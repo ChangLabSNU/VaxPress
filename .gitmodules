@@ -1,0 +1,3 @@
+[submodule "LinearFold"]
+	path = contrib/LinearFold
+	url = https://github.com/LinearFold/LinearFold
