@@ -83,6 +83,11 @@ class MutantGenerator:
         self.choices = choices
         self.initial_codons = initial_codons
 
+    def randomize_initial_codons(self) -> None:
+        self.initial_codons[:] = [
+            self.rand.choice([codon] + self.synonymous_codons[codon])
+            for codon in self.initial_codons]
+
     def generate_mutant(self, codons: list[str],
                         mutation_rate: float) -> list[str]:
         child = codons[:]

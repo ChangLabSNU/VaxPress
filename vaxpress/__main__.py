@@ -34,6 +34,7 @@ import click
 @click.option('--quiet', is_flag=True, help='do not print progress')
 @click.option('--print-top', default=10, help='print top and bottom N sequences')
 @click.option('--codon-table', default='standard', help='codon table')
+@click.option('--random-initialization', is_flag=True, help='randomize all codons at the beginning')
 # Iteration parameters
 @click.option('--iterations', default=10, help='number of iterations')
 @click.option('--offsprings', default=4, help='number of offsprings per iteration')
@@ -62,8 +63,8 @@ import click
 @click.option('--repeats-weight', default=1.0, help='scoring weight for tandem repeats')
 # Arguments
 @click.argument('fasta', required=True)
-def run_vaxpress(output, seed, processes, quiet, print_top, codon_table, iterations,
-                 offsprings, survivors, initial_mutation_rate, winddown_trigger,
+def run_vaxpress(output, seed, processes, quiet, print_top, codon_table, random_initialization,
+                 iterations, offsprings, survivors, initial_mutation_rate, winddown_trigger,
                  winddown_rate, icodon_species, icodon_weight, ucount_weight,
                  gc_window_size, gc_stride, gc_weight,
                  folding_off, folding_engine, folding_mfe_weight,
@@ -111,7 +112,7 @@ def run_vaxpress(output, seed, processes, quiet, print_top, codon_table, iterati
         cdsseq, output, scoring_options, iteration_options,
         seed=seed, processes=processes,
         codon_table=codon_table, quiet=quiet, seq_description=seqdescr,
-        print_top_mutants=print_top)
+        print_top_mutants=print_top, random_initialization=random_initialization)
 
     evochamber.run()
 

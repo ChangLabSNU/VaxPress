@@ -74,7 +74,8 @@ class CDSEvolutionChamber:
     def __init__(self, cdsseq: str, checkpoint_output: str, scoring_options: ScoringOptions,
                  iteration_options: IterationOptions, seed: int, processes: int,
                  codon_table: str='standard', quiet: bool=False,
-                 seq_description: str=None, print_top_mutants: int=10):
+                 seq_description: str=None, print_top_mutants: int=10,
+                 random_initialization: bool=False):
 
         self.cdsseq = cdsseq
         if len(self.cdsseq) % 3 != 0:
@@ -87,17 +88,21 @@ class CDSEvolutionChamber:
         self.n_processes = processes
         self.quiet = quiet
         self.print_top_mutants = print_top_mutants
+        self.random_initialization = random_initialization
 
-        self.initialize(seed, codon_table)
+        self.initialize(seed, codon_table, random_initialization)
 
     def printmsg(self, *args, **kwargs) -> None:
         if not self.quiet:
             kwargs['file'] = sys.stderr
             print(*args, **kwargs)
 
-    def initialize(self, seed: int, codon_table: str) -> None:
+    def initialize(self, seed: int, codon_table: str,
+                   random_initialization: bool) -> None:
         self.rand = np.random.RandomState(seed)
         self.mutantgen = MutantGenerator(self.cdsseq, self.rand, codon_table)
+        if random_initialization:
+            self.mutantgen.randomize_initial_codons()
         self.population = [self.mutantgen.initial_codons]
 
         self.mutation_rate = self.iteropts.initial_mutation_rate
