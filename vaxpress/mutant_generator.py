@@ -37,10 +37,13 @@ class MutantGenerator:
     initial_codons = None
 
     def __init__(self, cdsseq: str, random_state: np.random.RandomState,
-                 codon_table: str='standard'):
+                 codon_table: str='standard', is_protein: bool=False):
         self.initialize_codon_table(codon_table)
 
-        self.cdsseq = cdsseq
+        if is_protein:
+            self.cdsseq = self.backtranslate(cdsseq)
+        else:
+            self.cdsseq = cdsseq
         if len(self.cdsseq) % 3 != 0:
             raise ValueError('Invalid CDS sequence length')
 
@@ -68,6 +71,9 @@ class MutantGenerator:
             for c in codons:
                 self.synonymous_codons[c] = sorted(codons - set([c]))
                 self.codon2aa[c] = aa
+
+    def backtranslate(self, proteinseq: str) -> str:
+        return ''.join(next(iter(self.aa2codons[aa])) for aa in proteinseq)
 
     def setup_choices(self) -> None:
         choices = []

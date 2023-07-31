@@ -38,6 +38,9 @@ from .scoring.folding import RNAFoldingFitness
 from .scoring.tandem_repeats import TandemRepeatsFitness
 from . import __version__
 
+PROTEIN_ALPHABETS = 'ACDEFGHIKLMNPQRSTVWY' + STOP
+RNA_ALPHABETS = 'ACGU'
+
 fitness_scorefuncs = {
     'iCodon': iCodonStabilityFitness,
     'ucount': UridineCountFitness,
@@ -65,6 +68,12 @@ IterationOptions = namedtuple('IterationOptions', [
     'winddown_trigger', 'winddown_rate'
 ])
 
+ExecutionOptions = namedtuple('ExecutionOptions', [
+    'seed', 'processes',
+    'random_initialization', 'codon_table', 'protein',
+    'quiet', 'seq_description', 'print_top_mutants'
+])
+
 class CDSEvolutionChamber:
 
     hbar = '-' * 80
@@ -72,36 +81,45 @@ class CDSEvolutionChamber:
     stop_threshold = 0.2
 
     def __init__(self, cdsseq: str, checkpoint_output: str, scoring_options: ScoringOptions,
-                 iteration_options: IterationOptions, seed: int, processes: int,
-                 codon_table: str='standard', quiet: bool=False,
-                 seq_description: str=None, print_top_mutants: int=10,
-                 random_initialization: bool=False):
+                 iteration_options: IterationOptions, exec_options: ExecutionOptions):
+        self.cdsseq = cdsseq.upper()
 
-        self.cdsseq = cdsseq
-        if len(self.cdsseq) % 3 != 0:
-            raise ValueError('Invalid CDS sequence length')
-
-        self.seq_description = seq_description
+        self.seq_description = exec_options.seq_description
         self.checkpoint_path = checkpoint_output
         self.scoreopts = scoring_options
         self.iteropts = iteration_options
-        self.n_processes = processes
-        self.quiet = quiet
-        self.print_top_mutants = print_top_mutants
-        self.random_initialization = random_initialization
+        self.execopts = exec_options
+        self.n_processes = exec_options.processes
+        self.quiet = exec_options.quiet
+        self.print_top_mutants = exec_options.print_top_mutants
 
-        self.initialize(seed, codon_table, random_initialization)
+        self.initialize()
 
     def printmsg(self, *args, **kwargs) -> None:
         if not self.quiet:
             kwargs['file'] = sys.stderr
             print(*args, **kwargs)
 
-    def initialize(self, seed: int, codon_table: str,
-                   random_initialization: bool) -> None:
-        self.rand = np.random.RandomState(seed)
-        self.mutantgen = MutantGenerator(self.cdsseq, self.rand, codon_table)
-        if random_initialization:
+    def initialize(self) -> None:
+        if self.execopts.protein:
+            invalid_letters = set(self.cdsseq) - set(PROTEIN_ALPHABETS)
+            if invalid_letters:
+                raise ValueError(f'Invalid protein sequence: {" ".join(invalid_letters)}')
+            if self.cdsseq[-1] != STOP:
+                self.cdsseq += STOP
+        else: # RNA or DNA
+            self.cdsseq = self.cdsseq.replace('T', 'U')
+            invalid_letters = set(self.cdsseq) - set(RNA_ALPHABETS)
+            if invalid_letters:
+                raise ValueError(f'Invalid RNA sequence: {" ".join(invalid_letters)}')
+            if len(self.cdsseq) % 3 != 0:
+                raise ValueError('Invalid CDS sequence length')
+
+        self.rand = np.random.RandomState(self.execopts.seed)
+        self.mutantgen = MutantGenerator(self.cdsseq, self.rand,
+                                         self.execopts.codon_table,
+                                         self.execopts.protein)
+        if self.execopts.random_initialization or self.execopts.protein:
             self.mutantgen.randomize_initial_codons()
         self.population = [self.mutantgen.initial_codons]
 

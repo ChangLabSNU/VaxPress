@@ -23,7 +23,8 @@
 # THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-from .evolution_chamber import CDSEvolutionChamber, ScoringOptions, IterationOptions
+from .evolution_chamber import (
+    CDSEvolutionChamber, ScoringOptions, IterationOptions, ExecutionOptions)
 from Bio import SeqIO
 import argparse
 
@@ -43,6 +44,7 @@ def parse_options():
 
     grp = parser.add_argument_group('Sequence Options')
     grp.add_argument('--codon-table', default='standard', help='codon table (default: standard)')
+    grp.add_argument('--protein', default=False, action='store_true', help='input is a protein sequence')
     grp.add_argument('--random-initialization', default=False, action='store_true', help='randomize all codons at the beginning')
 
     grp = parser.add_argument_group('Optimization Options')
@@ -68,7 +70,7 @@ def parse_options():
     grp = parser.add_argument_group('Fitness - RNA Folding')
     grp.add_argument('--folding-off', default=False, action='store_true', help='disable secondary structure folding')
     grp.add_argument('--folding-engine', default='vienna', choices=['vienna', 'linearfold'],
-                     help='RNA folding engine: vienna (default) or linearfold')
+                     help='RNA folding engine (default: vienna)')
     grp.add_argument('--folding-mfe-weight', type=float, default=1.0, help='scoring weight for MFE (default: 1.0)')
     grp.add_argument('--folding-start-structure-width', type=int, default=15, help='width in nt of unfolded region near the start codon (default: 15)')
     grp.add_argument('--folding-start-structure-weight', type=int, default=1, help='penalty weight for folded start codon region (default: 1)')
@@ -87,13 +89,7 @@ def run_vaxpress():
 
     inputseq = next(SeqIO.parse(args.fasta, 'fasta'))
     seqdescr = inputseq.description
-    cdsseq = str(inputseq.seq).replace('T', 'U')
-    if len(cdsseq) % 3 != 0:
-        raise ValueError('Invalid CDS sequence length')
-
-    invalid_letters = set(cdsseq) - set('ACGU')
-    if invalid_letters:
-        raise ValueError(f'Invalid letters in CDS sequence: {",".join(invalid_letters)}')
+    cdsseq = str(inputseq.seq)
 
     scoring_options = ScoringOptions(
         iCodon_species=args.icodon_species,
@@ -121,11 +117,20 @@ def run_vaxpress():
         winddown_rate=args.winddown_rate,
     )
 
+    execution_options = ExecutionOptions(
+        seed=args.seed,
+        processes=args.processes,
+        random_initialization=args.random_initialization,
+        codon_table=args.codon_table,
+        quiet=args.quiet,
+        seq_description=seqdescr,
+        print_top_mutants=args.print_top,
+        protein=args.protein,
+    )
+
     evochamber = CDSEvolutionChamber(
         cdsseq, args.output, scoring_options, iteration_options,
-        seed=args.seed, processes=args.processes,
-        codon_table=args.codon_table, quiet=args.quiet, seq_description=seqdescr,
-        print_top_mutants=args.print_top, random_initialization=args.random_initialization)
+        execution_options)
 
     evochamber.run()
 
