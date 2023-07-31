@@ -41,7 +41,6 @@ Return the MFE structure and free energy predicted by LinearFold.");
 static PyObject *
 linearfold_fold(PyObject *self, PyObject *args)
 {
-    double score;
     const char *seq;
     Py_ssize_t len;
 
@@ -49,14 +48,14 @@ linearfold_fold(PyObject *self, PyObject *args)
         return NULL;
 
     /* LinearFold arguments */
-    int beamsize = 100;
-    bool sharpturn = false;
-    bool is_verbose = false;
-    bool zuker_subopt = false;
-    float energy_delta = 5.0;
-    string shape_file_path = "";
-    bool fasta = false;
-    int dangles = 2;
+    const int beamsize = 100;
+    const bool sharpturn = false;
+    const bool is_verbose = false;
+    const bool zuker_subopt = false;
+    const float energy_delta = 5.0;
+    const string shape_file_path = "";
+    const bool fasta = false;
+    const int dangles = 2;
 
     string rna_seq(seq);
 
@@ -65,7 +64,7 @@ linearfold_fold(PyObject *self, PyObject *args)
                          energy_delta, shape_file_path, fasta, dangles);
     BeamCKYParser::DecoderResult result = parser.parse(rna_seq, NULL);
 
-    score = result.score / -100.0;
+    double score = result.score / -100.0;
 
     return Py_BuildValue("(s#d)", result.structure.c_str(), len, score);
 }
@@ -79,25 +78,13 @@ static PyMethodDef linearfold_methods[] = {
 PyDoc_STRVAR(module_doc,
 "CPython interface to LinearFold");
 
-static int
-linearfold_exec(PyObject *m)
-{
-    /* Nothing to do here */
-    return 0;
-}
-
-static struct PyModuleDef_Slot linearfold_slots[] = {
-    {Py_mod_exec, (PyObject*)linearfold_exec},
-    {0, NULL},
-};
-
 static struct PyModuleDef linearfoldmodule = {
     PyModuleDef_HEAD_INIT,
     "linearfold",
     module_doc,
     0,
     linearfold_methods,
-    linearfold_slots,
+    NULL,
     NULL,
     NULL,
     NULL
