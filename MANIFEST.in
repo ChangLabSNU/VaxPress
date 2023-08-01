@@ -1,0 +1,3 @@
+include README.md
+include LICENSE.txt
+recursive-include contrib/LinearFold AUTHORS LICENSE README.md *.cpp *.h
