@@ -1,0 +1,6 @@
+biopython>=1.5
+numpy>=1.15
+pandas>=2.0
+pytrf>=1.0.1
+rpy2>=3.0
+ViennaRNA>=2.4
