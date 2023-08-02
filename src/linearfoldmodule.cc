@@ -58,11 +58,14 @@ linearfold_fold(PyObject *self, PyObject *args)
     const int dangles = 2;
 
     string rna_seq(seq);
+    BeamCKYParser::DecoderResult result;
 
     /* Call LinearFold */
+    Py_BEGIN_ALLOW_THREADS
     BeamCKYParser parser(beamsize, !sharpturn, is_verbose, false, zuker_subopt,
                          energy_delta, shape_file_path, fasta, dangles);
-    BeamCKYParser::DecoderResult result = parser.parse(rna_seq, NULL);
+    result = parser.parse(rna_seq, NULL);
+    Py_END_ALLOW_THREADS
 
     double score = result.score / -100.0;
 
