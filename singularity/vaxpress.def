@@ -1,0 +1,38 @@
+Bootstrap: docker
+From: ubuntu:jammy
+
+%files
+    .. /vaxpress-build
+
+%environment
+    export LC_ALL=C
+
+%post
+    perl -pi -e 's,http://archive.ubuntu.com/ubuntu,http://kr.archive.ubuntu.com/ubuntu,g' \
+        /etc/apt/sources.list
+
+    export http_proxy=http://mango:3142; \
+    export DEBIAN_FRONTEND=noninteractive; \
+    apt -y update && apt -y upgrade && \
+    apt -y install python3-rpy2 git gcc make python3-matplotlib \
+    python3-dev python3-rna python3-biopython python3-pandas python3-pip \
+    r-cran-stringr r-cran-devtools r-cran-magrittr r-cran-stringr \
+    r-cran-purrr r-cran-tibble r-cran-dplyr r-cran-ggplot2 r-cran-scales \
+    r-cran-tidyr r-cran-recipes r-cran-glmnet r-cran-rlang r-cran-ggrepel \
+    r-cran-shiny r-cran-ggridges r-cran-cowplot && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+
+    Rscript -e 'devtools::install_github("santiago1234/iCodon",dependencies=c("Depends","Imports","LinkingTo"),upgrade_dependencies=FALSE)'
+
+    cd /vaxpress-build && pip install pytrf && pip install .
+
+    cd / && rm -rf /vaxpress-build
+
+%runscript
+    /usr/local/bin/vaxpress $@
+
+%labels
+    Version 0.1
+
+# ex: ts=8 sts=4 sw=4 et
