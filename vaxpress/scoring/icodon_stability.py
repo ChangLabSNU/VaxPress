@@ -40,6 +40,9 @@ class iCodonStabilityFitness(ScoringFunction):
 
     def __call__(self, seqs):
         if not self.iCodon_initialized:
+            import os
+            os.environ['TZ'] = 'UTC' # dplyr requires this to run in singularity
+
             import rpy2.robjects.packages as rpackages
             rpackages.importr('iCodon')
             rpackages.importr('stringr')
