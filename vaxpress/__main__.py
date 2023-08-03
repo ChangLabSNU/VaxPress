@@ -34,17 +34,17 @@ def parse_options():
         description='VaxPress: A Codon Optimizer for mRNA Vaccine Design')
 
     grp = parser.add_argument_group('Input/Output Options')
+    grp.add_argument('-i', '--input', required=True, help='input fasta file containing the CDS sequence')
+    grp.add_argument('--protein', default=False, action='store_true', help='input is a protein sequence')
     grp.add_argument('-o', '--output', required=True, help='output file')
     grp.add_argument('-q', '--quiet', default=False, action='store_true', help='do not print progress')
     grp.add_argument('--print-top', type=int, default=10, help='print top and bottom N sequences (default: 10)')
 
     grp = parser.add_argument_group('Execution Options')
-    grp.add_argument('--seed', type=int, default=922, help='random seed (default: 922)')
     grp.add_argument('-p', '--processes', type=int, default=4, help='number of processes to use (default: 4)')
-
-    grp = parser.add_argument_group('Sequence Options')
+    grp.add_argument('--seed', type=int, default=922, help='random seed (default: 922)')
+    grp.add_argument('--species', default='human', help='target species (default: human)')
     grp.add_argument('--codon-table', default='standard', help='codon table (default: standard)')
-    grp.add_argument('--protein', default=False, action='store_true', help='input is a protein sequence')
     grp.add_argument('--random-initialization', default=False, action='store_true', help='randomize all codons at the beginning')
 
     grp = parser.add_argument_group('Optimization Options')
@@ -56,7 +56,6 @@ def parse_options():
     grp.add_argument('--winddown-rate', type=float, default=0.9, help='mutation rate multiplier when mutation stabilization is triggered (default: 0.9)')
 
     grp = parser.add_argument_group('Fitness - iCodon')
-    grp.add_argument('--icodon-species', default='human', help='iCodon RNA stability optimizer: species (default: human)')
     grp.add_argument('--icodon-weight', type=float, default=1.0, help='scoring weight for iCodon predicted stability (default: 1.0)')
 
     grp = parser.add_argument_group('Fitness - Uridines')
@@ -80,19 +79,16 @@ def parse_options():
     grp.add_argument('--repeats-repeat-length', type=int, default=10, help='minimum length of repeats to be considered as a tandem repeat (default: 10)')
     grp.add_argument('--repeats-weight', type=float, default=1.0, help='scoring weight for tandem repeats (default: 1.0)')
 
-    parser.add_argument('fasta', help='input fasta file containing the CDS sequence')
-
     return parser.parse_args()
 
 def run_vaxpress():
     args = parse_options()
 
-    inputseq = next(SeqIO.parse(args.fasta, 'fasta'))
+    inputseq = next(SeqIO.parse(args.input, 'fasta'))
     seqdescr = inputseq.description
     cdsseq = str(inputseq.seq)
 
     scoring_options = ScoringOptions(
-        iCodon_species=args.icodon_species,
         iCodon_weight=args.icodon_weight,
         ucount_weight=args.ucount_weight,
         gc_window_size=args.gc_window_size,
@@ -121,6 +117,7 @@ def run_vaxpress():
         seed=args.seed,
         processes=args.processes,
         random_initialization=args.random_initialization,
+        species=args.species,
         codon_table=args.codon_table,
         quiet=args.quiet,
         seq_description=seqdescr,

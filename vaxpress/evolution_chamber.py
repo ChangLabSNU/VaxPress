@@ -51,7 +51,7 @@ fitness_scorefuncs = {
 
 ScoringOptions = namedtuple('ScoringOptions', [
     # iCodon predicted stability
-    'iCodon_species', 'iCodon_weight',
+    'iCodon_weight',
     # U content
     'ucount_weight',
     # GC ratio
@@ -69,9 +69,8 @@ IterationOptions = namedtuple('IterationOptions', [
 ])
 
 ExecutionOptions = namedtuple('ExecutionOptions', [
-    'seed', 'processes',
-    'random_initialization', 'codon_table', 'protein',
-    'quiet', 'seq_description', 'print_top_mutants'
+    'seed', 'processes', 'random_initialization', 'species', 'codon_table',
+    'protein', 'quiet', 'seq_description', 'print_top_mutants'
 ])
 
 class CDSEvolutionChamber:
@@ -141,6 +140,7 @@ class CDSEvolutionChamber:
 
         additional_opts = {
             'length_cds': self.length_cds,
+            'species': self.execopts.species,
         }
 
         for funcname, cls in fitness_scorefuncs.items():

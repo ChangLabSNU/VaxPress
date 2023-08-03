@@ -44,7 +44,7 @@ class GCRatioFitness(ScoringFunction):
 
     name = 'gc'
 
-    def __init__(self, weight, window_size, stride, length_cds):
+    def __init__(self, weight, window_size, stride, length_cds, species):
         num_windows = (length_cds - window_size) // stride + 1
         num_windows = max(num_windows, 1)
 
