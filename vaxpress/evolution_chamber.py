@@ -32,6 +32,7 @@ from concurrent import futures
 from itertools import cycle
 from .mutant_generator import MutantGenerator, STOP
 from .scoring.icodon_stability import iCodonStabilityFitness
+from .scoring.cai import CodonAdaptationIndexFitness
 from .scoring.ucount import UridineCountFitness
 from .scoring.gc_ratio import GCRatioFitness
 from .scoring.folding import RNAFoldingFitness
@@ -43,6 +44,7 @@ RNA_ALPHABETS = 'ACGU'
 
 fitness_scorefuncs = {
     'iCodon': iCodonStabilityFitness,
+    'cai': CodonAdaptationIndexFitness,
     'ucount': UridineCountFitness,
     'gc': GCRatioFitness,
     'folding': RNAFoldingFitness,
@@ -52,6 +54,8 @@ fitness_scorefuncs = {
 ScoringOptions = namedtuple('ScoringOptions', [
     # iCodon predicted stability
     'iCodon_weight',
+    # Codon Adaptation Index
+    'cai_weight',
     # U content
     'ucount_weight',
     # GC ratio
@@ -114,6 +118,7 @@ class CDSEvolutionChamber:
             if len(self.cdsseq) % 3 != 0:
                 raise ValueError('Invalid CDS sequence length')
 
+        self.species = self.execopts.species
         self.rand = np.random.RandomState(self.execopts.seed)
         self.mutantgen = MutantGenerator(self.cdsseq, self.rand,
                                          self.execopts.codon_table,
@@ -140,7 +145,6 @@ class CDSEvolutionChamber:
 
         additional_opts = {
             'length_cds': self.length_cds,
-            'species': self.execopts.species,
         }
 
         for funcname, cls in fitness_scorefuncs.items():
@@ -150,6 +154,8 @@ class CDSEvolutionChamber:
             if ('weight' in opts and opts['weight'] == 0) or ('off' in opts and opts['off']):
                 continue
             opts.update(additional_opts)
+            for reqattr in cls.requires:
+                opts[reqattr] = getattr(self, reqattr)
 
             scorefunc_inst = cls(**opts)
             if cls.single_submission:

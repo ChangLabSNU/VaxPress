@@ -32,7 +32,7 @@ class TandemRepeatsFitness(ScoringFunction):
 
     name = 'repeats'
 
-    def __init__(self, weight, min_repeats, repeat_length, length_cds, species):
+    def __init__(self, weight, min_repeats, repeat_length, length_cds):
         self.weight = weight / length_cds * -1000
         self.min_repeats = min_repeats
         self.repeat_length = repeat_length

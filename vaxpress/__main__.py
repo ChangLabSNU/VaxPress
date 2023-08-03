@@ -28,6 +28,14 @@ from .evolution_chamber import (
 from Bio import SeqIO
 import argparse
 
+SPECIES_ALIASES = {
+    'human': 'Homo sapiens',
+    'mouse': 'Mus musculus',
+    'zebrafish': 'Danio rerio',
+    'rat': 'Rattus norvegicus',
+    'macaque': 'Macaca mulatta',
+}
+
 def parse_options():
     parser = argparse.ArgumentParser(
         prog='vaxpress',
@@ -58,13 +66,8 @@ def parse_options():
     grp = parser.add_argument_group('Fitness - iCodon')
     grp.add_argument('--icodon-weight', type=float, default=1.0, help='scoring weight for iCodon predicted stability (default: 1.0)')
 
-    grp = parser.add_argument_group('Fitness - Uridines')
-    grp.add_argument('--ucount-weight', type=float, default=3.0, help='scoring weight for U count minimizer (default: 3.0)')
-
-    grp = parser.add_argument_group('Fitness - GC Ratio')
-    grp.add_argument('--gc-window-size', type=int, default=50, help='size of window for GC content calculation (default: 50)')
-    grp.add_argument('--gc-stride', type=int, default=5, help='size of stride for GC content calculation (default: 5)')
-    grp.add_argument('--gc-weight', type=int, default=3, help='GC penalty score (default: 3)')
+    grp = parser.add_argument_group('Fitness - Codon Adaptation Index')
+    grp.add_argument('--cai-weight', type=float, default=3.0, help='scoring weight for codon adaptation index (default: 1.0)')
 
     grp = parser.add_argument_group('Fitness - RNA Folding')
     grp.add_argument('--folding-off', default=False, action='store_true', help='disable secondary structure folding')
@@ -73,6 +76,14 @@ def parse_options():
     grp.add_argument('--folding-mfe-weight', type=float, default=1.0, help='scoring weight for MFE (default: 1.0)')
     grp.add_argument('--folding-start-structure-width', type=int, default=15, help='width in nt of unfolded region near the start codon (default: 15)')
     grp.add_argument('--folding-start-structure-weight', type=int, default=1, help='penalty weight for folded start codon region (default: 1)')
+
+    grp = parser.add_argument_group('Fitness - Uridines')
+    grp.add_argument('--ucount-weight', type=float, default=3.0, help='scoring weight for U count minimizer (default: 3.0)')
+
+    grp = parser.add_argument_group('Fitness - GC Ratio')
+    grp.add_argument('--gc-window-size', type=int, default=50, help='size of window for GC content calculation (default: 50)')
+    grp.add_argument('--gc-stride', type=int, default=5, help='size of stride for GC content calculation (default: 5)')
+    grp.add_argument('--gc-weight', type=int, default=3, help='GC penalty score (default: 3)')
 
     grp = parser.add_argument_group('Fitness - Tandem Repeats')
     grp.add_argument('--repeats-min-repeats', type=int, default=2, help='minimum number of repeats to be considered as a tandem repeat (default: 2)')
@@ -90,6 +101,7 @@ def run_vaxpress():
 
     scoring_options = ScoringOptions(
         iCodon_weight=args.icodon_weight,
+        cai_weight=args.cai_weight,
         ucount_weight=args.ucount_weight,
         gc_window_size=args.gc_window_size,
         gc_stride=args.gc_stride,
@@ -117,7 +129,7 @@ def run_vaxpress():
         seed=args.seed,
         processes=args.processes,
         random_initialization=args.random_initialization,
-        species=args.species,
+        species=SPECIES_ALIASES.get(args.species, args.species),
         codon_table=args.codon_table,
         quiet=args.quiet,
         seq_description=seqdescr,

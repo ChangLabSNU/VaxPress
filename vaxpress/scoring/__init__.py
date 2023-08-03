@@ -30,3 +30,6 @@ class ScoringFunction:
 
     # If True, the scoring function is called for each individual sequence.
     single_submission = False
+
+    # Specifies the additional required arguments for the scoring function.
+    requires = []

@@ -25,6 +25,12 @@
 
 from . import ScoringFunction
 
+ICODON_SPECIES_MAPPING = {
+    'Homo sapiens': 'human',
+    'Mus musculus': 'mouse',
+    'Danio rerio': 'zebrafish',
+}
+
 class iCodonStabilityFitness(ScoringFunction):
 
     iCodon_initialized = False
@@ -32,10 +38,13 @@ class iCodonStabilityFitness(ScoringFunction):
     predfuncs = {} # cache for iCodon predict_stability functions
 
     name = 'iCodon'
+    requires = ['species']
 
     def __init__(self, weight, species, length_cds):
         self.weight = weight
-        self.species = species
+        if species not in ICODON_SPECIES_MAPPING:
+            raise ValueError(f"Unsupported species by iCodon: {species}")
+        self.species = ICODON_SPECIES_MAPPING[species]
         self.length_cds = length_cds
 
     def __call__(self, seqs):

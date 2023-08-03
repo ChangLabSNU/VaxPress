@@ -31,7 +31,7 @@ class UridineCountFitness(ScoringFunction):
 
     name = 'ucount'
 
-    def __init__(self, weight, length_cds, species):
+    def __init__(self, weight, length_cds):
         self.weight = -weight / length_cds * 4
 
     def __call__(self, seqs):

@@ -24,36 +24,40 @@
 #
 
 from . import ScoringFunction
+from .. import codon_usage_data
 import numpy as np
 
-def gc_content_sliding_window(seq, winsize, stride):
-    chars = np.frombuffer(seq.encode(), dtype=np.uint8)
-    isgc = ((chars == ord('G')) + (chars == ord('C')))
-    gc = []
-    for i in range(0, len(chars) - winsize + 1, stride):
-        gc.append(np.mean(isgc[i:i+winsize]))
-    return np.array(gc)
-
-def compute_gc_penalty(seq, winsize, stride):
-    gc = gc_content_sliding_window(seq, winsize, stride)
-    return -(10**np.log2(np.abs(gc - 0.5) + 0.05)).sum()
-
-class GCRatioFitness(ScoringFunction):
+class CodonAdaptationIndexFitness(ScoringFunction):
 
     single_submission = False
 
-    name = 'gc'
+    name = 'cai'
+    requires = ['mutantgen', 'species']
 
-    def __init__(self, weight, window_size, stride, length_cds):
-        num_windows = (length_cds - window_size) // stride + 1
-        num_windows = max(num_windows, 1)
+    def __init__(self, weight, length_cds, species, mutantgen):
+        self.weight = weight
+        self.species = species
+        self.mutantgen = mutantgen
+        self.initialize_codon_scores()
 
-        self.weight = weight / num_windows
-        self.window_size = window_size
-        self.stride = stride
+    def initialize_codon_scores(self):
+        if self.species not in codon_usage_data.codon_usage:
+            raise ValueError(f'No codon usage data for species: {self.species}')
+        
+        codon_usage = codon_usage_data.codon_usage[self.species]
+        scores = {}
+        for aa, codons in self.mutantgen.aa2codons.items():
+            codons = sorted(codons)
+            freqs = np.array([codon_usage[c] for c in codons])
+            scores.update(dict(zip(codons, np.log(freqs / freqs.max()))))
+
+        self.codon_scores = scores
 
     def __call__(self, seqs):
-        gc_penalties = [compute_gc_penalty(seq, self.window_size, self.stride)
-                        for seq in seqs]
-        scores = [s * self.weight for s in gc_penalties]
-        return {'gc_penalty': scores}, {'gc_penalty': gc_penalties}
+        scores = self.codon_scores
+        cai = np.array([
+            np.mean([scores[seq[i:i+3]] for i in range(0, len(seq), 3)])
+            for seq in seqs])
+        cai_score = cai * self.weight
+
+        return {'cai': cai_score}, {'cai': cai}
