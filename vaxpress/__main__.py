@@ -48,9 +48,9 @@ def parse_options():
     grp.add_argument('--random-initialization', default=False, action='store_true', help='randomize all codons at the beginning')
 
     grp = parser.add_argument_group('Optimization Options')
-    grp.add_argument('--iterations', type=int, default=50, help='number of iterations (default: 50)')
-    grp.add_argument('--offsprings', type=int, default=100, help='number of offsprings per iteration (default: 100)')
-    grp.add_argument('--survivors', type=int, default=3, help='number of survivors per iteration (default: 3)')
+    grp.add_argument('--iterations', type=int, default=10, help='number of iterations (default: 10)')
+    grp.add_argument('--offsprings', type=int, default=20, help='number of offsprings per iteration (default: 20)')
+    grp.add_argument('--survivors', type=int, default=2, help='number of survivors per iteration (default: 2)')
     grp.add_argument('--initial-mutation-rate', type=float, default=0.1, help='initial mutation rate (default: 0.1)')
     grp.add_argument('--winddown-trigger', type=int, default=15, help='number of iterations with the same best score to trigger mutation stabilization (default: 15)')
     grp.add_argument('--winddown-rate', type=float, default=0.9, help='mutation rate multiplier when mutation stabilization is triggered (default: 0.9)')
