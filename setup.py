@@ -23,25 +23,51 @@
 # THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-from distutils.core import setup
-from distutils.extension import Extension
+from setuptools import setup
 
-setup(name='vaxpress',
-      version='0.1',
-      description='Codon Optimizer for mRNA Vaccine Design',
-      author='Hyeshik Chang',
-      author_email='hyeshik@snu.ac.kr',
-      url='https://github.com/ChangLabSNU/VaxPress',
-      packages=['vaxpress', 'vaxpress.scoring'],
-      entry_points={
+setup(
+    name='vaxpress',
+    version='0.1',
+    description='Codon Optimizer for mRNA Vaccine Design',
+    author='Hyeshik Chang',
+    author_email='hyeshik@snu.ac.kr',
+    url='https://github.com/ChangLabSNU/VaxPress',
+    download_url='https://github.com/ChangLabSNU/python-linearfold/releases',
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
+    keywords=[
+        'mRNA vaccine',
+        'messenger RNA',
+        'codon optimization'
+    ],
+    license='MIT',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: Console',
+        'Intended Audience :: Healthcare Industry',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: POSIX',
+        'Programming Language :: Python :: 3 :: Only',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+    ],
+    packages=['vaxpress', 'vaxpress.scoring'],
+    entry_points={
         'console_scripts': [
             'vaxpress = vaxpress.__main__:run_vaxpress',
         ],
-      },
-      ext_modules=[
-        Extension(
-            'vaxpress.linearfold',
-            ['src/linearfoldmodule.cc'],
-            include_dirs=['contrib/LinearFold/src'],
-        )],
-     )
+    },
+    install_requires=[
+        'biopython >= 1.5',
+        'numpy >= 1.15',
+        'pandas >= 2.0',
+        'pytrf >= 1.0.1',
+        'rpy2 >= 3.0',
+        'ViennaRNA >= 2.4',
+        'tqdm >= 4.0',
+        'tabulate >= 0.9',
+    ],
+    extras_require={
+        'nonfree': ['linearfold-unofficial'],
+    }, 
+)
