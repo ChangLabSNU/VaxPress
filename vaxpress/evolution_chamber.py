@@ -303,8 +303,8 @@ class CDSEvolutionChamber:
         header = ['flags', 'score'] + sorted(metrics[rowstoshow[0]].keys())
         tabdata = []
         for rank, i in enumerate(rowstoshow):
-            is_parent = 'P' if i < n_parents else ' '
-            is_survivor = 'S' if rank < self.iteropts.n_survivors else ' '
+            is_parent = 'P' if i < n_parents else '-'
+            is_survivor = 'S' if rank < self.iteropts.n_survivors else '-'
             f_total = total_scores[i]
             f_metrics = [metrics[i][name] for name in header[2:]]
             tabdata.append([is_parent + is_survivor, f_total] +f_metrics)
