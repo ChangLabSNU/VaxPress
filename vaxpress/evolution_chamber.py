@@ -23,11 +23,11 @@
 # THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-import pandas as pd
 import numpy as np
 import time
 import sys
 from tqdm import tqdm
+from tabulate import tabulate
 from collections import namedtuple
 from concurrent import futures
 from itertools import cycle
@@ -232,6 +232,7 @@ class CDSEvolutionChamber:
 
         futures.wait(jobs)
         pbar.close()
+        self.printmsg('')
 
         total_scores = [sum(s.values()) for s in scores]
 
@@ -291,18 +292,24 @@ class CDSEvolutionChamber:
                 self.printmsg()
 
     def print_eval_results(self, total_scores, metrics, ind_sorted, n_parents) -> None:
+        if self.quiet:
+            return
+
         print_top = min(self.print_top_mutants, len(self.population))
-        for rank, i in enumerate(ind_sorted[:print_top]):
+        rowstoshow = ind_sorted[:print_top]
+        if len(rowstoshow) < 1:
+            return
+
+        header = ['flags', 'score'] + sorted(metrics[rowstoshow[0]].keys())
+        tabdata = []
+        for rank, i in enumerate(rowstoshow):
             is_parent = 'P' if i < n_parents else ' '
             is_survivor = 'S' if rank < self.iteropts.n_survivors else ' '
-            f_total = f'[{total_scores[i]:.3f}]'
-            f_metrics = []
-            for name, value in sorted(metrics[i].items()):
-                if isinstance(value, int):
-                    f_metrics.append(f'{name}={value}')
-                else:
-                    f_metrics.append(f'{name}={value:.2f}')
-            self.printmsg(is_parent, is_survivor, f_total, *f_metrics)
+            f_total = total_scores[i]
+            f_metrics = [metrics[i][name] for name in header[2:]]
+            tabdata.append([is_parent + is_survivor, f_total] +f_metrics)
+
+        self.printmsg(tabulate(tabdata, header, tablefmt='simple', floatfmt='.2f'), end='\n\n')
 
     def print_time_estimation(self, iteration_start: float, iteration_end: float,
                               iter_no: int) -> None:
