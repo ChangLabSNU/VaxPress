@@ -27,6 +27,7 @@ import pandas as pd
 import numpy as np
 import time
 import sys
+from tqdm import tqdm
 from collections import namedtuple
 from concurrent import futures
 from itertools import cycle
@@ -191,6 +192,7 @@ class CDSEvolutionChamber:
 
         def collect_scores_batch(future):
             scoreupdates, metricupdates = future.result()
+            pbar.update()
 
             # Update scores
             for k, updates in scoreupdates.items():
@@ -209,7 +211,12 @@ class CDSEvolutionChamber:
             i = future._seqidx
             scores[i].update(scoreupdates)
             metrics[i].update(metricupdates)
+            pbar.update()
 
+        num_tasks = len(self.scorefuncs_batch) + len(self.scorefuncs_single) * len(self.flatten_seqs)
+        self.printmsg('')
+        pbar = tqdm(total=num_tasks, disable=self.quiet, file=sys.stderr,
+                    unit='task', desc='Scoring fitness')
         jobs = []
         for scorefunc in self.scorefuncs_batch:
             future = executor.submit(scorefunc, self.flatten_seqs)
@@ -224,6 +231,7 @@ class CDSEvolutionChamber:
                 jobs.append(future)
 
         futures.wait(jobs)
+        pbar.close()
 
         total_scores = [sum(s.values()) for s in scores]
 
