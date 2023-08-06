@@ -1,0 +1,64 @@
+diff --color -ruN iCodon-3.1/DESCRIPTION iCodon-3.1.fixed/DESCRIPTION
+--- iCodon-3.1/DESCRIPTION	2020-05-06 05:14:38.000000000 +0900
++++ iCodon-3.1.fixed/DESCRIPTION	2023-08-07 00:06:57.141118186 +0900
+@@ -1,6 +1,6 @@
+-Package: optimalcodonR
++Package: iCodon
+ Title: Manipulating mRNA stability by synonymous codon choice
+-Version: 0.0.0.9000
++Version: 3.1
+ Authors@R: 
+     person(given = "Santiago Gerardo",
+            family = "Medina",
+@@ -13,23 +13,17 @@
+ LazyData: true
+ RoxygenNote: 7.0.2
+ Depends: 
+-    R (>= 3.6.0)
++    R (>= 3.5.0)
+ Imports: 
+     magrittr,
+     stringr,
+     purrr,
+     tibble,
+     dplyr,
+-    ggplot2,
+-    scales,
+     tidyr,
+     recipes (>= 0.1.9),
+     glmnet (>= 3.0.2),
+-    rlang,
+-    ggrepel,
+-    shiny,
+-    ggridges,
+-    cowplot
++    rlang
+ Suggests: 
+     testthat,
+     covr
+diff --color -ruN iCodon-3.1/NAMESPACE iCodon-3.1.fixed/NAMESPACE
+--- iCodon-3.1/NAMESPACE	2020-05-06 05:14:38.000000000 +0900
++++ iCodon-3.1.fixed/NAMESPACE	2023-08-07 00:06:34.487676917 +0900
+@@ -4,22 +4,12 @@
+ export(add_codon_counts)
+ export(codon_distance)
+ export(count_codons)
+-export(evolution)
+ export(optimizer)
+-export(plot_optimization)
+ export(predict_stability)
+ export(preprocess_secuences)
+ export(pretty_print_seq)
+-export(runExample)
+-export(run_optimization_shinny)
+-export(sample_synonimous_codon)
+ export(selection)
+ export(translate)
+-export(unscale_decay_to_mouse)
+ export(validate_sequence)
+-export(visualize_evolution)
+-export(viz_result_shiny)
+-importFrom(ggplot2,aes)
+-importFrom(ggplot2,stat)
+ importFrom(magrittr,"%>%")
+ importFrom(stats,quantile)

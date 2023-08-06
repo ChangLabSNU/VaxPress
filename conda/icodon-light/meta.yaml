@@ -1,0 +1,50 @@
+{% set version = '3.1' %}
+
+package:
+  name: r-icodon-light
+  version: {{ version }}
+
+source:
+  git_rev: v{{ version }}
+  git_url: https://github.com/santiago1234/iCodon
+
+build:
+  noarch: generic
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  host:
+    - r-base
+    - r-magrittr
+    - r-stringr
+    - r-purrr
+    - r-tibble
+    - r-dplyr
+    - r-tidyr
+    - r-recipes
+    - r-glmnet
+    - r-rlang
+
+  run:
+    - r-base
+    - r-magrittr
+    - r-stringr
+    - r-purrr
+    - r-tibble
+    - r-dplyr
+    - r-tidyr
+    - r-recipes
+    - r-glmnet
+    - r-rlang
+
+test:
+  commands:
+    - $R -e "library('iCodon')"
+
+about:
+  home: https://github.com/santiago1234/iCodon
+  license: MIT
+  summary: 'Codon customizes gene expression based on the codon composition'
