@@ -1,0 +1,50 @@
+{% set version = '0.1' %}
+
+package:
+  name: vaxpress
+  version: {{ version }}
+
+source:
+  git_rev: v{{ version }}
+  git_url: git@github.com:ChangLabSNU/VaxPress.git
+
+build:
+  noarch: generic
+  number: 0
+  entry_points:
+    - vaxpress = vaxpress.__main__:run_vaxpress
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - rpy2
+    - numpy
+    - pandas
+    - biopython
+    - tqdm
+    - tabulate
+    - pytrf
+    - viennarna >=2.6
+  run:
+    - python
+    - python-linearfold
+    - r-icodon-light
+    - rpy2
+    - numpy
+    - pandas
+    - biopython
+    - tqdm
+    - tabulate
+    - pytrf
+    - viennarna >=2.6
+
+test:
+  commands:
+    - vaxpress --help
+
+about:
+  home: https://github.com/ChangLabSNU/VaxPress
+  license: MIT
+  summary: 'Codon Optimizer for mRNA Vaccine Design'
