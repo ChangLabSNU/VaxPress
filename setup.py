@@ -69,5 +69,5 @@ setup(
     ],
     extras_require={
         'nonfree': ['linearfold-unofficial'],
-    }, 
+    },
 )
