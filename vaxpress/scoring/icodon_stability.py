@@ -35,7 +35,7 @@ class iCodonStabilityFitness(ScoringFunction):
 
     iCodon_initialized = False
     single_submission = False
-    predfuncs = {} # cache for iCodon predict_stability functions
+    predfunc = None
 
     name = 'iCodon'
     requires = ['species']
@@ -58,17 +58,14 @@ class iCodonStabilityFitness(ScoringFunction):
 
             import rpy2.robjects as ro
             ro.r['options'](warn=-1)
+            self.predfunc = ro.r['predict_stability'](self.species)
 
             self.iCodon_initialized = True
-
-        import rpy2.robjects as ro
-        if self.species not in self.predfuncs:
-            self.predfuncs[self.species] = ro.r['predict_stability'](self.species)
 
         # Remove duplicates since iCodon refuses prediction of sequence lists
         # containing duplicates
         query = list(set(seqs))
-        results = self.predfuncs[self.species](seqs)
+        results = self.predfunc(seqs)
         results = dict(zip(query, results))
 
         pred = [float(results[s]) for s in seqs]
