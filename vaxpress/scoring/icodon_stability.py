@@ -71,7 +71,6 @@ class iCodonStabilityFitness(ScoringFunction):
         results = self.predfuncs[self.species](seqs)
         results = dict(zip(query, results))
 
-        pred = [results[s] for s in seqs]
-        pred = list(map(float, pred))
+        pred = [float(results[s]) for s in seqs]
         scores = [s * self.weight for s in pred]
         return {'pred_stability': scores}, {'pred_stability': pred}
