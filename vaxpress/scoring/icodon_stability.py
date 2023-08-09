@@ -65,7 +65,13 @@ class iCodonStabilityFitness(ScoringFunction):
         if self.species not in self.predfuncs:
             self.predfuncs[self.species] = ro.r['predict_stability'](self.species)
 
-        pred = self.predfuncs[self.species](seqs)
+        # Remove duplicates since iCodon refuses prediction of sequence lists
+        # containing duplicates
+        query = list(set(seqs))
+        results = self.predfuncs[self.species](seqs)
+        results = dict(zip(query, results))
+
+        pred = [results[s] for s in seqs]
         pred = list(map(float, pred))
         scores = [s * self.weight for s in pred]
         return {'pred_stability': scores}, {'pred_stability': pred}
