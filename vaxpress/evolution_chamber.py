@@ -84,6 +84,7 @@ class CDSEvolutionChamber:
     hbar = '-' * 80
     finalized_seqs = None
     stop_threshold = 0.2
+    table_header_length = 6
 
     def __init__(self, cdsseq: str, checkpoint_output: str, scoring_options: ScoringOptions,
                  iteration_options: IterationOptions, exec_options: ExecutionOptions):
@@ -347,7 +348,8 @@ class CDSEvolutionChamber:
             f_metrics = [metrics[i][name] for name in header[2:]]
             tabdata.append([is_parent + is_survivor, f_total] +f_metrics)
 
-        self.printmsg(tabulate(tabdata, header, tablefmt='simple', floatfmt='.2f'), end='\n\n')
+        header_short = [h[:self.table_header_length] for h in header]
+        self.printmsg(tabulate(tabdata, header_short, tablefmt='simple', floatfmt='.2f'), end='\n\n')
 
     def print_time_estimation(self, iteration_start: float, iteration_end: float,
                               iter_no: int) -> None:
