@@ -65,7 +65,7 @@ class iCodonStabilityFitness(ScoringFunction):
         # Remove duplicates since iCodon refuses prediction of sequence lists
         # containing duplicates
         query = list(set(seqs))
-        results = self.predfunc(seqs)
+        results = self.predfunc(query)
         results = dict(zip(query, results))
 
         pred = [float(results[s]) for s in seqs]
