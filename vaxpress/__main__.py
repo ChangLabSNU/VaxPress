@@ -76,6 +76,8 @@ def parse_options():
     grp.add_argument('--folding-mfe-weight', type=float, default=1.0, help='scoring weight for MFE (default: 1.0)')
     grp.add_argument('--folding-start-structure-width', type=int, default=15, help='width in nt of unfolded region near the start codon (default: 15)')
     grp.add_argument('--folding-start-structure-weight', type=int, default=1, help='penalty weight for folded start codon region (default: 1)')
+    grp.add_argument('--folding-loop-threshold', type=int, default=2, help='minimum count of unfolded bases to be considered as a loop (default: 2)')
+    grp.add_argument('--folding-loop-weight', type=float, default=1.0, help='scoring weight for loops (default: 1.0)')
 
     grp = parser.add_argument_group('Fitness - Uridines')
     grp.add_argument('--ucount-weight', type=float, default=3.0, help='scoring weight for U count minimizer (default: 3.0)')
@@ -111,6 +113,8 @@ def run_vaxpress():
         folding_mfe_weight=args.folding_mfe_weight,
         folding_start_structure_width=args.folding_start_structure_width,
         folding_start_structure_weight=args.folding_start_structure_weight,
+        folding_loop_threshold=args.folding_loop_threshold,
+        folding_loop_weight=args.folding_loop_weight,
         repeats_min_repeats=args.repeats_min_repeats,
         repeats_repeat_length=args.repeats_repeat_length,
         repeats_weight=args.repeats_weight,

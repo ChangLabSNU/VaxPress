@@ -64,6 +64,7 @@ ScoringOptions = namedtuple('ScoringOptions', [
     # Secondary structure folding
     'folding_off', 'folding_engine', 'folding_mfe_weight',
     'folding_start_structure_width', 'folding_start_structure_weight',
+    'folding_loop_threshold', 'folding_loop_weight',
     # Tandem repeats
     'repeats_min_repeats', 'repeats_repeat_length', 'repeats_weight',
 ])

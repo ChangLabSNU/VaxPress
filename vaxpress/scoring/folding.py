@@ -24,6 +24,7 @@
 #
 
 from . import ScoringFunction
+import re
 
 class RNAFoldingFitness(ScoringFunction):
 
@@ -33,11 +34,15 @@ class RNAFoldingFitness(ScoringFunction):
 
     def __init__(self, engine, mfe_weight,
                  start_structure_width, start_structure_weight,
+                 loop_threshold, loop_weight,
                  length_cds, off=False):
-        # off is handled by CDSEvolutionChamber.initialize_fitness_scorefuncs()
+        # `off' is handled by CDSEvolutionChamber.initialize_fitness_scorefuncs()
+
         self.mfe_weight = -mfe_weight / length_cds
         self.start_structure_width = start_structure_width
         self.start_structure_weight = -start_structure_weight
+        self.loop_threshold = loop_threshold
+        self.loop_weight = -loop_weight / length_cds
         self.engine = engine
 
         if engine == 'vienna':
@@ -53,15 +58,31 @@ class RNAFoldingFitness(ScoringFunction):
         else:
             raise ValueError(f'Unsupported RNA folding engine: {engine}')
 
+        if loop_weight != 0 and loop_threshold >= 1:
+            self.find_loops = re.compile('\\.{' + str(loop_threshold) + ',}')
+        else:
+            self.find_loops = None
+
     def __call__(self, seq):
         folding, mfe = self.fold(seq)
 
         # folded start codon
         start_structure = folding[:self.start_structure_width]
-        start_folded = start_structure.count('(') + start_structure.count(')')
 
-        metrics = {'mfe': mfe, 'start_str': start_folded}
-        scores = {'mfe': mfe * self.mfe_weight,
-                  'start_str': start_folded * self.start_structure_weight}
+        metrics, scores = {}, {}
+
+        if self.mfe_weight != 0:
+            metrics['mfe'] = mfe
+            scores['mfe'] = mfe * self.mfe_weight
+
+        if self.start_structure_weight != 0:
+            start_folded = start_structure.count('(') + start_structure.count(')')
+            metrics['start_str'] = start_folded
+            scores['start_str'] = start_folded * self.start_structure_weight
+
+        if self.find_loops is not None:
+            loops = sum(map(len, self.find_loops.findall(folding)))
+            metrics['loop'] = loops
+            scores['loop'] = loops * self.loop_weight
 
         return scores, metrics
