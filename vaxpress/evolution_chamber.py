@@ -100,7 +100,9 @@ class CDSEvolutionChamber:
         self.initialize()
 
     def printmsg(self, *args, **kwargs) -> None:
-        if not self.quiet:
+        if not self.quiet or kwargs.get('force') is not None:
+            if 'force' in kwargs:
+                del kwargs['force']
             kwargs['file'] = sys.stderr
             print(*args, **kwargs)
 
@@ -189,9 +191,13 @@ class CDSEvolutionChamber:
     def evaluate_population(self, executor) -> None:
         scores = [{} for i in range(len(self.population))]
         metrics = [{} for i in range(len(self.population))]
+        errors = []
 
         def collect_scores_batch(future):
-            scoreupdates, metricupdates = future.result()
+            try:
+                scoreupdates, metricupdates = future.result()
+            except Exception as exc:
+                return handle_exception(exc)
             pbar.update()
 
             # Update scores
@@ -213,26 +219,50 @@ class CDSEvolutionChamber:
             metrics[i].update(metricupdates)
             pbar.update()
 
+        def handle_exception(exc):
+            self.printmsg('=*' * (len(self.hbar) // 2) + '=', force=True)
+            self.printmsg('Error occurred in a scoring function:', force=True)
+
+            import traceback, io
+            errormsg = io.StringIO()
+            traceback.print_exc(file=errormsg)
+            self.printmsg(errormsg.getvalue(), force=True)
+
+            self.printmsg('=*' * (len(self.hbar) // 2) + '=', force=True)
+            self.printmsg(force=True)
+            self.printmsg('Termination in progress. Waiting for running tasks to finish before closing the program.',
+                          force=True)
+            errors.append(exc.args)
+
         num_tasks = len(self.scorefuncs_batch) + len(self.scorefuncs_single) * len(self.flatten_seqs)
         self.printmsg('')
         pbar = tqdm(total=num_tasks, disable=self.quiet, file=sys.stderr,
                     unit='task', desc='Scoring fitness')
         jobs = []
         for scorefunc in self.scorefuncs_batch:
+            if errors:
+                continue
             future = executor.submit(scorefunc, self.flatten_seqs)
             future.add_done_callback(collect_scores_batch)
             jobs.append(future)
 
         for scorefunc in self.scorefuncs_single:
             for i, seq in enumerate(self.flatten_seqs):
+                if errors:
+                    continue
                 future = executor.submit(scorefunc, seq)
                 future._seqidx = i
                 future.add_done_callback(collect_scores_single)
                 jobs.append(future)
 
-        futures.wait(jobs)
+        if not errors:
+            futures.wait(jobs)
+
         pbar.close()
         self.printmsg('')
+
+        if errors:
+            return None, None, None
 
         total_scores = [sum(s.values()) for s in scores]
 
@@ -265,6 +295,9 @@ class CDSEvolutionChamber:
 
                 self.mutate_population()
                 total_scores, scores, metrics = self.evaluate_population(executor)
+                if total_scores is None:
+                    # Termination due to errors from one or more scoring functions
+                    break
 
                 ind_sorted = np.argsort(total_scores)[::-1]
                 survivors = [self.population[i] for i in ind_sorted[:n_survivors]]
