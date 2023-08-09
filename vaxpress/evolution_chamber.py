@@ -274,6 +274,7 @@ class CDSEvolutionChamber:
 
         n_survivors = self.iteropts.n_survivors
         last_winddown = 0
+        error_code = 0
 
         with futures.ProcessPoolExecutor(max_workers=self.n_processes) as executor:
             for i in range(self.iteropts.n_iterations):
@@ -297,6 +298,7 @@ class CDSEvolutionChamber:
                 total_scores, scores, metrics = self.evaluate_population(executor)
                 if total_scores is None:
                     # Termination due to errors from one or more scoring functions
+                    error_code = 1
                     break
 
                 ind_sorted = np.argsort(total_scores)[::-1]
@@ -323,6 +325,8 @@ class CDSEvolutionChamber:
                 self.print_time_estimation(iteration_start, iteration_end, iter_no)
 
                 self.printmsg()
+        
+        return error_code
 
     def print_eval_results(self, total_scores, metrics, ind_sorted, n_parents) -> None:
         if self.quiet:

@@ -141,8 +141,10 @@ def run_vaxpress():
         cdsseq, args.output, scoring_options, iteration_options,
         execution_options)
 
-    evochamber.run()
+    return evochamber.run()
 
 
 if __name__ == '__main__':
-    run_vaxpress()
+    import sys
+    ret = run_vaxpress()
+    sys.exit(ret)
