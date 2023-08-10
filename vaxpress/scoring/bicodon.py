@@ -60,7 +60,7 @@ class BicodonAdaptationIndexFitness(ScoringFunction):
         assert len(self.bicodon_scores) == 4096
 
     def __call__(self, seqs):
-        if len(seqs[0]) < 2:
+        if len(seqs[0]) < 6:
             return [0.0] * len(seqs)
 
         scores = self.bicodon_scores
