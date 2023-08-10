@@ -24,7 +24,7 @@
 #
 
 from . import ScoringFunction
-from .. import codon_usage_data
+from ..data import codon_usage_data
 import numpy as np
 
 class CodonAdaptationIndexFitness(ScoringFunction):
