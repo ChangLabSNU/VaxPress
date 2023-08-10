@@ -28,6 +28,9 @@ class ScoringFunction:
     name = 'noname'
     description = 'no description'
 
+    # Command line help shows in ascending order of this priority
+    priority = 99
+
     # If True, the scoring function is called for each individual sequence.
     single_submission = False
 
@@ -48,7 +51,7 @@ class ScoringFunction:
         return argmap
 
 
-def list_scoring_functions():
+def discover_scoring_functions():
     from . import __path__, __name__
     import pkgutil, importlib
 

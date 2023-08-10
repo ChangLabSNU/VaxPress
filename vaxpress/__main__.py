@@ -79,7 +79,7 @@ def parse_options(scoring_funcs):
     return args, scoring_opts
 
 def run_vaxpress():
-    scoring_funcs = scoring.list_scoring_functions()
+    scoring_funcs = scoring.discover_scoring_functions()
 
     args, scoring_options = parse_options(scoring_funcs)
 
