@@ -39,8 +39,9 @@ class iCodonStabilityFitness(ScoringFunction):
 
     name = 'iCodon'
     description = 'iCodon'
-    requires = ['species']
+    priority = 10
 
+    requires = ['species']
     arguments = [
         ('weight', dict(
             type=float, default=1.0,

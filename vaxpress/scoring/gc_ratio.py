@@ -44,6 +44,8 @@ class GCRatioFitness(ScoringFunction):
 
     name = 'gc'
     description = 'GC Ratio'
+    priority = 50
+
     arguments = [
         ('weight', dict(
             type=float, default=3.0,

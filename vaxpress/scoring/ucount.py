@@ -31,6 +31,7 @@ class UridineCountFitness(ScoringFunction):
 
     name = 'ucount'
     description = 'Uridines'
+    priority = 30
 
     arguments = [
         ('weight',

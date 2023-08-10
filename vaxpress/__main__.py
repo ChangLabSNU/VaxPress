@@ -65,7 +65,7 @@ def parse_options(scoring_funcs):
     grp.add_argument('--winddown-rate', type=float, default=0.9, help='mutation rate multiplier when mutation stabilization is triggered (default: 0.9)')
 
     argmaps = []
-    for func in scoring_funcs.values():
+    for func in sorted(scoring_funcs.values(), key=lambda f: f.priority):
         argmap = func.add_argument_parser(parser)
         argmaps.append((func, argmap))
 

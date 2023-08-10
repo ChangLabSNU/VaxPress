@@ -33,6 +33,7 @@ class CodonAdaptationIndexFitness(ScoringFunction):
 
     name = 'cai'
     description = 'Codon Adaptation Index'
+    priority = 20
 
     requires = ['mutantgen', 'species']
     arguments = [

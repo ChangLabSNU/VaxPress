@@ -32,6 +32,7 @@ class TandemRepeatsFitness(ScoringFunction):
 
     name = 'repeats'
     description = 'Tandem Repeats'
+    priority = 60
 
     arguments = [
         ('min-repeats',

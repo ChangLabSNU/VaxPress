@@ -34,6 +34,7 @@ class BicodonAdaptationIndexFitness(ScoringFunction):
 
     name = 'bicodon'
     description = 'Codon Adaptation Index of Codon-Pairs'
+    priority = 21
 
     requires = ['species']
     arguments = [

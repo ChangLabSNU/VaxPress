@@ -32,6 +32,8 @@ class RNAFoldingFitness(ScoringFunction):
 
     name = 'folding'
     description = 'RNA Folding'
+    priority = 40
+
     arguments = [
         ('off', dict(
             action='store_true', default=False, help='disable secondary structure folding')),
