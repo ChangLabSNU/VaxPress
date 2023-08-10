@@ -51,7 +51,7 @@ setup(
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
     ],
-    packages=['vaxpress', 'vaxpress.scoring'],
+    packages=['vaxpress', 'vaxpress.scoring', 'vaxpress.data'],
     entry_points={
         'console_scripts': [
             'vaxpress = vaxpress.__main__:run_vaxpress',
