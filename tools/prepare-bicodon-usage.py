@@ -4,6 +4,7 @@ from datetime import datetime
 from textwrap import wrap
 from urllib import request
 from itertools import product
+from base64 import a85encode
 import numpy as np
 
 SELECTED_SPECIES = [
@@ -18,6 +19,8 @@ DATA_URL = '\
 https://dnahive.fda.gov/dna.cgi?cmd=objFile&ids=537&filename=Refseq_Bicod.tsv&raw=1'
 FILENAME = 'Refseq_Bicod.tsv'
 
+WRAPLINE = 80
+
 HEADER = """\
 #
 # Bicodon Frequency Table
@@ -31,10 +34,15 @@ HEADER = """\
 #
 
 import numpy as np
+from base64 import a85decode
 
-inf = np.inf
+_ = lambda b: np.frombuffer(a85decode(b), dtype=np.float16)
+
 bicodon_usage = {{}}
 """
+
+FOOTER = """\
+del _, a85decode, np"""
 
 def load_codon_table():
     rows = []
@@ -69,7 +77,7 @@ def process_codon_table(table):
 
         log_w = bicodcnts['log_w']
         w_noninf = log_w[~np.isinf(log_w)]
-        normw = (log_w - w_noninf.mean()) / w_noninf.std()
+        normw = ((log_w - w_noninf.mean()) / w_noninf.std()).values
 
         w_ret[row['Species']] = normw
 
@@ -79,11 +87,10 @@ def format_codon_table(w_lists):
     formatted = []
 
     for species, wscores in w_lists.items():
-        fmt = repr(wscores.round(4).to_list())[1:-1]
+        wenc = a85encode(wscores.astype(np.float16).tobytes(), wrapcol=WRAPLINE)
 
-        formatted.append(f"bicodon_usage['{species}'] = np.array([")
-        formatted.extend(wrap(fmt, initial_indent='  ', subsequent_indent='  '))
-        formatted.append('], dtype=np.float32)\n')
+        formatted.append(f"bicodon_usage['{species}'] = _(rb'''")
+        formatted.append(wenc.decode() + "''')\n")
     
     return '\n'.join(formatted)
 
@@ -101,3 +108,4 @@ if __name__ == '__main__':
         formatted = format_codon_table(w_lists)
         print(HEADER.format(now=datetime.now().strftime('%Y-%m-%d %H:%M:%S')), file=out)
         print(formatted, file=out, end='')
+        print(FOOTER, file=out)
