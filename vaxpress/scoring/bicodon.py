@@ -24,48 +24,48 @@
 #
 
 from . import ScoringFunction
-from ..data import codon_usage_data
+from ..data import bicodon_usage_data
 import numpy as np
+from itertools import product
 
-class CodonAdaptationIndexFitness(ScoringFunction):
+class BicodonAdaptationIndexFitness(ScoringFunction):
 
     single_submission = False
 
-    name = 'cai'
-    description = 'Codon Adaptation Index'
+    name = 'bicodon'
+    description = 'Codon Adaptation Index of Codon-Pairs'
 
-    requires = ['mutantgen', 'species']
+    requires = ['species']
     arguments = [
         ('weight', dict(
-            type=float, default=3.0,
-            help='scoring weight for codon adaptation index (default: 1.0)'
+            type=float, default=1.0,
+            help='scoring weight for codon adaptation index of codon-pairs (default: 1.0)'
         )),
     ]
 
-    def __init__(self, weight, length_cds, species, mutantgen):
+    def __init__(self, weight, length_cds, species):
         self.weight = weight
         self.species = species
-        self.mutantgen = mutantgen
-        self.initialize_codon_scores()
+        self.initialize_bicodon_scores()
 
-    def initialize_codon_scores(self):
-        if self.species not in codon_usage_data.codon_usage:
-            raise ValueError(f'No codon usage data for species: {self.species}')
+    def initialize_bicodon_scores(self):
+        if self.species not in bicodon_usage_data.bicodon_usage:
+            raise ValueError(f'No bicodon usage data for species: {self.species}')
 
-        codon_usage = codon_usage_data.codon_usage[self.species]
-        scores = {}
-        for aa, codons in self.mutantgen.aa2codons.items():
-            codons = sorted(codons)
-            freqs = np.array([codon_usage[c] for c in codons])
-            scores.update(dict(zip(codons, np.log(freqs / freqs.max()))))
+        bicodon_usage = bicodon_usage_data.bicodon_usage[self.species].astype(np.float64)
+        pairs = [''.join(seq) for seq in product('ACGU', repeat=6)]
 
-        self.codon_scores = scores
+        self.bicodon_scores = dict(zip(pairs, bicodon_usage))
+        assert len(self.bicodon_scores) == 4096
 
     def __call__(self, seqs):
-        scores = self.codon_scores
-        cai = np.array([
-            np.mean([scores[seq[i:i+3]] for i in range(0, len(seq), 3)])
-            for seq in seqs])
-        cai_score = cai * self.weight
+        if len(seqs[0]) < 2:
+            return [0.0] * len(seqs)
 
-        return {'cai': cai_score}, {'cai': cai}
+        scores = self.bicodon_scores
+        bcai = np.array([
+            np.mean([scores[seq[i:i+6]] for i in range(0, len(seq) - 1, 3)])
+            for seq in seqs])
+        bcai_score = bcai * self.weight
+
+        return {'bicodon': bcai_score}, {'bicodon': bcai}
