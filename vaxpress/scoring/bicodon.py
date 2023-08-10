@@ -65,7 +65,7 @@ class BicodonAdaptationIndexFitness(ScoringFunction):
 
         scores = self.bicodon_scores
         bcai = np.array([
-            np.mean([scores[seq[i:i+6]] for i in range(0, len(seq) - 1, 3)])
+            np.mean([scores[seq[i:i+6]] for i in range(0, len(seq) - 3, 3)])
             for seq in seqs])
         bcai_score = bcai * self.weight
 
