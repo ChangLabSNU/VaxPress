@@ -33,3 +33,35 @@ class ScoringFunction:
 
     # Specifies the additional required arguments for the scoring function.
     requires = []
+
+    # Command line arguments
+    arguments = []
+
+    @classmethod
+    def add_argument_parser(cls, parser):
+        grp = parser.add_argument_group('Fitness - ' + cls.description)
+        argprefix = f'--{cls.name}-'
+        argmap = []
+        for argname, argopts in cls.arguments:
+            grp.add_argument(argprefix + argname, **argopts)
+            argmap.append((argprefix + argname, argname.replace('-', '_')))
+        return argmap
+
+
+def list_scoring_functions():
+    from . import __path__, __name__
+    import pkgutil, importlib
+
+    funcs = {}
+
+    for modinfo in pkgutil.iter_modules(__path__):
+        modname = f'{__name__}.{modinfo.name}'
+        mod = importlib.import_module(modname)
+
+        for objname in dir(mod):
+            obj = getattr(mod, objname)
+            if (obj is not ScoringFunction and type(obj) == type and
+                    issubclass(obj, ScoringFunction)):
+                funcs[obj.name] = obj
+
+    return funcs

@@ -23,8 +23,9 @@
 # THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+from . import scoring
 from .evolution_chamber import (
-    CDSEvolutionChamber, ScoringOptions, IterationOptions, ExecutionOptions)
+    CDSEvolutionChamber, IterationOptions, ExecutionOptions)
 from Bio import SeqIO
 import argparse
 
@@ -36,7 +37,7 @@ SPECIES_ALIASES = {
     'macaque': 'Macaca mulatta',
 }
 
-def parse_options():
+def parse_options(scoring_funcs):
     parser = argparse.ArgumentParser(
         prog='vaxpress',
         description='VaxPress: A Codon Optimizer for mRNA Vaccine Design')
@@ -63,62 +64,28 @@ def parse_options():
     grp.add_argument('--winddown-trigger', type=int, default=15, help='number of iterations with the same best score to trigger mutation stabilization (default: 15)')
     grp.add_argument('--winddown-rate', type=float, default=0.9, help='mutation rate multiplier when mutation stabilization is triggered (default: 0.9)')
 
-    grp = parser.add_argument_group('Fitness - iCodon')
-    grp.add_argument('--icodon-weight', type=float, default=1.0, help='scoring weight for iCodon predicted stability (default: 1.0)')
+    argmaps = []
+    for func in scoring_funcs.values():
+        argmap = func.add_argument_parser(parser)
+        argmaps.append((func, argmap))
 
-    grp = parser.add_argument_group('Fitness - Codon Adaptation Index')
-    grp.add_argument('--cai-weight', type=float, default=3.0, help='scoring weight for codon adaptation index (default: 1.0)')
+    args = parser.parse_args()
+    scoring_opts = {}
+    for func, argmap in argmaps:
+        opts = scoring_opts[func.name] = {}
+        for optname, varname in argmap:
+            opts[varname] = getattr(args, optname[2:].replace('-', '_'))
 
-    grp = parser.add_argument_group('Fitness - RNA Folding')
-    grp.add_argument('--folding-off', default=False, action='store_true', help='disable secondary structure folding')
-    grp.add_argument('--folding-engine', default='vienna', choices=['vienna', 'linearfold'],
-                     help='RNA folding engine (default: vienna)')
-    grp.add_argument('--folding-mfe-weight', type=float, default=1.0, help='scoring weight for MFE (default: 1.0)')
-    grp.add_argument('--folding-start-structure-width', type=int, default=15, help='width in nt of unfolded region near the start codon (default: 15)')
-    grp.add_argument('--folding-start-structure-weight', type=int, default=1, help='penalty weight for folded start codon region (default: 1)')
-    grp.add_argument('--folding-loop-threshold', type=int, default=2, help='minimum count of unfolded bases to be considered as a loop (default: 2)')
-    grp.add_argument('--folding-loop-weight', type=float, default=1.0, help='scoring weight for loops (default: 1.0)')
-
-    grp = parser.add_argument_group('Fitness - Uridines')
-    grp.add_argument('--ucount-weight', type=float, default=3.0, help='scoring weight for U count minimizer (default: 3.0)')
-
-    grp = parser.add_argument_group('Fitness - GC Ratio')
-    grp.add_argument('--gc-window-size', type=int, default=50, help='size of window for GC content calculation (default: 50)')
-    grp.add_argument('--gc-stride', type=int, default=5, help='size of stride for GC content calculation (default: 5)')
-    grp.add_argument('--gc-weight', type=int, default=3, help='GC penalty score (default: 3)')
-
-    grp = parser.add_argument_group('Fitness - Tandem Repeats')
-    grp.add_argument('--repeats-min-repeats', type=int, default=2, help='minimum number of repeats to be considered as a tandem repeat (default: 2)')
-    grp.add_argument('--repeats-repeat-length', type=int, default=10, help='minimum length of repeats to be considered as a tandem repeat (default: 10)')
-    grp.add_argument('--repeats-weight', type=float, default=1.0, help='scoring weight for tandem repeats (default: 1.0)')
-
-    return parser.parse_args()
+    return args, scoring_opts
 
 def run_vaxpress():
-    args = parse_options()
+    scoring_funcs = scoring.list_scoring_functions()
+
+    args, scoring_options = parse_options(scoring_funcs)
 
     inputseq = next(SeqIO.parse(args.input, 'fasta'))
     seqdescr = inputseq.description
     cdsseq = str(inputseq.seq)
-
-    scoring_options = ScoringOptions(
-        iCodon_weight=args.icodon_weight,
-        cai_weight=args.cai_weight,
-        ucount_weight=args.ucount_weight,
-        gc_window_size=args.gc_window_size,
-        gc_stride=args.gc_stride,
-        gc_weight=args.gc_weight,
-        folding_off=args.folding_off,
-        folding_engine=args.folding_engine,
-        folding_mfe_weight=args.folding_mfe_weight,
-        folding_start_structure_width=args.folding_start_structure_width,
-        folding_start_structure_weight=args.folding_start_structure_weight,
-        folding_loop_threshold=args.folding_loop_threshold,
-        folding_loop_weight=args.folding_loop_weight,
-        repeats_min_repeats=args.repeats_min_repeats,
-        repeats_repeat_length=args.repeats_repeat_length,
-        repeats_weight=args.repeats_weight,
-    )
 
     iteration_options = IterationOptions(
         n_iterations=args.iterations,
@@ -142,8 +109,8 @@ def run_vaxpress():
     )
 
     evochamber = CDSEvolutionChamber(
-        cdsseq, args.output, scoring_options, iteration_options,
-        execution_options)
+        cdsseq, args.output, scoring_funcs, scoring_options,
+        iteration_options, execution_options)
 
     return evochamber.run()
 

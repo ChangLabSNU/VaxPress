@@ -38,7 +38,14 @@ class iCodonStabilityFitness(ScoringFunction):
     predfunc = None
 
     name = 'iCodon'
+    description = 'iCodon'
     requires = ['species']
+
+    arguments = [
+        ('weight', dict(
+            type=float, default=1.0,
+            help='scoring weight for iCodon predicted stability (default: 1.0)')),
+    ]
 
     def __init__(self, weight, species, length_cds):
         self.weight = weight

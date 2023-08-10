@@ -32,42 +32,10 @@ from collections import namedtuple
 from concurrent import futures
 from itertools import cycle
 from .mutant_generator import MutantGenerator, STOP
-from .scoring.icodon_stability import iCodonStabilityFitness
-from .scoring.cai import CodonAdaptationIndexFitness
-from .scoring.ucount import UridineCountFitness
-from .scoring.gc_ratio import GCRatioFitness
-from .scoring.folding import RNAFoldingFitness
-from .scoring.tandem_repeats import TandemRepeatsFitness
 from . import __version__
 
 PROTEIN_ALPHABETS = 'ACDEFGHIKLMNPQRSTVWY' + STOP
 RNA_ALPHABETS = 'ACGU'
-
-fitness_scorefuncs = {
-    'iCodon': iCodonStabilityFitness,
-    'cai': CodonAdaptationIndexFitness,
-    'ucount': UridineCountFitness,
-    'gc': GCRatioFitness,
-    'folding': RNAFoldingFitness,
-    'repeats': TandemRepeatsFitness,
-}
-
-ScoringOptions = namedtuple('ScoringOptions', [
-    # iCodon predicted stability
-    'iCodon_weight',
-    # Codon Adaptation Index
-    'cai_weight',
-    # U content
-    'ucount_weight',
-    # GC ratio
-    'gc_weight', 'gc_window_size', 'gc_stride',
-    # Secondary structure folding
-    'folding_off', 'folding_engine', 'folding_mfe_weight',
-    'folding_start_structure_width', 'folding_start_structure_weight',
-    'folding_loop_threshold', 'folding_loop_weight',
-    # Tandem repeats
-    'repeats_min_repeats', 'repeats_repeat_length', 'repeats_weight',
-])
 
 IterationOptions = namedtuple('IterationOptions', [
     'n_iterations', 'n_offsprings', 'n_survivors', 'initial_mutation_rate',
@@ -86,12 +54,14 @@ class CDSEvolutionChamber:
     stop_threshold = 0.2
     table_header_length = 6
 
-    def __init__(self, cdsseq: str, checkpoint_output: str, scoring_options: ScoringOptions,
-                 iteration_options: IterationOptions, exec_options: ExecutionOptions):
+    def __init__(self, cdsseq: str, checkpoint_output: str, scoring_funcs: dict,
+                 scoring_options: dict, iteration_options: IterationOptions,
+                 exec_options: ExecutionOptions):
         self.cdsseq = cdsseq.upper()
 
         self.seq_description = exec_options.seq_description
         self.checkpoint_path = checkpoint_output
+        self.scoringfuncs = scoring_funcs
         self.scoreopts = scoring_options
         self.iteropts = iteration_options
         self.execopts = exec_options
@@ -152,10 +122,8 @@ class CDSEvolutionChamber:
             'length_cds': self.length_cds,
         }
 
-        for funcname, cls in fitness_scorefuncs.items():
-            opts = {k[len(funcname)+1:]: v for k, v
-                    in self.scoreopts._asdict().items()
-                    if k.startswith(funcname + '_')}
+        for funcname, cls in self.scoringfuncs.items():
+            opts = self.scoreopts[funcname]
             if ('weight' in opts and opts['weight'] == 0) or ('off' in opts and opts['off']):
                 continue
             opts.update(additional_opts)

@@ -32,7 +32,15 @@ class CodonAdaptationIndexFitness(ScoringFunction):
     single_submission = False
 
     name = 'cai'
+    description = 'Codon Adaptation Index'
+
     requires = ['mutantgen', 'species']
+    arguments = [
+        ('weight', dict(
+            type=float, default=3.0,
+            help='scoring weight for codon adaptation index (default: 1.0)'
+        )),
+    ]
 
     def __init__(self, weight, length_cds, species, mutantgen):
         self.weight = weight

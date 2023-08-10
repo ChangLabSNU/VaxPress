@@ -31,15 +31,28 @@ class TandemRepeatsFitness(ScoringFunction):
     single_submission = True
 
     name = 'repeats'
+    description = 'Tandem Repeats'
 
-    def __init__(self, weight, min_repeats, repeat_length, length_cds):
+    arguments = [
+        ('min-repeats',
+         dict(type=int, default=2,
+              help='minimum number of repeats to be considered as a tandem repeat (default: 2)')),
+        ('min-length',
+         dict(type=int, default=10,
+              help='minimum length of repeats to be considered as a tandem repeat (default: 10)')),
+        ('weight',
+         dict(type=float, default=1.0,
+              help='scoring weight for tandem repeats (default: 1.0)')),
+    ]
+
+    def __init__(self, weight, min_repeats, min_length, length_cds):
         self.weight = weight / length_cds * -1000
         self.min_repeats = min_repeats
-        self.repeat_length = repeat_length
+        self.min_length = min_length
 
     def __call__(self, seq):
         repeats = pytrf.GTRFinder('name', seq, min_repeat=self.min_repeats,
-                                min_length=self.repeat_length)
+                                min_length=self.min_length)
         total_repeat_length = sum(r.length for r in repeats)
         repeat_score = total_repeat_length * self.weight
 
