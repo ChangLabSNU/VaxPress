@@ -50,7 +50,7 @@ class GCRatioFitness(ScoringFunction):
         ('weight', dict(
             type=float, default=3.0,
             help='scoring weight for GC ratio (default: 3.0)')),
-        ('window_size', dict(
+        ('window-size', dict(
             type=int, default=50,
             help='size of window for GC content calculation (default: 50)')),
         ('stride', dict(

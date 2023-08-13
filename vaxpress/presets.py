@@ -28,6 +28,12 @@ import json
 execopts_to_remove = [
     'output', 'overwrite', 'quiet', 'seq_description', 'print_top_mutants',
     'protein']
+iteroptions_aliases = {
+    'n_iterations': 'iterations',
+    'n_offsprings': 'offsprings',
+    'n_survivors': 'survivors',
+}
+iteroptions_aliases_rev = {v: k for k, v in iteroptions_aliases.items()}
 
 def dump_to_preset(scoreopts, iteropts, execopts):
     data = {}
@@ -44,3 +50,9 @@ def dump_to_preset(scoreopts, iteropts, execopts):
                 mod[argname] = argval
 
     return json.dumps(data, indent=2)
+
+def load_preset(data):
+    return {
+        iteroptions_aliases.get(k, k): v
+        for k, v in json.loads(data).items()
+    }

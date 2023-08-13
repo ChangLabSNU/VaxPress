@@ -26,6 +26,7 @@
 from . import scoring
 from .evolution_chamber import (
     CDSEvolutionChamber, IterationOptions, ExecutionOptions)
+from .presets import load_preset
 from Bio import SeqIO
 import argparse
 
@@ -36,6 +37,50 @@ SPECIES_ALIASES = {
     'rat': 'Rattus norvegicus',
     'macaque': 'Macaca mulatta',
 }
+
+def overlay_preset(main_parser):
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument('--preset', type=str, required=False, default=None)
+    args, _ = parser.parse_known_args()
+    if args.preset is not None:
+        try:
+            preset = load_preset(open(args.preset).read())
+        except Exception as exc:
+            print(f'Failed to load the preset from {args.preset}.')
+            sys.exit(1)
+    else:
+        return
+
+    apply_preset(main_parser, preset)
+
+def apply_preset(main_parser, preset):
+    optmap = main_parser._option_string_actions
+
+    def fix_option(opt, newval):
+        if opt.default == newval:
+            return
+
+        opt.default = newval
+
+        # Fix store_action for boolean options
+        if isinstance(newval, bool):
+            opt.const = not newval
+
+        # Fix default value in help string
+        if '(default:' in opt.help:
+            prefix = opt.help.split('(default:')[0]
+            opt.help = f'{prefix}(default: {newval})'
+
+    for argname, argval in preset.items():
+        if argname != 'fitness':
+            optname = '--' + argname.replace('_', '-')
+            fix_option(optmap[optname], argval)
+            continue
+
+        for grpname, grpvalues in argval.items():
+            for optname, optval in grpvalues.items():
+                optname = f'--{grpname}-{optname}'.replace('_', '-')
+                fix_option(optmap[optname], optval)
 
 def parse_options(scoring_funcs):
     parser = argparse.ArgumentParser(
@@ -51,6 +96,7 @@ def parse_options(scoring_funcs):
     grp.add_argument('--print-top', type=int, default=10, help='print top and bottom N sequences (default: 10)')
 
     grp = parser.add_argument_group('Execution Options')
+    grp.add_argument('--preset', type=str, required=False, default=None, help='use preset values in parameters.json')
     grp.add_argument('-p', '--processes', type=int, default=4, help='number of processes to use (default: 4)')
     grp.add_argument('--seed', type=int, default=922, help='random seed (default: 922)')
     grp.add_argument('--species', default='human', help='target species (default: human)')
@@ -69,6 +115,8 @@ def parse_options(scoring_funcs):
     for func in sorted(scoring_funcs.values(), key=lambda f: f.priority):
         argmap = func.add_argument_parser(parser)
         argmaps.append((func, argmap))
+
+    overlay_preset(parser)
 
     args = parser.parse_args()
     scoring_opts = {}
