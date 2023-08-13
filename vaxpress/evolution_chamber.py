@@ -188,15 +188,21 @@ class CDSEvolutionChamber:
         errors = []
 
         def collect_scores_batch(future):
+            nonlocal pbar
+
             try:
                 ret = future.result()
                 if ret is None:
                     errors.append('KeyboardInterrupt')
+                    if pbar is not None: pbar.close()
+                    pbar = None
                     return
                 scoreupdates, metricupdates = ret
             except Exception as exc:
                 return handle_exception(exc)
-            pbar.update()
+            
+            if pbar is not None:
+                pbar.update()
 
             # Update scores
             for k, updates in scoreupdates.items():
@@ -211,10 +217,14 @@ class CDSEvolutionChamber:
                     s[k] = u
 
         def collect_scores_single(future):
+            nonlocal pbar
+
             try:
                 ret = future.result()
                 if ret is None:
                     errors.append('KeyboardInterrupt')
+                    if pbar is not None: pbar.close()
+                    pbar = None
                     return
                 scoreupdates, metricupdates = ret
             except Exception as exc:
@@ -222,7 +232,9 @@ class CDSEvolutionChamber:
             i = future._seqidx
             scores[i].update(scoreupdates)
             metrics[i].update(metricupdates)
-            pbar.update()
+
+            if pbar is not None:
+                pbar.update()
 
         def handle_exception(exc):
             self.printmsg('=*' * (len(self.hbar) // 2) + '=', force=True)
@@ -263,7 +275,8 @@ class CDSEvolutionChamber:
         if not errors:
             futures.wait(jobs)
 
-        pbar.close()
+        if pbar is not None:
+            pbar.close()
         self.printmsg('')
 
         if errors:
