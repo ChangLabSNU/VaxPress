@@ -111,11 +111,18 @@ def run_vaxpress():
         protein=args.protein,
     )
 
-    evochamber = CDSEvolutionChamber(
-        cdsseq, scoring_funcs, scoring_options,
-        iteration_options, execution_options)
+    try:
+        evochamber = CDSEvolutionChamber(
+            cdsseq, scoring_funcs, scoring_options,
+            iteration_options, execution_options)
 
-    return evochamber.run()
+        return evochamber.run()
+    except KeyboardInterrupt:
+        return 1
+    except FileExistsError:
+        print('Output directory already exists. Use --overwrite '
+              'option to overwrite it.')
+        return 1
 
 
 if __name__ == '__main__':

@@ -27,6 +27,7 @@ import numpy as np
 import time
 import sys
 import os
+import shutil
 from tqdm import tqdm
 from tabulate import tabulate
 from collections import namedtuple
@@ -88,11 +89,14 @@ class CDSEvolutionChamber:
         print(*args, **kwargs)
 
     def initialize(self) -> None:
-        if os.path.exists(self.outputdir) and self.execopts.overwrite:
-            if os.path.isdir(self.outputdir):
-                shutil.rmtree(self.outputdir)
+        if os.path.exists(self.outputdir):
+            if self.execopts.overwrite:
+                if os.path.isdir(self.outputdir):
+                    shutil.rmtree(self.outputdir)
+                else:
+                    os.unlink(self.outputdir)
             else:
-                os.unlink(self.outputdir)
+                raise FileExistsError('Output directory already exists.')
 
         os.makedirs(self.outputdir)
         self.checkpoint_path = os.path.join(self.outputdir, 'checkpoints.tsv')
@@ -164,6 +168,7 @@ class CDSEvolutionChamber:
         self.printmsg(f' * CDS length: {self.length_cds} nt')
         self.printmsg(f' * Possible single mutations: {spec["singles"]}')
         self.printmsg(f' * Possible sequences: {spec["total"]}')
+        self.printmsg(f' * Command line: {" ".join(sys.argv)}')
         self.printmsg()
 
     def mutate_population(self) -> None:
