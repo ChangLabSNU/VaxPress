@@ -66,7 +66,7 @@ class GCRatioFitness(ScoringFunction):
         self.window_size = window_size
         self.stride = stride
 
-    def __call__(self, seqs):
+    def score(self, seqs):
         gc_penalties = [compute_gc_penalty(seq, self.window_size, self.stride)
                         for seq in seqs]
         scores = [s * self.weight for s in gc_penalties]

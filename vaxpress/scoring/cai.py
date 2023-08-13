@@ -62,7 +62,7 @@ class CodonAdaptationIndexFitness(ScoringFunction):
 
         self.codon_scores = scores
 
-    def __call__(self, seqs):
+    def score(self, seqs):
         scores = self.codon_scores
         cai = np.array([
             np.mean([scores[seq[i:i+3]] for i in range(0, len(seq), 3)])

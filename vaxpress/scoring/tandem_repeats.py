@@ -51,7 +51,7 @@ class TandemRepeatsFitness(ScoringFunction):
         self.min_repeats = min_repeats
         self.min_length = min_length
 
-    def __call__(self, seq):
+    def score(self, seq):
         repeats = pytrf.GTRFinder('name', seq, min_repeat=self.min_repeats,
                                 min_length=self.min_length)
         total_repeat_length = sum(r.length for r in repeats)

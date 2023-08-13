@@ -87,7 +87,7 @@ class RNAFoldingFitness(ScoringFunction):
         else:
             self.find_loops = None
 
-    def __call__(self, seq):
+    def score(self, seq):
         folding, mfe = self.fold(seq)
 
         # folded start codon

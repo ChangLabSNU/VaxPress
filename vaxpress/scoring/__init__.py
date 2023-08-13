@@ -50,6 +50,14 @@ class ScoringFunction:
             argmap.append((argprefix + argname, argname.replace('-', '_')))
         return argmap
 
+    def __call__(self, seqs):
+        try:
+            return self.score(seqs)
+        except KeyboardInterrupt:
+            return None
+
+    def score(self, seqs):
+        raise NotImplementedError
 
 def discover_scoring_functions():
     from . import __path__, __name__

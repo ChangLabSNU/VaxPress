@@ -55,7 +55,7 @@ class iCodonStabilityFitness(ScoringFunction):
         self.species = ICODON_SPECIES_MAPPING[species]
         self.length_cds = length_cds
 
-    def __call__(self, seqs):
+    def score(self, seqs):
         if not self.iCodon_initialized:
             import os
             os.environ['TZ'] = 'UTC' # dplyr requires this to run in singularity
