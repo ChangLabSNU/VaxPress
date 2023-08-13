@@ -48,12 +48,12 @@ class iCodonStabilityFitness(ScoringFunction):
             help='scoring weight for iCodon predicted stability (default: 1.0)')),
     ]
 
-    def __init__(self, weight, species, length_cds):
+    def __init__(self, weight, _species, _length_cds):
         self.weight = weight
-        if species not in ICODON_SPECIES_MAPPING:
-            raise ValueError(f"Unsupported species by iCodon: {species}")
-        self.species = ICODON_SPECIES_MAPPING[species]
-        self.length_cds = length_cds
+        if _species not in ICODON_SPECIES_MAPPING:
+            raise ValueError(f"Unsupported species by iCodon: {_species}")
+        self.species = ICODON_SPECIES_MAPPING[_species]
+        self.length_cds = _length_cds
 
     def score(self, seqs):
         if not self.iCodon_initialized:

@@ -23,26 +23,24 @@
 # THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-from . import ScoringFunction
+import json
 
-class UridineCountFitness(ScoringFunction):
+execopts_to_remove = [
+    'output', 'overwrite', 'quiet', 'seq_description', 'print_top_mutants',
+    'protein']
 
-    single_submission = False
+def dump_to_preset(scoreopts, iteropts, execopts):
+    data = {}
 
-    name = 'ucount'
-    description = 'Uridines'
-    priority = 30
+    data.update(iteropts._asdict())
+    data.update({(k, v) for k, v in execopts._asdict().items()
+                 if k not in execopts_to_remove})
 
-    arguments = [
-        ('weight',
-         dict(type=float, default=3.0,
-              help='scoring weight for U count minimizer (default: 3.0)')),
-    ]
+    data['fitness'] = {}
+    for modname, args in scoreopts.items():
+        mod = data['fitness'][modname] = {}
+        for argname, argval in args.items():
+            if not argname.startswith('_'):
+                mod[argname] = argval
 
-    def __init__(self, weight, _length_cds):
-        self.weight = -weight / _length_cds * 4
-
-    def score(self, seqs):
-        ucounts = [s.count('U') for s in seqs]
-        scores = [s * self.weight for s in ucounts]
-        return {'ucount': scores}, {'ucount': ucounts}
+    return json.dumps(data, indent=2)

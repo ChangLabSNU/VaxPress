@@ -46,8 +46,8 @@ class TandemRepeatsFitness(ScoringFunction):
               help='scoring weight for tandem repeats (default: 1.0)')),
     ]
 
-    def __init__(self, weight, min_repeats, min_length, length_cds):
-        self.weight = weight / length_cds * -1000
+    def __init__(self, weight, min_repeats, min_length, _length_cds):
+        self.weight = weight / _length_cds * -1000
         self.min_repeats = min_repeats
         self.min_length = min_length
 

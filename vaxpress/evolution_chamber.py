@@ -35,6 +35,7 @@ from collections import namedtuple
 from concurrent import futures
 from itertools import cycle
 from .mutant_generator import MutantGenerator, STOP
+from .presets import dump_to_preset
 from . import __version__
 
 PROTEIN_ALPHABETS = 'ACDEFGHIKLMNPQRSTVWY' + STOP
@@ -144,7 +145,7 @@ class CDSEvolutionChamber:
         self.scorefuncs_batch = []
 
         additional_opts = {
-            'length_cds': self.length_cds,
+            '_length_cds': self.length_cds,
         }
 
         for funcname, cls in self.scoringfuncs.items():
@@ -153,7 +154,7 @@ class CDSEvolutionChamber:
                 continue
             opts.update(additional_opts)
             for reqattr in cls.requires:
-                opts[reqattr] = getattr(self, reqattr)
+                opts['_' + reqattr] = getattr(self, reqattr)
 
             scorefunc_inst = cls(**opts)
             if cls.single_submission:
@@ -349,7 +350,7 @@ class CDSEvolutionChamber:
 
             if error_code == 0:
                 self.printmsg(f'Finished successfully. '
-                              f'Output files are saved in {self.outputdir.rstrip("/")}/.')
+                              f'You can find the results in {self.outputdir.rstrip("/")}/.')
                 self.save_results(optimization_start, iteration_end)
 
         return error_code
@@ -418,6 +419,14 @@ class CDSEvolutionChamber:
         with open(fastapath, 'w') as f:
             print(f'>{self.seq_description}', file=f)
             print(*wrap(bestseq, width=self.fasta_line_width), sep='\n', file=f)
+
+        # Save the parameters used for the optimization
+        paramspath = os.path.join(self.outputdir, 'parameters.json')
+        self.save_optimization_parameters(paramspath)
+
+    def save_optimization_parameters(self, path: str) -> None:
+        optdata = dump_to_preset(self.scoreopts, self.iteropts, self.execopts)
+        open(path, 'w').write(optdata)
 
 
 if __name__ == '__main__':

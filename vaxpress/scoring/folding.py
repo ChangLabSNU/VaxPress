@@ -59,14 +59,14 @@ class RNAFoldingFitness(ScoringFunction):
     def __init__(self, engine, mfe_weight,
                  start_structure_width, start_structure_weight,
                  loop_threshold, loop_weight,
-                 length_cds, off=False):
+                 _length_cds, off=False):
         # `off' is handled by CDSEvolutionChamber.initialize_fitness_scorefuncs()
 
-        self.mfe_weight = -mfe_weight / length_cds
+        self.mfe_weight = -mfe_weight / _length_cds
         self.start_structure_width = start_structure_width
         self.start_structure_weight = -start_structure_weight
         self.loop_threshold = loop_threshold
-        self.loop_weight = -loop_weight / length_cds
+        self.loop_weight = -loop_weight / _length_cds
         self.engine = engine
 
         if engine == 'vienna':

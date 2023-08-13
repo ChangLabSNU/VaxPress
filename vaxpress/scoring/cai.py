@@ -43,10 +43,10 @@ class CodonAdaptationIndexFitness(ScoringFunction):
         )),
     ]
 
-    def __init__(self, weight, length_cds, species, mutantgen):
+    def __init__(self, weight, _length_cds, _species, _mutantgen):
         self.weight = weight
-        self.species = species
-        self.mutantgen = mutantgen
+        self.species = _species
+        self.mutantgen = _mutantgen
         self.initialize_codon_scores()
 
     def initialize_codon_scores(self):

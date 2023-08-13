@@ -44,9 +44,9 @@ class BicodonAdaptationIndexFitness(ScoringFunction):
         )),
     ]
 
-    def __init__(self, weight, length_cds, species):
+    def __init__(self, weight, _length_cds, _species):
         self.weight = weight
-        self.species = species
+        self.species = _species
         self.initialize_bicodon_scores()
 
     def initialize_bicodon_scores(self):

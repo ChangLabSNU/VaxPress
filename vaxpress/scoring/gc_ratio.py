@@ -58,8 +58,8 @@ class GCRatioFitness(ScoringFunction):
             help='size of stride for GC content calculation (default: 5)')),
     ]
 
-    def __init__(self, weight, window_size, stride, length_cds):
-        num_windows = (length_cds - window_size) // stride + 1
+    def __init__(self, weight, window_size, stride, _length_cds):
+        num_windows = (_length_cds - window_size) // stride + 1
         num_windows = max(num_windows, 1)
 
         self.weight = weight / num_windows
