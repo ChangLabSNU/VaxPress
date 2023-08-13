@@ -28,6 +28,7 @@ import time
 import sys
 import os
 import shutil
+from textwrap import wrap
 from tqdm import tqdm
 from tabulate import tabulate
 from collections import namedtuple
@@ -58,6 +59,7 @@ class CDSEvolutionChamber:
 
     finalized_seqs = None
     checkpoint_path = None
+    fasta_line_width = 72
 
     def __init__(self, cdsseq: str, scoring_funcs: dict,
                  scoring_options: dict, iteration_options: IterationOptions,
@@ -200,7 +202,7 @@ class CDSEvolutionChamber:
                 scoreupdates, metricupdates = ret
             except Exception as exc:
                 return handle_exception(exc)
-            
+
             if pbar is not None:
                 pbar.update()
 
@@ -290,6 +292,7 @@ class CDSEvolutionChamber:
         if not self.quiet:
             self.show_configuration()
 
+        optimization_start = time.time()
         n_survivors = self.iteropts.n_survivors
         last_winddown = 0
         error_code = 0
@@ -343,7 +346,12 @@ class CDSEvolutionChamber:
                 self.print_time_estimation(iteration_start, iteration_end, iter_no)
 
                 self.printmsg()
-        
+
+            if error_code == 0:
+                self.printmsg(f'Finished successfully. '
+                              f'Output files are saved in {self.outputdir.rstrip("/")}/.')
+                self.save_results(optimization_start, iteration_end)
+
         return error_code
 
     def print_eval_results(self, total_scores, metrics, ind_sorted, n_parents) -> None:
@@ -402,6 +410,15 @@ class CDSEvolutionChamber:
 
         print(*[f[1] for f in fields], sep='\t', file=self.checkpoint_file)
         self.checkpoint_file.flush()
+
+    def save_results(self, optstart: float, optend: float) -> None:
+        # Save the best sequence
+        bestseq = ''.join(self.population[0])
+        fastapath = os.path.join(self.outputdir, 'best-sequence.fasta')
+        with open(fastapath, 'w') as f:
+            print(f'>{self.seq_description}', file=f)
+            print(*wrap(bestseq, width=self.fasta_line_width), sep='\n', file=f)
+
 
 if __name__ == '__main__':
     pass
