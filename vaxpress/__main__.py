@@ -45,7 +45,8 @@ def parse_options(scoring_funcs):
     grp = parser.add_argument_group('Input/Output Options')
     grp.add_argument('-i', '--input', required=True, help='input fasta file containing the CDS sequence')
     grp.add_argument('--protein', default=False, action='store_true', help='input is a protein sequence')
-    grp.add_argument('-o', '--output', required=True, help='output file')
+    grp.add_argument('-o', '--output', required=True, help='output directory')
+    grp.add_argument('--overwrite', action='store_true', help='overwrite output directory if it already exists')
     grp.add_argument('-q', '--quiet', default=False, action='store_true', help='do not print progress')
     grp.add_argument('--print-top', type=int, default=10, help='print top and bottom N sequences (default: 10)')
 
@@ -97,6 +98,8 @@ def run_vaxpress():
     )
 
     execution_options = ExecutionOptions(
+        output=args.output,
+        overwrite=args.overwrite,
         seed=args.seed,
         processes=args.processes,
         random_initialization=args.random_initialization,
@@ -109,7 +112,7 @@ def run_vaxpress():
     )
 
     evochamber = CDSEvolutionChamber(
-        cdsseq, args.output, scoring_funcs, scoring_options,
+        cdsseq, scoring_funcs, scoring_options,
         iteration_options, execution_options)
 
     return evochamber.run()

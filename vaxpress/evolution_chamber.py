@@ -26,6 +26,7 @@
 import numpy as np
 import time
 import sys
+import os
 from tqdm import tqdm
 from tabulate import tabulate
 from collections import namedtuple
@@ -43,24 +44,27 @@ IterationOptions = namedtuple('IterationOptions', [
 ])
 
 ExecutionOptions = namedtuple('ExecutionOptions', [
-    'seed', 'processes', 'random_initialization', 'species', 'codon_table',
-    'protein', 'quiet', 'seq_description', 'print_top_mutants'
+    'output', 'overwrite', 'seed', 'processes', 'random_initialization',
+    'species', 'codon_table', 'protein', 'quiet', 'seq_description',
+    'print_top_mutants'
 ])
 
 class CDSEvolutionChamber:
 
     hbar = '-' * 80
-    finalized_seqs = None
     stop_threshold = 0.2
     table_header_length = 6
 
-    def __init__(self, cdsseq: str, checkpoint_output: str, scoring_funcs: dict,
+    finalized_seqs = None
+    checkpoint_path = None
+
+    def __init__(self, cdsseq: str, scoring_funcs: dict,
                  scoring_options: dict, iteration_options: IterationOptions,
                  exec_options: ExecutionOptions):
         self.cdsseq = cdsseq.upper()
 
         self.seq_description = exec_options.seq_description
-        self.checkpoint_path = checkpoint_output
+        self.outputdir = exec_options.output
         self.scoringfuncs = scoring_funcs
         self.scoreopts = scoring_options
         self.iteropts = iteration_options
@@ -78,7 +82,22 @@ class CDSEvolutionChamber:
             kwargs['file'] = sys.stderr
             print(*args, **kwargs)
 
+        if 'force' in kwargs:
+            del kwargs['force']
+        kwargs['file'] = self.log_file
+        print(*args, **kwargs)
+
     def initialize(self) -> None:
+        if os.path.exists(self.outputdir) and self.execopts.overwrite:
+            if os.path.isdir(self.outputdir):
+                shutil.rmtree(self.outputdir)
+            else:
+                os.unlink(self.outputdir)
+
+        os.makedirs(self.outputdir)
+        self.checkpoint_path = os.path.join(self.outputdir, 'checkpoints.tsv')
+        self.log_file = open(os.path.join(self.outputdir, 'log.txt'), 'w')
+
         if self.execopts.protein:
             invalid_letters = set(self.cdsseq) - set(PROTEIN_ALPHABETS)
             if invalid_letters:
