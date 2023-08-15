@@ -39,7 +39,7 @@ class CodonAdaptationIndexFitness(ScoringFunction):
     arguments = [
         ('weight', dict(
             type=float, default=3.0,
-            help='scoring weight for codon adaptation index (default: 1.0)'
+            help='scoring weight for codon adaptation index (default: 3.0)'
         )),
     ]
 
