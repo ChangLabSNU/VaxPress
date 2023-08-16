@@ -49,7 +49,7 @@ IterationOptions = namedtuple('IterationOptions', [
 ExecutionOptions = namedtuple('ExecutionOptions', [
     'output', 'overwrite', 'seed', 'processes', 'random_initialization',
     'species', 'codon_table', 'protein', 'quiet', 'seq_description',
-    'print_top_mutants'
+    'print_top_mutants', 'addons',
 ])
 
 class CDSEvolutionChamber:
