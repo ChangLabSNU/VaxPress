@@ -39,7 +39,7 @@ def dump_to_preset(scoreopts, iteropts, execopts):
     data = {}
 
     data.update(iteropts._asdict())
-    data.update({(k, v) for k, v in execopts._asdict().items()
+    data.update({k: v for k, v in execopts._asdict().items()
                  if k not in execopts_to_remove})
 
     data['fitness'] = {}
