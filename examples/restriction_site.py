@@ -7,9 +7,9 @@ class RestrictionSiteFitness(ScoringFunction):
     # If True, the scoring function is called for each individual sequence.
     single_submission = False
 
-    name = "restriction"  # used as an argument prefix, e.g. "--restriction-weight"
-    description = "Restriction Site"  # Description shown in help message
-    priority = 100  # Affects the order in which the scoring function is displayed in the help message
+    name = "restriction"               # used as an argument prefix, e.g. "--restriction-weight"
+    description = "Restriction Site"   # Description shown in help message
+    priority = 100                     # Affects the order in which the scoring function is displayed in the help message
     
     # Define arguments for your scoring function here.
     arguments = [
@@ -24,8 +24,8 @@ class RestrictionSiteFitness(ScoringFunction):
             default=1000, type=int, help='maximum length of the first fragment (default: 1000)')),
     ]
 
+    # Initialize the scoring function with the given arguments.
     def __init__(self, weight, restriction_site, cut_length_min, cut_length_max):  
-        # Initialize the scoring function with the given arguments.
         self.weight = weight
         self.restriction_site = restriction_site
         self.cut_length_min = cut_length_min
@@ -41,7 +41,7 @@ class RestrictionSiteFitness(ScoringFunction):
             raise ValueError('sequence is shorter than minimum fragment length')
         
         is_passed = []  # Initialize list to store 0 or 1 values for each sequence.
-        scores = []   # Initialize list to store the final scores for each sequence.
+        scores = []     # Initialize list to store the final scores for each sequence.
 
         for s in seqs:
 
@@ -60,7 +60,7 @@ class RestrictionSiteFitness(ScoringFunction):
                 # If all fragments meet the length criteria, gives 1
                 if all_fragments_valid:
                     is_passed.append(1)  
-                 # If not all the fragments meet length criteria, gives 0
+                # If not all the fragments meet length criteria, gives 0
                 else:
                     is_passed.append(0) 
             
