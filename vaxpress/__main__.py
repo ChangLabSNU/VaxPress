@@ -114,7 +114,7 @@ def parse_options(scoring_funcs, preset):
 
     grp = parser.add_argument_group('Execution Options')
     grp.add_argument('--preset', type=str, required=False, default=None, help='use preset values in parameters.json')
-    grp.add_argument('--addon', type=str, action='append', help='load additional parameters.json')
+    grp.add_argument('--addon', type=str, action='append', help='load a third-party fitness function')
     grp.add_argument('-p', '--processes', type=int, default=4, help='number of processes to use (default: 4)')
     grp.add_argument('--seed', type=int, default=922, help='random seed (default: 922)')
     grp.add_argument('--species', default='human', help='target species (default: human)')
