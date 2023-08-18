@@ -177,7 +177,7 @@ def run_vaxpress():
         seq_description=seqdescr,
         print_top_mutants=args.print_top,
         protein=args.protein,
-        addons=args.addon,
+        addons=addon_paths,
     )
 
     try:
