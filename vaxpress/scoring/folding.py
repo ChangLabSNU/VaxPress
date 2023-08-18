@@ -41,8 +41,8 @@ class RNAFoldingFitness(ScoringFunction):
             choices=['vienna', 'linearfold'], default='vienna',
             help='RNA folding engine (default: vienna)')),
         ('mfe-weight', dict(
-            type=float, default=1.0,
-            help='scoring weight for MFE (default: 1.0)')),
+            type=float, default=3.0,
+            help='scoring weight for MFE (default: 3.0)')),
         ('start-structure-width', dict(
             type=int, default=15,
             help='width in nt of unfolded region near the start codon (default: 15)')),
@@ -53,7 +53,7 @@ class RNAFoldingFitness(ScoringFunction):
             type=int, default=2,
             help='minimum count of unfolded bases to be considered as a loop (default: 2)')),
         ('loop-weight', dict(
-            type=float, default=1.0, help='scoring weight for loops (default: 1.0)')),
+            type=float, default=1.5, help='scoring weight for loops (default: 1.5)')),
     ]
 
     def __init__(self, engine, mfe_weight,
