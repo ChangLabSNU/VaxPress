@@ -10,7 +10,7 @@ source:
 
 build:
   noarch: generic
-  number: 0
+  number: 1
   rpaths:
     - lib/R/lib/
     - lib/
@@ -24,7 +24,7 @@ requirements:
     - r-tibble
     - r-dplyr
     - r-tidyr
-    - r-recipes
+    - r-recipes <1.0.7
     - r-glmnet
     - r-rlang
 
@@ -36,7 +36,7 @@ requirements:
     - r-tibble
     - r-dplyr
     - r-tidyr
-    - r-recipes
+    - r-recipes <1.0.7
     - r-glmnet
     - r-rlang
 
