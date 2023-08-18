@@ -27,7 +27,7 @@ class RestrictionSiteFitness(ScoringFunction):
         self.weight = weight
         self.restriction_site = restriction_site
         if self.restriction_site is None:
-            raise EOFError
+            raise EOFError  # This scoring function will not be considered if EOFError is raised.
    
         self.restriction_site = self.restriction_site.upper().replace('T', 'U')
         if set(self.restriction_site) - set('ACGU'):
