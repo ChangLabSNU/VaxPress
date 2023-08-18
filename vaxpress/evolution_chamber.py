@@ -331,6 +331,9 @@ class CDSEvolutionChamber:
                 survivors = [self.population[i] for i in ind_sorted[:n_survivors]]
                 self.best_scores.append(total_scores[ind_sorted[0]])
 
+                if i == 0: # Write the evaluation result of the initial sequence in the first iteration
+                    self.write_checkpoint(0, [0], total_scores, scores, metrics)
+
                 self.print_eval_results(total_scores, metrics, ind_sorted, n_parents)
                 self.write_checkpoint(iter_no, ind_sorted[:n_survivors], total_scores,
                                       scores, metrics)
