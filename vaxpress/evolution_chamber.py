@@ -155,8 +155,12 @@ class CDSEvolutionChamber:
             opts.update(additional_opts)
             for reqattr in cls.requires:
                 opts['_' + reqattr] = getattr(self, reqattr)
-
-            scorefunc_inst = cls(**opts)
+            
+            try:
+                scorefunc_inst = cls(**opts)
+            except EOFError:
+                continue
+            
             if cls.single_submission:
                 self.scorefuncs_single.append(scorefunc_inst)
             else:
