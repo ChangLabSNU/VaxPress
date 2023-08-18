@@ -35,8 +35,8 @@ class UridineCountFitness(ScoringFunction):
 
     arguments = [
         ('weight',
-         dict(type=float, default=2.0,
-              help='scoring weight for U count minimizer (default: 2.0)')),
+         dict(type=float, default=3.0,
+              help='scoring weight for U count minimizer (default: 3.0)')),
     ]
 
     def __init__(self, weight, _length_cds):
