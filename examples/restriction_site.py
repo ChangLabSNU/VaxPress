@@ -1,54 +1,67 @@
-# Example code to optimize sequences to have a specific restriction enzyme recognition site.
-# IUPAC ambiguity codes are not supported.
+# Example code that optimizes a sequence to have a specific restriction enzyme
+# recognition site.
 
 from vaxpress.scoring import ScoringFunction
 
 class RestrictionSiteFitness(ScoringFunction):
 
-    # If True, the scoring function is called for each individual sequence.
+    # True: The scoring function is called with each sequence individually.
+    #       This is useful if the scoring function is computationally expensive.
+    # False: The scoring function is called with all sequences at once.
+    #        This is useful if the scoring function is fast or memory-intensive.
     single_submission = False
 
-    name = 'resite'                    # used as an argument prefix, e.g. "--resite-weight"
-    description = 'Restriction Site'   # Description shown in help message
-    priority = 100                     # Affects the order in which the scoring function is displayed in the help message
+    # Prefix in command line arguments, e.g. "--resite-weight"
+    name = 'resite'
 
-    # Define arguments for your scoring function here.
+    # Appears in the help message
+    description = 'Restriction Site'
+
+    # Adjusts the order of appearance in the help message. Lower numbers appear
+    # first.
+    priority = 100
+
+    # Definitions for command line arguments.
     arguments = [
         ('weight', dict(
-            type=float, default=10.0,  # set high default weight to firmly select sequences with the restriction site
-            help='scoring weight for the presence of the restriction site (default: 10.0)')),
+            type=float,
+            default=10.0, # penalize for the violations
+            help='scoring weight for the presence of the restriction site '
+                 '(default: 10.0)')),
         ('restriction-site', dict(
-            default=None, type=str, help='restriction site sequence containing only A, C, G, T or U (default: None)')),
+            default=None, type=str,
+            help='restriction site sequence containing only A, C, G, T or '
+                 'U (default: None)')),
     ]
 
-    # Initialize the scoring function with the given arguments.
+    # Argument "_length_cds" is always passed to the constructor. Leave it as
+    # it is even if you don't use it.
     def __init__(self, weight, restriction_site, _length_cds):
-
         self.weight = weight
         self.restriction_site = restriction_site
         if self.restriction_site is None:
-            raise EOFError  # This scoring function will not be considered if EOFError is raised.
+            raise EOFError # disable this scoring function
 
         self.restriction_site = self.restriction_site.upper().replace('T', 'U')
         if set(self.restriction_site) - set('ACGU'):
             raise ValueError('restriction site contains invalid characters')
 
-    # This is where your code for calculating desired metrics & scores goes.
+    # This function is called for every iteration. "seqs" is a list of strings
+    # if single_submission is False, or a single string if single_submission is
+    # True.
     def score(self, seqs):
-
-        has_site = []    # Initialize list to store 0 or 1 for each sequence.
-        scores = []     # Initialize list to store the final score for each sequence.
+        has_site = [] # 0s or 1s indicating existence of site for each sequence.
+        scores = [] # fitness values for each sequences. Higher is better.
 
         for seq in seqs:
-            # If the sequence contains the restriction site, gives 1
             if self.restriction_site in seq:
-                has_site.append(1)
-            # If the sequence does not contain the restriction site, gives 0
+                found = 1
             else:
-                has_site.append(0)
+                found = 0
 
-        for v in has_site:
-            scores.append(v * self.weight)
+            has_site.append(found)
+            scores.append(found * self.weight)
 
-        # Return scores and metrics
+        # The first dict should contain the fitness values for each sequence.
+        # The second dict may contain the original metrics for it for reference.
         return {'resite': scores}, {'resite': has_site}

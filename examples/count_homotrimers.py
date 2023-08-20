@@ -1,4 +1,5 @@
-# Example code for counting the number of trimers consisted of the consecutive same bases
+# Example code for counting the number of trimers consisted of the consecutive
+# same bases
 
 from vaxpress.scoring import ScoringFunction
 
@@ -23,7 +24,8 @@ class HomoTrimerFitness(ScoringFunction):
         counts = []
         scores = []
         for seq in seqs:
-            hcount = seq.count('AAA') + seq.count('CCC') + seq.count('GGG') + seq.count('TTT')
+            hcount = (seq.count('AAA') + seq.count('CCC') +
+                      seq.count('GGG') + seq.count('TTT'))
             counts.append(hcount)
             scores.append(hcount * self.weight)
         return {'homotrimer': scores}, {'homotrimer': counts}
