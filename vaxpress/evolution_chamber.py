@@ -108,7 +108,8 @@ class CDSEvolutionChamber:
         if self.execopts.protein:
             invalid_letters = set(self.cdsseq) - set(PROTEIN_ALPHABETS)
             if invalid_letters:
-                raise ValueError(f'Invalid protein sequence: {" ".join(invalid_letters)}')
+                raise ValueError('Invalid protein sequence: '
+                                 f'{" ".join(invalid_letters)}')
             if self.cdsseq[-1] != STOP:
                 self.cdsseq += STOP
         else: # RNA or DNA
@@ -150,7 +151,8 @@ class CDSEvolutionChamber:
 
         for funcname, cls in self.scoringfuncs.items():
             opts = self.scoreopts[funcname]
-            if ('weight' in opts and opts['weight'] == 0) or ('off' in opts and opts['off']):
+            if (('weight' in opts and opts['weight'] == 0) or
+                ('off' in opts and opts['off'])):
                 continue
             opts.update(additional_opts)
             for reqattr in cls.requires:
@@ -201,7 +203,8 @@ class CDSEvolutionChamber:
                 ret = future.result()
                 if ret is None:
                     errors.append('KeyboardInterrupt')
-                    if pbar is not None: pbar.close()
+                    if pbar is not None:
+                        pbar.close()
                     pbar = None
                     return
                 scoreupdates, metricupdates = ret
@@ -230,7 +233,8 @@ class CDSEvolutionChamber:
                 ret = future.result()
                 if ret is None:
                     errors.append('KeyboardInterrupt')
-                    if pbar is not None: pbar.close()
+                    if pbar is not None:
+                        pbar.close()
                     pbar = None
                     return
                 scoreupdates, metricupdates = ret
@@ -247,18 +251,20 @@ class CDSEvolutionChamber:
             self.printmsg('=*' * (len(self.hbar) // 2) + '=', force=True)
             self.printmsg('Error occurred in a scoring function:', force=True)
 
-            import traceback, io
+            import traceback
+            import io
             errormsg = io.StringIO()
             traceback.print_exc(file=errormsg)
             self.printmsg(errormsg.getvalue(), force=True)
 
             self.printmsg('=*' * (len(self.hbar) // 2) + '=', force=True)
             self.printmsg(force=True)
-            self.printmsg('Termination in progress. Waiting for running tasks to finish before closing the program.',
-                          force=True)
+            self.printmsg('Termination in progress. Waiting for running tasks '
+                          'to finish before closing the program.', force=True)
             errors.append(exc.args)
 
-        num_tasks = len(self.scorefuncs_batch) + len(self.scorefuncs_single) * len(self.flatten_seqs)
+        num_tasks = (len(self.scorefuncs_batch) +
+                     len(self.scorefuncs_single) * len(self.flatten_seqs))
         self.printmsg('')
         pbar = tqdm(total=num_tasks, disable=self.quiet, file=sys.stderr,
                     unit='task', desc='Scoring fitness')
@@ -329,7 +335,9 @@ class CDSEvolutionChamber:
                 survivors = [self.population[i] for i in ind_sorted[:n_survivors]]
                 self.best_scores.append(total_scores[ind_sorted[0]])
 
-                if i == 0: # Write the evaluation result of the initial sequence in the first iteration
+                # Write the evaluation result of the initial sequence in
+                # the first iteration
+                if i == 0:
                     self.write_checkpoint(0, [0], total_scores, scores, metrics)
 
                 self.print_eval_results(total_scores, metrics, ind_sorted, n_parents)
@@ -338,13 +346,15 @@ class CDSEvolutionChamber:
 
                 self.population[:] = survivors
 
-                self.printmsg(f' # Last best scores:',
+                self.printmsg(' # Last best scores:',
                               ' '.join(f'{s:.3f}' for s in self.best_scores[-5:]))
                 if (len(self.best_scores) >= self.iteropts.winddown_trigger and
                         iter_no - last_winddown > self.iteropts.winddown_trigger):
-                    if self.best_scores[-1] <= self.best_scores[-self.iteropts.winddown_trigger]:
+                    if (self.best_scores[-1] <=
+                            self.best_scores[-self.iteropts.winddown_trigger]):
                         self.mutation_rate *= self.iteropts.winddown_rate
-                        self.printmsg(f'==> Winddown triggered: mutation rate = {self.mutation_rate:.5f}')
+                        self.printmsg('==> Winddown triggered: mutation rate '
+                                      f'= {self.mutation_rate:.5f}')
                         last_winddown = iter_no
 
                 timelogs.append(time.time())
@@ -354,8 +364,8 @@ class CDSEvolutionChamber:
                 self.printmsg()
 
             if error_code == 0:
-                self.printmsg(f'Finished successfully. '
-                              f'You can find the results in {self.outputdir.rstrip("/")}/.')
+                self.printmsg('Finished successfully. You can find the results '
+                              f'in {self.outputdir.rstrip("/")}/.')
                 self.save_results()
 
         return {
@@ -382,7 +392,8 @@ class CDSEvolutionChamber:
             tabdata.append([is_parent + is_survivor, f_total] +f_metrics)
 
         header_short = [h[:self.table_header_length] for h in header]
-        self.printmsg(tabulate(tabdata, header_short, tablefmt='simple', floatfmt='.2f'), end='\n\n')
+        self.printmsg(tabulate(tabdata, header_short, tablefmt='simple',
+                               floatfmt='.2f'), end='\n\n')
 
     def print_time_estimation(self, iteration_start: float, iteration_end: float,
                               iter_no: int) -> None:
@@ -399,7 +410,8 @@ class CDSEvolutionChamber:
 
         self.printmsg(f' # {elapsed_str}s/it  --  Expected finish: {expected_end}')
 
-    def write_checkpoint(self, iter_no, survivors, total_scores, scores, metrics) -> None:
+    def write_checkpoint(self, iter_no, survivors, total_scores, scores,
+                         metrics) -> None:
         ind = survivors[0]
 
         fields = [('iter_no', iter_no), ('mutation_rate', self.mutation_rate),

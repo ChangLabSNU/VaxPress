@@ -35,13 +35,14 @@ HEADER = """\
 import numpy as np
 from base64 import a85decode
 
-_ = lambda b: np.frombuffer(a85decode(b), dtype=np.float16)
+def _(b):
+    return np.frombuffer(a85decode(b), dtype=np.float16)
 
 bicodon_usage = {{}}
 """
 
 FOOTER = """\
-del _, a85decode, np"""
+"""
 
 def load_codon_table():
     rows = []
@@ -66,7 +67,8 @@ def process_codon_table(table):
         bicodcnts = row[hexamers].to_frame('count').reset_index()
         bicodcnts['count'] = bicodcnts['count'].astype(int)
         bicodcnts['index'] = bicodcnts['index'].str.upper()
-        bicodcnts['aa2'] = bicodcnts['index'].apply(lambda x: codon2aa[x[:3]] + codon2aa[x[3:]])
+        bicodcnts['aa2'] = bicodcnts['index'].apply(
+            lambda x: codon2aa[x[:3]] + codon2aa[x[3:]])
         bicodcnts['maxcount'] = -1
         for _, grp in bicodcnts.groupby('aa2'):
             bicodcnts.loc[grp.index, 'maxcount'] = grp['count'].max()
@@ -90,13 +92,16 @@ def format_codon_table(w_lists):
 
         formatted.append(f"bicodon_usage['{species}'] = _(rb'''")
         formatted.append(wenc.decode() + "''')\n")
-    
+
     return '\n'.join(formatted)
 
 if __name__ == '__main__':
-    import sys, os
+    import sys
+    import os
     script_path = os.path.abspath(sys.argv[0])
-    output_path = os.path.dirname(script_path) + '/../vaxpress/data/bicodon_usage_data.py'
+    output_path = (
+        os.path.dirname(script_path) +
+        '/../vaxpress/data/bicodon_usage_data.py')
 
     if not os.path.exists(FILENAME):
         request.urlretrieve(DATA_URL, FILENAME)

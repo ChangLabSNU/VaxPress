@@ -40,7 +40,8 @@ class BicodonAdaptationIndexFitness(ScoringFunction):
     arguments = [
         ('weight', dict(
             type=float, default=1.0,
-            help='scoring weight for codon adaptation index of codon-pairs (default: 1.0)'
+            help='scoring weight for codon adaptation index of codon-pairs '
+                 '(default: 1.0)'
         )),
     ]
 
@@ -53,7 +54,8 @@ class BicodonAdaptationIndexFitness(ScoringFunction):
         if self.species not in bicodon_usage_data.bicodon_usage:
             raise ValueError(f'No bicodon usage data for species: {self.species}')
 
-        bicodon_usage = bicodon_usage_data.bicodon_usage[self.species].astype(np.float64)
+        bicodon_usage = (
+            bicodon_usage_data.bicodon_usage[self.species].astype(np.float64))
         pairs = [''.join(seq) for seq in product('ACGU', repeat=6)]
 
         self.bicodon_scores = dict(zip(pairs, bicodon_usage))

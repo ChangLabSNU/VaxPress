@@ -38,10 +38,12 @@ def load_codon_table():
     content = request.urlopen(DATA_URL).read().decode()
     print(' - done.')
 
-    content = content.replace('\t\n', '\n') # CoCoPUTs tsv contains an excessive trailing tab
+    # CoCoPUTs tsv contains an excessive trailing tab
+    content = content.replace('\t\n', '\n')
 
     table = pd.read_csv(StringIO(content), sep='\t')
-    table = table[table['Species'].isin(SELECTED_SPECIES) & (table['Organelle'] == 'genomic')]
+    table = table[table['Species'].isin(SELECTED_SPECIES) &
+                  (table['Organelle'] == 'genomic')]
 
     pat_codon = re.compile('[ACGT]{3}')
     codoncols = [col for col in table.columns if pat_codon.match(col)]
@@ -57,13 +59,15 @@ def format_codon_table(table):
         freqs = (codoncounts / codoncounts.sum()).round(6).to_dict()
 
         formatted.append(f"codon_usage['{species}'] = {{")
-        formatted.extend(wrap(repr(freqs)[1:-1], initial_indent='  ', subsequent_indent='  '))
+        formatted.extend(wrap(repr(freqs)[1:-1],
+                              initial_indent='  ', subsequent_indent='  '))
         formatted.append('}\n')
     
     return '\n'.join(formatted)
 
 if __name__ == '__main__':
-    import sys, os
+    import sys
+    import os
     script_path = os.path.abspath(sys.argv[0])
     output_path = os.path.dirname(script_path) + '/../vaxpress/codon_usage_data.py'
 

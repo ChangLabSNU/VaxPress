@@ -36,7 +36,8 @@ class RNAFoldingFitness(ScoringFunction):
 
     arguments = [
         ('off', dict(
-            action='store_true', default=False, help='disable secondary structure folding')),
+            action='store_true', default=False,
+            help='disable secondary structure folding')),
         ('engine', dict(
             choices=['vienna', 'linearfold'], default='vienna',
             help='RNA folding engine (default: vienna)')),
@@ -51,7 +52,8 @@ class RNAFoldingFitness(ScoringFunction):
             help='penalty weight for folded start codon region (default: 1)')),
         ('loop-threshold', dict(
             type=int, default=2,
-            help='minimum count of unfolded bases to be considered as a loop (default: 2)')),
+            help='minimum count of unfolded bases to be considered as a loop '
+                 '(default: 2)')),
         ('loop-weight', dict(
             type=float, default=1.5, help='scoring weight for loops (default: 1.5)')),
     ]

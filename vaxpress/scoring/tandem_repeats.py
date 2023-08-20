@@ -37,10 +37,12 @@ class TandemRepeatsFitness(ScoringFunction):
     arguments = [
         ('min-repeats',
          dict(type=int, default=2,
-              help='minimum number of repeats to be considered as a tandem repeat (default: 2)')),
+              help='minimum number of repeats to be considered as a tandem '
+                   'repeat (default: 2)')),
         ('min-length',
          dict(type=int, default=10,
-              help='minimum length of repeats to be considered as a tandem repeat (default: 10)')),
+              help='minimum length of repeats to be considered as a tandem '
+                   'repeat (default: 10)')),
         ('weight',
          dict(type=float, default=1.0,
               help='scoring weight for tandem repeats (default: 1.0)')),

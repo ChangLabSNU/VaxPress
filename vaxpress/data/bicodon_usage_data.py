@@ -2,7 +2,7 @@
 # Bicodon Frequency Table
 #
 # The data in this table is derived from the CoCoPUTs codon usage database [1].
-# Automatically generated using tools/prepare-bicodon-usage.py on 2023-08-10 21:55:39.
+# Automatically generated using tools/prepare-bicodon-usage.py on 2023-08-20 21:41:16.
 #
 # [1] Alexaki et al. (2019) Codon and Codon-Pair Usage Tables (CoCoPUTs):
 #     facilitating genetic variation analyses and recombinant gene design.
@@ -12,7 +12,8 @@
 import numpy as np
 from base64 import a85decode
 
-_ = lambda b: np.frombuffer(a85decode(b), dtype=np.float16)
+def _(b):
+    return np.frombuffer(a85decode(b), dtype=np.float16)
 
 bicodon_usage = {}
 
@@ -665,4 +666,3 @@ QatqWQF2RW0s>CG\[qtu+Y=\@*&E0q*km!2BX@9=A&#dcHb&7J-S7cd_RtLV!k_CALUg3k5f&GpK")6(
 -,%4$qR$""fs3Q2/%p0`?66JR4Lpk,@_d6%WO-o_G.+BS9sXl,>-tZB5e\BtW\lH<""6AjN5>7rQG,U6
 auhdGloM7,l8%S.#/>"(?ab0hijr!t[_"H+/Mi8%4gij&TKCL\a?1e0rjmSB"hSHX%(p)\hn-q5E]\r]
 gGsaHIm$Ce=Zi3:fX?8mIm"T14#rln.CSk(Im"Z.<'*`6rNk'6>9+]g2Sbk=)`5=;gG.*QV7YYC>-sa&''')
-del _, a85decode, np

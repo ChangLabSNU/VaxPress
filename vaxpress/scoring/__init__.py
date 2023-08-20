@@ -61,7 +61,10 @@ class ScoringFunction:
 
 def discover_scoring_functions(addon_paths):
     from . import __path__, __name__
-    import pkgutil, importlib, os, sys
+    import pkgutil
+    import importlib
+    import os
+    import sys
 
     funcs = {}
 
