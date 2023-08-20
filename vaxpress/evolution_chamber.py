@@ -47,9 +47,9 @@ IterationOptions = namedtuple('IterationOptions', [
 ])
 
 ExecutionOptions = namedtuple('ExecutionOptions', [
-    'output', 'overwrite', 'seed', 'processes', 'random_initialization',
-    'species', 'codon_table', 'protein', 'quiet', 'seq_description',
-    'print_top_mutants', 'addons',
+    'output', 'command_line', 'overwrite', 'seed', 'processes',
+    'random_initialization', 'species', 'codon_table', 'protein', 'quiet',
+    'seq_description', 'print_top_mutants', 'addons',
 ])
 
 class CDSEvolutionChamber:
@@ -293,11 +293,11 @@ class CDSEvolutionChamber:
 
         return total_scores, scores, metrics
 
-    def run(self) -> None:
+    def run(self) -> dict:
         if not self.quiet:
             self.show_configuration()
 
-        optimization_start = time.time()
+        timelogs = [time.time()]
         n_survivors = self.iteropts.n_survivors
         last_winddown = 0
         error_code = 0
@@ -312,8 +312,6 @@ class CDSEvolutionChamber:
                 if self.expected_total_mutations < self.stop_threshold:
                     self.printmsg('==> Stopping: expected mutation reaches the minimum')
                     break
-
-                iteration_start = time.time()
 
                 self.printmsg(self.hbar)
                 self.printmsg(f'Iteration {iter_no}/{self.iteropts.n_iterations}  --',
@@ -349,18 +347,21 @@ class CDSEvolutionChamber:
                         self.printmsg(f'==> Winddown triggered: mutation rate = {self.mutation_rate:.5f}')
                         last_winddown = iter_no
 
-                iteration_end = time.time()
+                timelogs.append(time.time())
 
-                self.print_time_estimation(iteration_start, iteration_end, iter_no)
+                self.print_time_estimation(timelogs[-2], timelogs[-1], iter_no)
 
                 self.printmsg()
 
             if error_code == 0:
                 self.printmsg(f'Finished successfully. '
                               f'You can find the results in {self.outputdir.rstrip("/")}/.')
-                self.save_results(optimization_start, iteration_end)
+                self.save_results()
 
-        return error_code
+        return {
+            'error': error_code,
+            'time': timelogs,
+        }
 
     def print_eval_results(self, total_scores, metrics, ind_sorted, n_parents) -> None:
         if self.quiet:
@@ -419,7 +420,7 @@ class CDSEvolutionChamber:
         print(*[f[1] for f in fields], sep='\t', file=self.checkpoint_file)
         self.checkpoint_file.flush()
 
-    def save_results(self, optstart: float, optend: float) -> None:
+    def save_results(self) -> None:
         # Save the best sequence
         bestseq = ''.join(self.population[0])
         fastapath = os.path.join(self.outputdir, 'best-sequence.fasta')

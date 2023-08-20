@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import pandas as pd
 from datetime import datetime
-from textwrap import wrap
 from urllib import request
 from itertools import product
 from base64 import a85encode

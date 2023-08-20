@@ -27,8 +27,10 @@ from . import scoring
 from .evolution_chamber import (
     CDSEvolutionChamber, IterationOptions, ExecutionOptions)
 from .presets import load_preset
+from .reporting import ReportGenerator
 from Bio import SeqIO
 import argparse
+import shlex
 import os
 
 SPECIES_ALIASES = {
@@ -48,7 +50,7 @@ def preparse_preset_and_addons():
     if args.preset is not None:
         try:
             preset = load_preset(open(args.preset).read())
-        except Exception as exc:
+        except Exception:
             print(f'Failed to load the preset from {args.preset}.')
             sys.exit(1)
     else:
@@ -156,6 +158,8 @@ def run_vaxpress():
     seqdescr = inputseq.description
     cdsseq = str(inputseq.seq)
 
+    command_line = ' '.join(shlex.quote(arg) for arg in sys.argv)
+
     iteration_options = IterationOptions(
         n_iterations=args.iterations,
         n_offsprings=args.offsprings,
@@ -167,6 +171,7 @@ def run_vaxpress():
 
     execution_options = ExecutionOptions(
         output=args.output,
+        command_line=command_line,
         overwrite=args.overwrite,
         seed=args.seed,
         processes=args.processes,
@@ -185,7 +190,10 @@ def run_vaxpress():
             cdsseq, scoring_funcs, scoring_options,
             iteration_options, execution_options)
 
-        return evochamber.run()
+        result = evochamber.run()
+        generate_report(result, args, scoring_options, iteration_options,
+                        execution_options, inputseq)
+        return result['error']
     except KeyboardInterrupt:
         return 1
     except FileExistsError:
@@ -193,6 +201,19 @@ def run_vaxpress():
               'option to overwrite it.')
         return 1
 
+def generate_report(result, args, scoring_options, iteration_options,
+                    execution_options, inputseq):
+    # Save arguments and parameters for debugging and inspection.
+    # May be removed in the future.
+    import pickle
+    pickle.dump({'args': args, 'scoring_options': scoring_options,
+                'iteration_options': iteration_options,
+                'execution_options': execution_options,
+                'seq': inputseq, 'result': result},
+                open(execution_options.output + '/report_data.pickle', 'wb'))
+
+    ReportGenerator(result, args, scoring_options, iteration_options,
+                    execution_options, inputseq).generate()
 
 if __name__ == '__main__':
     import sys
