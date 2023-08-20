@@ -62,9 +62,9 @@ class ReportPlotsMixin:
             title='Fitness changes over the iterations',
             height=self.default_panel_height[2])
 
-        fig.update_yaxes(title_text="Fitness score", row=1, col=1)
-        fig.update_yaxes(title_text="Mutation rate", row=2, col=1)
-        fig.update_xaxes(title_text="Iteration", row=2, col=1)
+        fig.update_yaxes(title_text='Fitness score', row=1, col=1)
+        fig.update_yaxes(title_text='Mutation rate', row=2, col=1)
+        fig.update_xaxes(title_text='Iteration', row=2, col=1)
 
         return pyo.plot(fig, output_type='div', include_plotlyjs=False)
 
