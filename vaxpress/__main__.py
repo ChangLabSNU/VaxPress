@@ -31,6 +31,7 @@ from .reporting import ReportGenerator
 from Bio import SeqIO
 import argparse
 import shlex
+import sys
 import os
 
 SPECIES_ALIASES = {
