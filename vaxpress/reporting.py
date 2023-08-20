@@ -32,8 +32,6 @@ import os
 import json
 import time
 
-template_dir = os.path.join(os.path.dirname(__file__), 'report_template')
-
 def filter_timestamp_local(timestamp):
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timestamp))
 
@@ -111,7 +109,8 @@ class ReportGenerator(ReportPlotsMixin):
         }
 
     def load_templates(self):
-        env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir))
+        template_loader = jinja2.PackageLoader('vaxpress', 'report_template')
+        env = jinja2.Environment(loader=template_loader)
         env.filters['localtime'] = filter_timestamp_local
 
         return {
