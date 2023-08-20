@@ -1,0 +1,13 @@
+<html>
+<head>
+    <title>VaxPress Result: {{ seq.name }}</title>
+</head>
+<body>
+<ul>
+    <li>Sequence name: {{ seq.description }}</li>
+    <li>Started: {{ result['time'][0] | localtime }}</li>
+    <li>Finished: {{ result['time'][-1] | localtime }}</li>
+    <li>Command line: {{ exec.command_line }}</li>
+</ul>
+</body>
+</html>
