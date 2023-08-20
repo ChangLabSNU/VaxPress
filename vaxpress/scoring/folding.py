@@ -76,10 +76,10 @@ class RNAFoldingFitness(ScoringFunction):
             self.fold = RNA.fold
         elif engine == 'linearfold':
             try:
-                from vaxpress import linearfold
+                import linearfold
             except ImportError:
-                raise ImportError('VaxPress is not installed with LinearFold '
-                                  'support. Try installing a non-free package.')
+                raise ImportError('LinearFold module is not available. Try "'
+                                  'pip install linearfold-unofficial" to install.')
             self.fold = linearfold.fold
         else:
             raise ValueError(f'Unsupported RNA folding engine: {engine}')
