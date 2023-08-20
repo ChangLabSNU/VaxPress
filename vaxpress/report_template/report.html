@@ -1,6 +1,7 @@
 <html>
 <head>
     <title>VaxPress Result: {{ seq.name }}</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
 <ul>
@@ -9,5 +10,6 @@
     <li>Finished: {{ result['time'][-1] | localtime }}</li>
     <li>Command line: {{ exec.command_line }}</li>
 </ul>
+{{ plotters.fitness_curve() }}
 </body>
 </html>

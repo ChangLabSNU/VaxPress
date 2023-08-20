@@ -66,6 +66,8 @@ setup(
         'ViennaRNA >= 2.4',
         'tqdm >= 4.0',
         'tabulate >= 0.9',
+        'Jinja2 >= 3.1',
+        'plotly >= 5.0',
     ],
     extras_require={
         'nonfree': ['linearfold-unofficial'],
