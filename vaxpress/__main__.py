@@ -211,7 +211,7 @@ def run_vaxpress():
         addons=addon_paths,
     )
 
-    next_report = time.time()
+    next_report = 0 # Generate the first report immediately.
     # vaxpress assumes that the system clock does not go back or jump forward.
 
     try:
