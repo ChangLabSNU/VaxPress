@@ -122,7 +122,7 @@
 {% if 'folding' in scoring and not scoring['folding']['off'] %}
     <h2>Predicted secondary structure</h2>
     <ul>
-        <li><b>MFE:</b> {{ status['evaluations']['mfe'] }} kcal/mol</li>
+        <li><b>MFE:</b> {{ "%.1f"|format(status['evaluations']['mfe']) }} kcal/mol</li>
         <li><b>Total loop length (≥{{ scoring['folding']['loop_threshold'] }}):</b>
             {{ status['evaluations']['loops'] }}</li>
     </ul>
