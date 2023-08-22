@@ -35,7 +35,7 @@ class UridineCountFitness(ScoringFunction):
 
     arguments = [
         ('weight',
-         dict(type=float, default=3.0,
+         dict(type=float, default=3.0, metavar='WEIGHT',
               help='scoring weight for U count minimizer (default: 3.0)')),
     ]
 

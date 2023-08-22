@@ -39,7 +39,7 @@ class BicodonAdaptationIndexFitness(ScoringFunction):
     requires = ['species']
     arguments = [
         ('weight', dict(
-            type=float, default=1.0,
+            type=float, default=1.0, metavar='WEIGHT',
             help='scoring weight for codon adaptation index of codon-pairs '
                  '(default: 1.0)'
         )),

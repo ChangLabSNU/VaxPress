@@ -133,9 +133,9 @@ def parse_options(scoring_funcs, preset):
                      help='number of processes to use (default: 4)')
     grp.add_argument('--seed', type=int, default=922, metavar='NUMBER',
                      help='random seed (default: 922)')
-    grp.add_argument('--species', default='human',
+    grp.add_argument('--species', default='human', metavar='NAME',
                      help='target species (default: human)')
-    grp.add_argument('--codon-table', default='standard',
+    grp.add_argument('--codon-table', default='standard', metavar='NAME',
                      help='codon table (default: standard)')
     grp.add_argument('--random-initialization', action='store_true',
                      default=False, help='randomize all codons at the beginning')

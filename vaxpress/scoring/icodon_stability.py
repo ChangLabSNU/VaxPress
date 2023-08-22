@@ -44,7 +44,7 @@ class iCodonStabilityFitness(ScoringFunction):
     requires = ['species']
     arguments = [
         ('weight', dict(
-            type=float, default=1.0,
+            type=float, default=1.0, metavar='WEIGHT',
             help='scoring weight for iCodon predicted stability (default: 1.0)')),
     ]
 
