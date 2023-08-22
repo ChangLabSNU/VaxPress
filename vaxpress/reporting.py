@@ -55,31 +55,44 @@ class ReportPlotsMixin:
     seq = args = result = scoreopts = iteropts = execopts = None
     checkpoints = None
 
-    default_panel_height = [0, 400, 600] # by number of panels
+    default_panel_height = [0, 400, 600, 700] # by number of panels
 
-    def plot_fitness_curve(self):
-        fig = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.1)
+    def plot_fitness_curve(self, skip_initial=True):
+        fig = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.1)
+        view = slice(1, None) if skip_initial else slice(None)
 
         panel_fitness = go.Scatter(
-            x=self.checkpoints.index, y=self.checkpoints['fitness'],
+            x=self.checkpoints.index[view], y=self.checkpoints['fitness'].iloc[view],
             mode='lines', name='Fitness')
         panel_mutation_rate = go.Scatter(
-            x=self.checkpoints.index, y=self.checkpoints['mutation_rate'],
+            x=self.checkpoints.index[view], y=self.checkpoints['mutation_rate'].iloc[view],
             mode='lines', name='Mutation rate')
 
         fig.add_trace(panel_fitness, row=1, col=1)
-        fig.add_trace(panel_mutation_rate, row=2, col=1)
+
+        for name, values in self.checkpoints.items():
+            if not name.startswith('score:'):
+                continue
+
+            nvalues = values.iloc[view]
+            nvalues -= nvalues.mean() # center the score (and don't scale)
+            trace = go.Scatter(
+                x=self.checkpoints.index[view], y=nvalues,
+                mode='lines', name=name[6:])
+            fig.add_trace(trace, row=2, col=1)
+
+        fig.add_trace(panel_mutation_rate, row=3, col=1)
 
         fig.update_layout(
             title='Fitness changes over the iterations',
-            height=self.default_panel_height[2])
+            height=self.default_panel_height[3])
 
-        fig.update_yaxes(title_text='Fitness score', row=1, col=1)
-        fig.update_yaxes(title_text='Mutation rate', row=2, col=1)
-        fig.update_xaxes(title_text='Iteration', row=2, col=1)
+        fig.update_yaxes(title_text='Total fitness', row=1, col=1)
+        fig.update_yaxes(title_text='Fitness score (centered)', row=2, col=1)
+        fig.update_yaxes(title_text='Mutation rate', row=3, col=1)
+        fig.update_xaxes(title_text='Iteration', row=3, col=1)
 
         return pyo.plot(fig, output_type='div', include_plotlyjs=False)
-
 
 
 class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
