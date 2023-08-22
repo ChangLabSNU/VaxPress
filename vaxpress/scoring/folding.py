@@ -115,4 +115,5 @@ class RNAFoldingFitness(ScoringFunction):
 
     def annotate_sequence(self, seq):
         folding, mfe = self.fold(seq)
-        return {'folding': folding, 'mfe': mfe}
+        loops = sum(map(len, self.find_loops.findall(folding)))
+        return {'folding': folding, 'mfe': mfe, 'loops': loops}
