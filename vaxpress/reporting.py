@@ -26,7 +26,6 @@
 import plotly.offline as pyo
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import pickle
 import pandas as pd
 import jinja2
 import os
