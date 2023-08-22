@@ -89,9 +89,13 @@
 
   
 
-    <h1>Plots for the Optimization Process</h1>
+    <h1>Optimization Process</h1>
 {{ plotters.fitness_curve() }}
 {{ plotters.metric_curves() }}
+
+    <h1>Sequence Evaluations</h1>
+    <h2>Local sequence metrics</h2>
+{{ plotters.sequence_evaluation_curves() }}
 
     <footer class="site-footer">
       <span class="site-footer-credits">The sequence was optimized by

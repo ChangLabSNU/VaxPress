@@ -70,3 +70,9 @@ class CodonAdaptationIndexFitness(ScoringFunction):
         cai_score = cai * self.weight
 
         return {'cai': cai_score}, {'cai': cai}
+
+    def evaluate_local(self, seq):
+        scores = self.codon_scores
+        cai = np.array([scores[seq[i:i+3]] for i in range(0, len(seq), 3)])
+        centers = np.arange(0, len(seq), 3) + 1
+        return {'cai': (centers, cai)}

@@ -71,3 +71,10 @@ class GCRatioFitness(ScoringFunction):
                         for seq in seqs]
         scores = [s * self.weight for s in gc_penalties]
         return {'gc_penalty': scores}, {'gc_penalty': gc_penalties}
+
+    def evaluate_local(self, seq):
+        gc = gc_content_sliding_window(seq, self.window_size, self.stride)
+        centers = (
+            np.arange(0, len(seq) - self.window_size + 1, self.stride) +
+            self.stride / 2)
+        return {'gc': (centers, gc)}

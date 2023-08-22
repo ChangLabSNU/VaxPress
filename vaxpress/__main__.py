@@ -223,7 +223,7 @@ def run_vaxpress():
         return 1
 
 def generate_report(result, args, scoring_options, iteration_options,
-                    execution_options, inputseq):
+                    execution_options, inputseq, scoring_funcs):
     # Save arguments and parameters for debugging and inspection.
     # May be removed in the future.
     import pickle
@@ -234,7 +234,7 @@ def generate_report(result, args, scoring_options, iteration_options,
                 open(execution_options.output + '/report_data.pickle', 'wb'))
 
     ReportGenerator(result, args, scoring_options, iteration_options,
-                    execution_options, inputseq).generate()
+                    execution_options, inputseq, scoring_funcs).generate()
 
 if __name__ == '__main__':
     ret = run_vaxpress()

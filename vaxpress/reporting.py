@@ -26,6 +26,7 @@
 import plotly.offline as pyo
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import pickle
 import pandas as pd
 import jinja2
 import os
@@ -58,14 +59,15 @@ class ReportPlotsMixin:
     default_panel_height = [0, 400, 600, 700, 800] # by number of panels
 
     def plot_fitness_curve(self, skip_initial=True):
-        fig = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0)
+        fig = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.05)
         view = slice(1, None) if skip_initial else slice(None)
 
         panel_fitness = go.Scatter(
             x=self.checkpoints.index[view], y=self.checkpoints['fitness'].iloc[view],
             mode='lines', name='Fitness')
         panel_mutation_rate = go.Scatter(
-            x=self.checkpoints.index[view], y=self.checkpoints['mutation_rate'].iloc[view],
+            x=self.checkpoints.index[view],
+            y=self.checkpoints['mutation_rate'].iloc[view],
             mode='lines', name='Mutation rate')
 
         fig.add_trace(panel_fitness, row=1, col=1)
@@ -97,7 +99,8 @@ class ReportPlotsMixin:
     def plot_metric_curves(self, skip_initial=True):
         metrics = self.checkpoints.filter(regex='^metric:').columns
 
-        fig = make_subplots(rows=len(metrics), cols=1, shared_xaxes=True, vertical_spacing=0.02)
+        fig = make_subplots(rows=len(metrics), cols=1, shared_xaxes=True,
+                            vertical_spacing=0.02)
         view = slice(1, None) if skip_initial else slice(None)
 
         for i, name in enumerate(metrics):
@@ -111,6 +114,25 @@ class ReportPlotsMixin:
         fig.update_layout(
             title='Individual metric change over the iterations',
             height=self.default_panel_height[-1])
+
+        return pyo.plot(fig, output_type='div', include_plotlyjs=False)
+
+    def plot_sequence_evaluation_curves(self):
+        plotdata = self.seqevals['local-metrics']
+
+        fig = make_subplots(rows=len(plotdata), cols=1, shared_xaxes=True,
+                            vertical_spacing=0.02)
+
+        for i, (metric, values) in enumerate(plotdata.items()):
+            trace = go.Scatter(x=values[0], y=values[1],
+                               mode='lines', name=metric)
+            fig.add_trace(trace, row=i + 1, col=1)
+            fig.update_yaxes(title_text=metric, row=i + 1, col=1)
+
+        height = min(len(self.default_panel_height), len(plotdata))
+        fig.update_layout(
+            title='Final sequence evaluation metrics',
+            height=self.default_panel_height[height - 1])
 
         return pyo.plot(fig, output_type='div', include_plotlyjs=False)
 
@@ -141,6 +163,8 @@ class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
         self.parameters = json.load(open(self.execopts.output + '/parameters.json'))
         self.checkpoints = pd.read_csv(self.execopts.output + '/checkpoints.tsv',
                                        sep='\t', index_col=0)
+        self.seqevals = pickle.load(open(self.execopts.output +
+                                         '/best-sequence-evals.pickle', 'rb'))
         scoreopts_filtered = {
             name: {k: v for k, v in opts.items() if not k.startswith('_')}
             for name, opts in self.scoreopts.items()
@@ -178,8 +202,8 @@ if __name__ == '__main__':
     import sys
     sys.path.append('.')
 
-    rundir = 'testrun-dev'
-    import pickle
+    #rundir = 'testrun-dev'
+    rundir = 'tmpxx'
     runinfo = pickle.load(open(rundir + '/report_data.pickle', 'rb'))
     from vaxpress import scoring
 

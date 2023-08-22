@@ -28,6 +28,7 @@ import time
 import sys
 import os
 import shutil
+import pickle
 from textwrap import wrap
 from tqdm import tqdm
 from tabulate import tabulate
@@ -364,8 +365,8 @@ class CDSEvolutionChamber:
                 self.printmsg()
 
             if error_code == 0:
-                self.printmsg('Finished successfully. You can find the results '
-                              f'in {self.outputdir.rstrip("/")}/.')
+                self.printmsg('Finished successfully. You can view the results '
+                              f'in {self.outputdir.rstrip("/")}/report.html.')
                 self.save_results()
 
         return {
@@ -445,9 +446,23 @@ class CDSEvolutionChamber:
         paramspath = os.path.join(self.outputdir, 'parameters.json')
         self.save_optimization_parameters(paramspath)
 
+        # Save the evaluation results of the best sequence
+        evalpath = os.path.join(self.outputdir, 'best-sequence-evals.pickle')
+        self.save_sequence_evaluation_data(evalpath)
+
     def save_optimization_parameters(self, path: str) -> None:
         optdata = dump_to_preset(self.scoreopts, self.iteropts, self.execopts)
         open(path, 'w').write(optdata)
+
+    def save_sequence_evaluation_data(self, path: str) -> None:
+        bestseq = ''.join(self.population[0])
+
+        seqevals = {}
+        for fun in self.scorefuncs_batch + self.scorefuncs_single:
+            if hasattr(fun, 'evaluate_local'):
+                seqevals.update(fun.evaluate_local(bestseq))
+
+        pickle.dump({'local-metrics': seqevals}, open(path, 'wb'))
 
 
 if __name__ == '__main__':
