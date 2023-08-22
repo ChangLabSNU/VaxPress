@@ -126,7 +126,7 @@
         <li><b>Total loop length (≥{{ scoring['folding']['loop_threshold'] }}):</b>
             {{ status['evaluations']['loops'] }}</li>
     </ul>
-    <iframe src="http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/vaxpress&sequence={{ seq.seq }}&structure={{ status['evaluations']['folding'] }}"
+    <iframe src="http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/vaxpress&sequence={{ seq.seq.replace('T', 'U') }}&structure={{ status['evaluations']['folding'] }}"
      align="center" height="650px" width="100%" seamless='seamless' frameBorder="0" AllowFullScreen></iframe>
 {% endif %}
 
