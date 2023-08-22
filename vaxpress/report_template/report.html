@@ -19,13 +19,75 @@
   </header>
 
   <main id="content" class="main-content" role="main">
-    <h1>Task information</h1>
+<h1>Task information</h1>
 <ul>
     <li><b>Sequence name:</b> {{ seq.description }}</li>
     <li><b>Started:</b> {{ result['time'][0] | localtime }}</li>
     <li><b>Finished:</b> {{ result['time'][-1] | localtime }}</li>
     <li><b>Command line:</b> {{ exec.command_line }}</li>
 </ul>
+
+<h1>Parameters</h1>
+<h2>Program Options</h2>
+<table>
+  <tr>
+    <th>Random seed</th>
+    <td>{{ exec.seed }}</td>
+    <th>Processes</th>
+    <td>{{ exec.processes }}</td>
+    <th>Random initialization</th>
+    <td>{{ exec.random_initialization | format_bool('yes', 'no') }}</td>
+  </tr>
+  <tr>
+    <th>Species</th>
+    <td>{{ exec.species }}</td>
+    <th>Codon table</th>
+    <td>{{ exec.codon_table }}</td>
+    <th></th>
+    <td></td>
+  </tr>
+</table>
+
+<h2>Optimization</h2>
+<table>
+  <tr>
+    <th>Iterations</th>
+    <td>{{ iter.n_iterations }}</td>
+    <th>Offsprings</th>
+    <td>{{ iter.n_offsprings }}</td>
+    <th>Survivors</th>
+    <td>{{ iter.n_survivors}}</td>
+  </tr>
+  <tr>
+    <th>Initial mutation rate</th>
+    <td>{{ iter.initial_mutation_rate }}</td>
+    <th>Wind-down trigger</th>
+    <td>{{ iter.winddown_trigger }}</td>
+    <th>Wind-down rate</th>
+    <td>{{ iter.winddown_rate }}</td>
+  </tr>
+</table>
+
+<h2>Fitness Scoring</h2>
+{% for name, opts in scoring.items() %}
+{% set fun = scorefuncs[name] %}
+<h3>{{ fun.description }}</h3>
+<table>
+  {% set optlen = opts|length %}
+  {% set bwidth = [optlen, 3]|min %}
+  {% for items in opts.items()|batch(bwidth, ('-', '-')) %}
+    <tr>
+    {%- for key, val in items %}
+      <th>{{ key | replace('_', ' ') }}</th>
+      <td>{{ val }}</td>
+    {%- endfor %}
+    </tr>
+  {% endfor %}
+</table>
+{% endfor %}
+
+
+  
 
     <h1>Plots</h1>
 {{ plotters.fitness_curve() }}

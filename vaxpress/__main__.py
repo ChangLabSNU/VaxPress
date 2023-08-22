@@ -213,7 +213,7 @@ def run_vaxpress():
 
         result = evochamber.run()
         generate_report(result, args, scoring_options, iteration_options,
-                        execution_options, inputseq)
+                        execution_options, inputseq, scoring_funcs)
         return result['error']
     except KeyboardInterrupt:
         return 1

@@ -35,6 +35,9 @@ import time
 def filter_timestamp_local(timestamp):
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timestamp))
 
+def filter_format_bool(value, truevalue, falsevalue):
+    return [falsevalue, truevalue][int(value)]
+
 
 class ReportPlotsMixin:
 
@@ -69,13 +72,15 @@ class ReportPlotsMixin:
 
 class ReportGenerator(ReportPlotsMixin):
 
-    def __init__(self, result, args, scoreopts, iteropts, execopts, seq):
+    def __init__(self, result, args, scoreopts, iteropts, execopts, seq,
+                 scorefuncs):
         self.seq = seq
         self.args = args
         self.result = result
         self.scoreopts = scoreopts
         self.iteropts = iteropts
         self.execopts = execopts
+        self.scorefuncs = scorefuncs
 
         self.templates = self.load_templates()
 
@@ -91,17 +96,21 @@ class ReportGenerator(ReportPlotsMixin):
         self.parameters = json.load(open(self.execopts.output + '/parameters.json'))
         self.checkpoints = pd.read_csv(self.execopts.output + '/checkpoints.tsv',
                                        sep='\t', index_col=0)
-        print("VERSION", self.result.keys())
+        scoreopts_filtered = {
+            name: {k: v for k, v in opts.items() if not k.startswith('_')}
+            for name, opts in self.scoreopts.items()
+        }
 
         return {
             'args': self.args,
             'seq': self.seq,
-            'scoring': self.scoreopts,
+            'scoring': scoreopts_filtered,
             'iter': self.iteropts,
             'exec': self.execopts,
             'params': self.parameters,
             'result': self.result,
             'checkpoints': self.checkpoints,
+            'scorefuncs': self.scorefuncs,
             'plotters': {
                 name[5:]: getattr(self, name)
                 for name in dir(self)
@@ -113,6 +122,7 @@ class ReportGenerator(ReportPlotsMixin):
         template_loader = jinja2.PackageLoader('vaxpress', 'report_template')
         env = jinja2.Environment(loader=template_loader)
         env.filters['localtime'] = filter_timestamp_local
+        env.filters['format_bool'] = filter_format_bool
 
         return {
             name: env.get_template(name)
@@ -127,7 +137,11 @@ if __name__ == '__main__':
     rundir = 'testrun-dev'
     import pickle
     runinfo = pickle.load(open(rundir + '/report_data.pickle', 'rb'))
+    from vaxpress import scoring
+
+    sfuncs = scoring.discover_scoring_functions([])
 
     ReportGenerator(runinfo['result'], runinfo['args'],
                     runinfo['scoring_options'], runinfo['iteration_options'],
-                    runinfo['execution_options'], runinfo['seq']).generate()
+                    runinfo['execution_options'], runinfo['seq'],
+                    sfuncs).generate()
