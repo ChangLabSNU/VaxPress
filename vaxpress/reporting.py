@@ -117,18 +117,25 @@ class ReportPlotsMixin:
         return pyo.plot(fig, output_type='div', include_plotlyjs=False)
 
     def plot_sequence_evaluation_curves(self):
-        plotdata = self.status['evaluations']['local-metrics']
+        plotdata_initial = self.status['evaluations']['initial']['local-metrics']
+        plotdata_optimized = self.status['evaluations']['optimized']['local-metrics']
 
-        fig = make_subplots(rows=len(plotdata), cols=1, shared_xaxes=True,
+        fig = make_subplots(rows=len(plotdata_initial), cols=1, shared_xaxes=True,
                             vertical_spacing=0.02)
 
-        for i, (metric, values) in enumerate(plotdata.items()):
-            trace = go.Scatter(x=values[0], y=values[1],
-                               mode='lines', name=metric)
-            fig.add_trace(trace, row=i + 1, col=1)
+        for i, (metric, values_init) in enumerate(plotdata_initial.items()):
+            values_opt = plotdata_optimized[metric]
+
+            trace_init = go.Scatter(x=values_init[0], y=values_init[1],
+                                    mode='lines', name=metric + ' (original)',
+                                    line=dict(color='gray', width=2, dash='dot'))
+            trace_opt = go.Scatter(x=values_opt[0], y=values_opt[1],
+                                   mode='lines', name=metric + ' (optimized)')
+            fig.add_trace(trace_init, row=i + 1, col=1)
+            fig.add_trace(trace_opt, row=i + 1, col=1)
             fig.update_yaxes(title_text=metric, row=i + 1, col=1)
 
-        height = min(len(self.default_panel_height), len(plotdata))
+        height = min(len(self.default_panel_height), len(plotdata_initial))
         fig.update_layout(
             title='Final sequence evaluation metrics',
             height=self.default_panel_height[height - 1])

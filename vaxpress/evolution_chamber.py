@@ -136,6 +136,9 @@ class CDSEvolutionChamber:
 
         self.initialize_fitness_scorefuncs()
 
+        self.initial_sequence_evaluation = (
+            self.prepare_sequence_evaluation_data(''.join(self.population[0])))
+
         self.best_scores = []
         self.elapsed_times = []
         self.checkpoint_file = open(self.checkpoint_path, 'w')
@@ -439,23 +442,24 @@ class CDSEvolutionChamber:
         self.save_optimization_parameters(paramspath)
 
         # Prepare the evaluation results of the best sequence
-        return self.prepare_sequence_evaluation_data()
+        return {
+            'initial': self.initial_sequence_evaluation,
+            'optimized': self.prepare_sequence_evaluation_data(bestseq)
+        }
 
     def save_optimization_parameters(self, path: str) -> None:
         optdata = dump_to_preset(self.scoreopts, self.iteropts, self.execopts)
         open(path, 'w').write(optdata)
 
-    def prepare_sequence_evaluation_data(self):
-        bestseq = ''.join(self.population[0])
-
+    def prepare_sequence_evaluation_data(self, seq):
         seqevals = {}
         seqevals['local-metrics'] = localmet = {}
         for fun in self.scorefuncs_batch + self.scorefuncs_single:
             if hasattr(fun, 'evaluate_local'):
-                localmet.update(fun.evaluate_local(bestseq))
+                localmet.update(fun.evaluate_local(seq))
 
             if hasattr(fun, 'annotate_sequence'):
-                seqevals.update(fun.annotate_sequence(bestseq))
+                seqevals.update(fun.annotate_sequence(seq))
 
         return seqevals
 

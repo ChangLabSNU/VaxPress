@@ -122,11 +122,11 @@
 {% if 'folding' in scoring and not scoring['folding']['off'] %}
     <h2>Predicted secondary structure</h2>
     <ul>
-        <li><b>MFE:</b> {{ "%.1f"|format(status['evaluations']['mfe']) }} kcal/mol</li>
+        <li><b>MFE:</b> {{ "%.1f"|format(status['evaluations']['optimized']['mfe']) }} kcal/mol</li>
         <li><b>Total loop length (≥{{ scoring['folding']['loop_threshold'] }}):</b>
-            {{ status['evaluations']['loops'] }}</li>
+            {{ status['evaluations']['optimized']['loops'] }}</li>
     </ul>
-    <iframe src="http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/vaxpress&sequence={{ seq.seq.replace('T', 'U') }}&structure={{ status['evaluations']['folding'] }}"
+    <iframe src="http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/vaxpress&sequence={{ seq.seq.replace('T', 'U') }}&structure={{ status['evaluations']['optimized']['folding'] }}"
      align="center" height="650px" width="100%" seamless='seamless' frameBorder="0" AllowFullScreen></iframe>
 {% endif %}
 
