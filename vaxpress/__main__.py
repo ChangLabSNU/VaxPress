@@ -23,7 +23,7 @@
 # THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-from . import scoring
+from . import scoring, __version__
 from .evolution_chamber import (
     CDSEvolutionChamber, IterationOptions, ExecutionOptions)
 from .presets import load_preset
@@ -31,6 +31,7 @@ from .reporting import ReportGenerator
 from Bio import SeqIO
 import argparse
 import shlex
+import time
 import sys
 import os
 
@@ -108,26 +109,29 @@ def parse_options(scoring_funcs, preset):
         description='VaxPress: A Codon Optimizer for mRNA Vaccine Design')
 
     grp = parser.add_argument_group('Input/Output Options')
-    grp.add_argument('-i', '--input', required=True,
+    grp.add_argument('-i', '--input', required=True, metavar='FILE',
                      help='input fasta file containing the CDS sequence')
     grp.add_argument('--protein', default=False, action='store_true',
                      help='input is a protein sequence')
-    grp.add_argument('-o', '--output', required=True, help='output directory')
+    grp.add_argument('-o', '--output', required=True, metavar='DIR',
+                     help='output directory')
     grp.add_argument('--overwrite', action='store_true',
                      help='overwrite output directory if it already exists')
     grp.add_argument('-q', '--quiet', default=False, action='store_true',
                      help='do not print progress')
-    grp.add_argument('--print-top', type=int, default=10,
+    grp.add_argument('--print-top', type=int, default=10, metavar='N',
                      help='print top and bottom N sequences (default: 10)')
+    grp.add_argument('--report-interval', type=int, default=10, metavar='MIN',
+                     help='report interval in minutes (default: 10)')
 
     grp = parser.add_argument_group('Execution Options')
     grp.add_argument('--preset', type=str, required=False, default=None,
-                     help='use preset values in parameters.json')
-    grp.add_argument('--addon', type=str, action='append',
+                     metavar='FILE', help='use preset values in parameters.json')
+    grp.add_argument('--addon', type=str, action='append', metavar='FILE',
                      help='load a third-party fitness function')
-    grp.add_argument('-p', '--processes', type=int, default=4,
+    grp.add_argument('-p', '--processes', type=int, default=4, metavar='N',
                      help='number of processes to use (default: 4)')
-    grp.add_argument('--seed', type=int, default=922,
+    grp.add_argument('--seed', type=int, default=922, metavar='NUMBER',
                      help='random seed (default: 922)')
     grp.add_argument('--species', default='human',
                      help='target species (default: human)')
@@ -137,18 +141,19 @@ def parse_options(scoring_funcs, preset):
                      default=False, help='randomize all codons at the beginning')
 
     grp = parser.add_argument_group('Optimization Options')
-    grp.add_argument('--iterations', type=int, default=10,
+    grp.add_argument('--iterations', type=int, default=10, metavar='N',
                      help='number of iterations (default: 10)')
-    grp.add_argument('--offsprings', type=int, default=20,
+    grp.add_argument('--offsprings', type=int, default=20, metavar='N',
                      help='number of offsprings per iteration (default: 20)')
-    grp.add_argument('--survivors', type=int, default=2,
+    grp.add_argument('--survivors', type=int, default=2, metavar='N',
                      help='number of survivors per iteration (default: 2)')
     grp.add_argument('--initial-mutation-rate', type=float, default=0.1,
+                     metavar='RATE',
                      help='initial mutation rate (default: 0.1)')
-    grp.add_argument('--winddown-trigger', type=int, default=15,
+    grp.add_argument('--winddown-trigger', type=int, default=15, metavar='N',
                      help='number of iterations with the same best score to '
                           'trigger mutation stabilization (default: 15)')
-    grp.add_argument('--winddown-rate', type=float, default=0.9,
+    grp.add_argument('--winddown-rate', type=float, default=0.9, metavar='RATE',
                      help='mutation rate multiplier when mutation stabilization '
                           'is triggered (default: 0.9)')
 
@@ -206,15 +211,38 @@ def run_vaxpress():
         addons=addon_paths,
     )
 
+    next_report = time.time()
+    # vaxpress assumes that the system clock does not go back or jump forward.
+
     try:
         evochamber = CDSEvolutionChamber(
             cdsseq, scoring_funcs, scoring_options,
             iteration_options, execution_options)
 
-        result = evochamber.run()
-        generate_report(result, args, scoring_options, iteration_options,
-                        execution_options, inputseq, scoring_funcs)
-        return result['error']
+        status = None
+        for status in evochamber.run():
+            do_report = len(status['time']) > 1 and (
+                (status['iter_no'] < 0) or (status['time'][-1] >= next_report))
+
+            if do_report:
+                next_report = status['time'][-1] + args.report_interval * 60
+                if status['iter_no'] >= 0:
+                    evochamber.printmsg('==> Generating intermediate report...')
+
+                evaldata = evochamber.save_results()
+                status.update({'evaluations': evaldata, 'version': __version__})
+
+                generate_report(status, args, scoring_options, iteration_options,
+                                execution_options, inputseq, scoring_funcs)
+
+        finished = (status is not None and status['iter_no'] < 0
+                    and status['error'] == 0)
+        if finished:
+            evochamber.printmsg(
+                'Finished successfully. You can view the results '
+                f'in {evochamber.outputdir.rstrip("/")}/report.html.')
+
+        return status['error'] if status is not None else 1
     except KeyboardInterrupt:
         return 1
     except FileExistsError:

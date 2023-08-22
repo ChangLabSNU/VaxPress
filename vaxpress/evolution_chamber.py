@@ -363,17 +363,9 @@ class CDSEvolutionChamber:
 
                 self.printmsg()
 
-            if error_code == 0:
-                evaldata = self.save_results()
-                self.printmsg('Finished successfully. You can view the results '
-                              f'in {self.outputdir.rstrip("/")}/report.html.')
+                yield {'iter_no': iter_no, 'error': error_code, 'time': timelogs}
 
-        return {
-            'error': error_code,
-            'time': timelogs,
-            'evaluations': evaldata,
-            'version': __version__,
-        }
+        yield {'iter_no': -1, 'error': error_code, 'time': timelogs}
 
     def print_eval_results(self, total_scores, metrics, ind_sorted, n_parents) -> None:
         if self.quiet:
