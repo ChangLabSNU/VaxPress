@@ -55,10 +55,10 @@ class ReportPlotsMixin:
     seq = args = result = scoreopts = iteropts = execopts = None
     checkpoints = None
 
-    default_panel_height = [0, 400, 600, 700] # by number of panels
+    default_panel_height = [0, 400, 600, 700, 800] # by number of panels
 
     def plot_fitness_curve(self, skip_initial=True):
-        fig = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.1)
+        fig = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0)
         view = slice(1, None) if skip_initial else slice(None)
 
         panel_fitness = go.Scatter(
@@ -91,6 +91,26 @@ class ReportPlotsMixin:
         fig.update_yaxes(title_text='Fitness score (centered)', row=2, col=1)
         fig.update_yaxes(title_text='Mutation rate', row=3, col=1)
         fig.update_xaxes(title_text='Iteration', row=3, col=1)
+
+        return pyo.plot(fig, output_type='div', include_plotlyjs=False)
+
+    def plot_metric_curves(self, skip_initial=True):
+        metrics = self.checkpoints.filter(regex='^metric:').columns
+
+        fig = make_subplots(rows=len(metrics), cols=1, shared_xaxes=True, vertical_spacing=0.02)
+        view = slice(1, None) if skip_initial else slice(None)
+
+        for i, name in enumerate(metrics):
+            nvalues = self.checkpoints[name].iloc[view]
+            trace = go.Scatter(
+                x=self.checkpoints.index[view], y=nvalues,
+                mode='lines', name=name[7:])
+            fig.add_trace(trace, row=i + 1, col=1)
+            fig.update_yaxes(title_text=name[7:], row=i + 1, col=1)
+
+        fig.update_layout(
+            title='Individual metric change over the iterations',
+            height=self.default_panel_height[-1])
 
         return pyo.plot(fig, output_type='div', include_plotlyjs=False)
 
