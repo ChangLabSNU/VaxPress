@@ -1,15 +1,44 @@
 <html>
 <head>
     <title>VaxPress Result: {{ seq.name }}</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <link rel="stylesheet" href="https://pages-themes.github.io/cayman/assets/css/style.css?v=29f8a343aad3bd9eea1173c01ab45a8a20acd7ff">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
+  <header class="page-header" role="banner">
+    <h1 class="project-name">VaxPress Codon Optimization Result</h1>
+    <h2 class="project-tagline">{{ seq.description }}</h2>
+
+    <a href="best-sequence.fasta" class="btn">Open Optimized Sequence</a>
+    <a href="checkpoints.tsv" class="btn">View Score Changes</a>
+    <a href="parameters.json" class="btn">Save Parameters for Later</a>
+  </header>
+
+  <main id="content" class="main-content" role="main">
+    <h1>Task information</h1>
 <ul>
-    <li>Sequence name: {{ seq.description }}</li>
-    <li>Started: {{ result['time'][0] | localtime }}</li>
-    <li>Finished: {{ result['time'][-1] | localtime }}</li>
-    <li>Command line: {{ exec.command_line }}</li>
+    <li><b>Sequence name:</b> {{ seq.description }}</li>
+    <li><b>Started:</b> {{ result['time'][0] | localtime }}</li>
+    <li><b>Finished:</b> {{ result['time'][-1] | localtime }}</li>
+    <li><b>Command line:</b> {{ exec.command_line }}</li>
 </ul>
+
+    <h1>Plots</h1>
 {{ plotters.fitness_curve() }}
+
+    <footer class="site-footer">
+      <span class="site-footer-credits">The sequence was optimized by
+          <a href="https://github.com/ChangLabSNU/VaxPress">VaxPress</a>
+          version {{ result['version'] }}.</span>
+      <span class="site-footer-owner">
+          <a href="https://github.com/ChangLabSNU/VaxPress">VaxPress</a> is
+          developed and maintained by <a href="https://qbio.io/">the Chang lab</a>
+          at <a href="https://biosci.snu.ac.kr/">Seoul National University</a>.</span>
+    </footer>
+  </main>
 </body>
 </html>

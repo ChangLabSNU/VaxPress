@@ -91,13 +91,14 @@ class ReportGenerator(ReportPlotsMixin):
         self.parameters = json.load(open(self.execopts.output + '/parameters.json'))
         self.checkpoints = pd.read_csv(self.execopts.output + '/checkpoints.tsv',
                                        sep='\t', index_col=0)
+        print("VERSION", self.result.keys())
 
         return {
             'args': self.args,
             'seq': self.seq,
             'scoring': self.scoreopts,
             'iter': self.iteropts,
-            'exec': self.scoreopts,
+            'exec': self.execopts,
             'params': self.parameters,
             'result': self.result,
             'checkpoints': self.checkpoints,

@@ -371,6 +371,7 @@ class CDSEvolutionChamber:
         return {
             'error': error_code,
             'time': timelogs,
+            'version': __version__,
         }
 
     def print_eval_results(self, total_scores, metrics, ind_sorted, n_parents) -> None:
