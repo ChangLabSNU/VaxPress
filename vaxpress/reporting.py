@@ -118,7 +118,7 @@ class ReportPlotsMixin:
         return pyo.plot(fig, output_type='div', include_plotlyjs=False)
 
     def plot_sequence_evaluation_curves(self):
-        plotdata = self.seqevals['local-metrics']
+        plotdata = self.result['evaluations']['local-metrics']
 
         fig = make_subplots(rows=len(plotdata), cols=1, shared_xaxes=True,
                             vertical_spacing=0.02)
@@ -163,8 +163,6 @@ class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
         self.parameters = json.load(open(self.execopts.output + '/parameters.json'))
         self.checkpoints = pd.read_csv(self.execopts.output + '/checkpoints.tsv',
                                        sep='\t', index_col=0)
-        self.seqevals = pickle.load(open(self.execopts.output +
-                                         '/best-sequence-evals.pickle', 'rb'))
         scoreopts_filtered = {
             name: {k: v for k, v in opts.items() if not k.startswith('_')}
             for name, opts in self.scoreopts.items()

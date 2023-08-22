@@ -28,7 +28,6 @@ import time
 import sys
 import os
 import shutil
-import pickle
 from textwrap import wrap
 from tqdm import tqdm
 from tabulate import tabulate
@@ -365,13 +364,14 @@ class CDSEvolutionChamber:
                 self.printmsg()
 
             if error_code == 0:
+                evaldata = self.save_results()
                 self.printmsg('Finished successfully. You can view the results '
                               f'in {self.outputdir.rstrip("/")}/report.html.')
-                self.save_results()
 
         return {
             'error': error_code,
             'time': timelogs,
+            'evaluations': evaldata,
             'version': __version__,
         }
 
@@ -434,7 +434,7 @@ class CDSEvolutionChamber:
         print(*[f[1] for f in fields], sep='\t', file=self.checkpoint_file)
         self.checkpoint_file.flush()
 
-    def save_results(self) -> None:
+    def save_results(self):
         # Save the best sequence
         bestseq = ''.join(self.population[0])
         fastapath = os.path.join(self.outputdir, 'best-sequence.fasta')
@@ -446,23 +446,26 @@ class CDSEvolutionChamber:
         paramspath = os.path.join(self.outputdir, 'parameters.json')
         self.save_optimization_parameters(paramspath)
 
-        # Save the evaluation results of the best sequence
-        evalpath = os.path.join(self.outputdir, 'best-sequence-evals.pickle')
-        self.save_sequence_evaluation_data(evalpath)
+        # Prepare the evaluation results of the best sequence
+        return self.prepare_sequence_evaluation_data()
 
     def save_optimization_parameters(self, path: str) -> None:
         optdata = dump_to_preset(self.scoreopts, self.iteropts, self.execopts)
         open(path, 'w').write(optdata)
 
-    def save_sequence_evaluation_data(self, path: str) -> None:
+    def prepare_sequence_evaluation_data(self):
         bestseq = ''.join(self.population[0])
 
         seqevals = {}
+        seqevals['local-metrics'] = localmet = {}
         for fun in self.scorefuncs_batch + self.scorefuncs_single:
             if hasattr(fun, 'evaluate_local'):
-                seqevals.update(fun.evaluate_local(bestseq))
+                localmet.update(fun.evaluate_local(bestseq))
 
-        pickle.dump({'local-metrics': seqevals}, open(path, 'wb'))
+            if hasattr(fun, 'annotate_sequence'):
+                seqevals.update(fun.annotate_sequence(bestseq))
+
+        return seqevals
 
 
 if __name__ == '__main__':
