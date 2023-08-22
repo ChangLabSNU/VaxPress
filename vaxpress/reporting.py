@@ -32,11 +32,22 @@ import os
 import json
 import time
 
-def filter_timestamp_local(timestamp):
-    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timestamp))
 
-def filter_format_bool(value, truevalue, falsevalue):
-    return [falsevalue, truevalue][int(value)]
+class TemplateFiltersMixin:
+
+    @staticmethod
+    def filter_localtime(timestamp):
+        return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timestamp))
+
+    @staticmethod
+    def filter_format_bool(value, truevalue, falsevalue):
+        return [falsevalue, truevalue][int(value)]
+
+    @classmethod
+    def set_filters(kls, env):
+        for name in dir(kls):
+            if name.startswith('filter_'):
+                env.filters[name[7:]] = getattr(kls, name)
 
 
 class ReportPlotsMixin:
@@ -70,7 +81,8 @@ class ReportPlotsMixin:
         return pyo.plot(fig, output_type='div', include_plotlyjs=False)
 
 
-class ReportGenerator(ReportPlotsMixin):
+
+class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
 
     def __init__(self, result, args, scoreopts, iteropts, execopts, seq,
                  scorefuncs):
@@ -121,8 +133,7 @@ class ReportGenerator(ReportPlotsMixin):
     def load_templates(self):
         template_loader = jinja2.PackageLoader('vaxpress', 'report_template')
         env = jinja2.Environment(loader=template_loader)
-        env.filters['localtime'] = filter_timestamp_local
-        env.filters['format_bool'] = filter_format_bool
+        self.set_filters(env)
 
         return {
             name: env.get_template(name)
