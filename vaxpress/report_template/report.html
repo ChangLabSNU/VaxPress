@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    {% if 'refresh' in status -%}
+    <meta http-equiv="refresh" content="{{ status['refresh'] }}">
+    {%- endif %}
     <link rel="stylesheet" href="https://pages-themes.github.io/cayman/assets/css/style.css?v=29f8a343aad3bd9eea1173c01ab45a8a20acd7ff">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>

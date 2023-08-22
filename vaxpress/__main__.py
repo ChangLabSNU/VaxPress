@@ -264,6 +264,7 @@ def generate_report(status, args, scoring_options, iteration_options,
         status['expected_end'] = expected_end
         status['progress_percentage'] = int(100 * status['iter_no'] /
                                             iteration_options.n_iterations)
+        status['refresh'] = args.report_interval * 60 + 5 # 5 seconds for safety
 
     ReportGenerator(status, args, scoring_options, iteration_options,
                     execution_options, inputseq, scoring_funcs).generate()
