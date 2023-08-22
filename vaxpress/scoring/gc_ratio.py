@@ -76,5 +76,5 @@ class GCRatioFitness(ScoringFunction):
         gc = gc_content_sliding_window(seq, self.window_size, self.stride)
         centers = (
             np.arange(0, len(seq) - self.window_size + 1, self.stride) +
-            self.stride / 2)
+            self.window_size / 2)
         return {'gc': (centers, gc)}
