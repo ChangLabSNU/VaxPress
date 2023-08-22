@@ -5,6 +5,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" href="https://pages-themes.github.io/cayman/assets/css/style.css?v=29f8a343aad3bd9eea1173c01ab45a8a20acd7ff">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
@@ -19,11 +20,29 @@
   </header>
 
   <main id="content" class="main-content" role="main">
+{% if 'expected_end' in status %}
+<blockquote>
+  <p><b><i>The optimization is in progress.</i></b></p>
+
+  <p>
+    <label for="file">Iteration {{ status['iter_no'] }} / {{ iter.n_iterations }}:</label>
+    <progress id="progress" value="{{ status['progress_percentage'] }}" max="100">
+      {{ status['progress_percentage'] }}%</progress>
+  </p>
+
+  <ul>
+    <li><b>Expected end:</b> {{ status['expected_end'] | localtime }}</li>
+    <li><b>Speed:</b> {{ "%.2f"|format(status['speed']) }} s/it</li>
+  </ul>
+</blockquote>
+
+{% endif %}
+
 <h1>Task information</h1>
 <ul>
     <li><b>Sequence name:</b> {{ seq.description }}</li>
-    <li><b>Started:</b> {{ result['time'][0] | localtime }}</li>
-    <li><b>Finished:</b> {{ result['time'][-1] | localtime }}</li>
+    <li><b>Started:</b> {{ status['time'][0] | localtime }}</li>
+    <li><b>Finished:</b> {{ status['time'][-1] | localtime }}</li>
     <li><b>Command line:</b> {{ exec.command_line }}</li>
 </ul>
 
@@ -100,18 +119,18 @@
 {% if 'folding' in scoring and not scoring['folding']['off'] %}
     <h2>Predicted secondary structure</h2>
     <ul>
-        <li><b>MFE:</b> {{ result['evaluations']['mfe'] }} kcal/mol</li>
+        <li><b>MFE:</b> {{ status['evaluations']['mfe'] }} kcal/mol</li>
         <li><b>Total loop length (≥{{ scoring['folding']['loop_threshold'] }}):</b>
-            {{ result['evaluations']['loops'] }}</li>
+            {{ status['evaluations']['loops'] }}</li>
     </ul>
-    <iframe src="http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/vaxpress&sequence={{ seq.seq }}&structure={{ result['evaluations']['folding'] }}"
+    <iframe src="http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/vaxpress&sequence={{ seq.seq }}&structure={{ status['evaluations']['folding'] }}"
      align="center" height="650px" width="100%" seamless='seamless' frameBorder="0" AllowFullScreen></iframe>
 {% endif %}
 
     <footer class="site-footer">
       <span class="site-footer-credits">The sequence was optimized by
           <a href="https://github.com/ChangLabSNU/VaxPress">VaxPress</a>
-          version {{ result['version'] }}.</span>
+          version {{ status['version'] }}.</span>
       <span class="site-footer-owner">
           <a href="https://github.com/ChangLabSNU/VaxPress">VaxPress</a> is
           developed and maintained by <a href="https://qbio.io/">the Chang lab</a>

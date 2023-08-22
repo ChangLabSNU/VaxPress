@@ -250,18 +250,22 @@ def run_vaxpress():
               'option to overwrite it.')
         return 1
 
-def generate_report(result, args, scoring_options, iteration_options,
+def generate_report(status, args, scoring_options, iteration_options,
                     execution_options, inputseq, scoring_funcs):
-    # Save arguments and parameters for debugging and inspection.
-    # May be removed in the future.
-    import pickle
-    pickle.dump({'args': args, 'scoring_options': scoring_options,
-                'iteration_options': iteration_options,
-                'execution_options': execution_options,
-                'seq': inputseq, 'result': result},
-                open(execution_options.output + '/report_data.pickle', 'wb'))
+    if status['iter_no'] > 0: # Intermediate report
+        total_elapsed = status['time'][-1] - status['time'][0]
+        time_per_iteration = total_elapsed / status['iter_no']
+        remaining = (iteration_options.n_iterations -
+                     status['iter_no']) * time_per_iteration
 
-    ReportGenerator(result, args, scoring_options, iteration_options,
+        expected_end = time.time() + remaining
+
+        status['speed'] = time_per_iteration
+        status['expected_end'] = expected_end
+        status['progress_percentage'] = int(100 * status['iter_no'] /
+                                            iteration_options.n_iterations)
+
+    ReportGenerator(status, args, scoring_options, iteration_options,
                     execution_options, inputseq, scoring_funcs).generate()
 
 if __name__ == '__main__':

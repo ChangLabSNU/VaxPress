@@ -53,7 +53,7 @@ class TemplateFiltersMixin:
 
 class ReportPlotsMixin:
 
-    seq = args = result = scoreopts = iteropts = execopts = None
+    seq = args = status = scoreopts = iteropts = execopts = None
     checkpoints = None
 
     default_panel_height = [0, 400, 600, 700, 800] # by number of panels
@@ -118,7 +118,7 @@ class ReportPlotsMixin:
         return pyo.plot(fig, output_type='div', include_plotlyjs=False)
 
     def plot_sequence_evaluation_curves(self):
-        plotdata = self.result['evaluations']['local-metrics']
+        plotdata = self.status['evaluations']['local-metrics']
 
         fig = make_subplots(rows=len(plotdata), cols=1, shared_xaxes=True,
                             vertical_spacing=0.02)
@@ -139,11 +139,11 @@ class ReportPlotsMixin:
 
 class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
 
-    def __init__(self, result, args, scoreopts, iteropts, execopts, seq,
+    def __init__(self, status, args, scoreopts, iteropts, execopts, seq,
                  scorefuncs):
         self.seq = seq
         self.args = args
-        self.result = result
+        self.status = status
         self.scoreopts = scoreopts
         self.iteropts = iteropts
         self.execopts = execopts
@@ -175,7 +175,7 @@ class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
             'iter': self.iteropts,
             'exec': self.execopts,
             'params': self.parameters,
-            'result': self.result,
+            'status': self.status,
             'checkpoints': self.checkpoints,
             'scorefuncs': self.scorefuncs,
             'plotters': {
@@ -194,20 +194,3 @@ class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
             name: env.get_template(name)
             for name in env.list_templates()
         }
-
-
-if __name__ == '__main__':
-    import sys
-    sys.path.append('.')
-
-    #rundir = 'testrun-dev'
-    rundir = 'tmpxx'
-    runinfo = pickle.load(open(rundir + '/report_data.pickle', 'rb'))
-    from vaxpress import scoring
-
-    sfuncs = scoring.discover_scoring_functions([])
-
-    ReportGenerator(runinfo['result'], runinfo['args'],
-                    runinfo['scoring_options'], runinfo['iteration_options'],
-                    runinfo['execution_options'], runinfo['seq'],
-                    sfuncs).generate()
