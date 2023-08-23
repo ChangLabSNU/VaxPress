@@ -57,8 +57,15 @@
     <td>{{ exec.seed }}</td>
     <th>Processes</th>
     <td>{{ exec.processes }}</td>
-    <th>Random initialization</th>
-    <td>{{ exec.random_initialization | format_bool('yes', 'no') }}</td>
+    <th>Initialization</th>
+    <td>{% if exec.lineardesign_lambda is not none -%}
+        LinearDesign (λ = {{ exec.lineardesign_lambda }})
+      {%- elif exec.random_initialization or exec.protein -%}
+        random
+      {%- else -%}
+        as-is
+      {%- endif -%}
+    </td>
   </tr>
   <tr>
     <th>Species</th>
