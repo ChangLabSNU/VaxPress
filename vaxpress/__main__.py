@@ -157,6 +157,16 @@ def parse_options(scoring_funcs, preset):
                      help='mutation rate multiplier when mutation stabilization '
                           'is triggered (default: 0.9)')
 
+    grp = parser.add_argument_group('LinearDesign Options')
+    grp.add_argument('--lineardesign', type=float, default=None,
+                     metavar='LAMBDA',
+                     help='call LinearDesign to initialize the optimization')
+    grp.add_argument('--lineardesign-dir', type=str, default=None, metavar='DIR',
+                     help='path to the top directory containing LinearDesign')
+    grp.add_argument('--lineardesign-omit-start', type=int, metavar='AA', default=5,
+                     help='number of amino acids to omit from the N-terminus '
+                          'when calling LinearDesign (default: 5)')
+
     argmaps = []
     for func in sorted(scoring_funcs.values(), key=lambda f: f.priority):
         argmap = func.add_argument_parser(parser)
@@ -209,6 +219,9 @@ def run_vaxpress():
         print_top_mutants=args.print_top,
         protein=args.protein,
         addons=addon_paths,
+        lineardesign_dir=args.lineardesign_dir,
+        lineardesign_lambda=args.lineardesign,
+        lineardesign_omit_start=args.lineardesign_omit_start,
     )
 
     next_report = 0 # Generate the first report immediately.

@@ -27,6 +27,7 @@ from Bio.Data import CodonTable
 from collections import namedtuple
 import pandas as pd
 import numpy as np
+from . import lineardesign
 
 STOP = '*'
 MutationChoice = namedtuple('MutationChoice', ['pos', 'altcodon'])
@@ -75,6 +76,10 @@ class MutantGenerator:
     def backtranslate(self, proteinseq: str) -> str:
         return ''.join(next(iter(self.aa2codons[aa])) for aa in proteinseq)
 
+    def translate(self, rnaseq: str) -> str:
+        return ''.join(self.codon2aa[rnaseq[i:i+3]]
+                       for i in range(0, len(rnaseq), 3))
+
     def setup_choices(self) -> None:
         choices = []
         initial_codons = []
@@ -93,6 +98,17 @@ class MutantGenerator:
         self.initial_codons[:] = [
             self.rand.choice([codon] + self.synonymous_codons[codon])
             for codon in self.initial_codons]
+
+    def lineardesign_initial_codons(self, lmd, lddir, omitstart) -> None:
+        prot = self.translate(self.cdsseq)
+
+        prot_om = prot[omitstart:]
+        res = lineardesign.run_lineardesign(lddir, prot_om, lmd)
+        assert len(res['seq']) == len(res['str']) == len(prot_om) * 3
+
+        rseq = res['seq']
+        self.initial_codons[omitstart:] = [
+            rseq[i*3:i*3+3] for i in range(len(prot_om))]
 
     def generate_mutant(self, codons: list[str],
                         mutation_rate: float) -> list[str]:

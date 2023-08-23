@@ -50,6 +50,7 @@ ExecutionOptions = namedtuple('ExecutionOptions', [
     'output', 'command_line', 'overwrite', 'seed', 'processes',
     'random_initialization', 'species', 'codon_table', 'protein', 'quiet',
     'seq_description', 'print_top_mutants', 'addons',
+    'lineardesign_dir', 'lineardesign_lambda', 'lineardesign_omit_start',
 ])
 
 class CDSEvolutionChamber:
@@ -125,7 +126,14 @@ class CDSEvolutionChamber:
         self.mutantgen = MutantGenerator(self.cdsseq, self.rand,
                                          self.execopts.codon_table,
                                          self.execopts.protein)
-        if self.execopts.random_initialization or self.execopts.protein:
+        if self.execopts.lineardesign_lambda is not None:
+            self.printmsg('==> Initializing sequence with LinearDesign...')
+
+            self.mutantgen.lineardesign_initial_codons(
+                self.execopts.lineardesign_lambda,
+                self.execopts.lineardesign_dir,
+                self.execopts.lineardesign_omit_start)
+        elif self.execopts.random_initialization or self.execopts.protein:
             self.mutantgen.randomize_initial_codons()
         self.population = [self.mutantgen.initial_codons]
 
