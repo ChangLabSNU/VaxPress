@@ -43,6 +43,13 @@ class TemplateFiltersMixin:
     def filter_format_bool(value, truevalue, falsevalue):
         return [falsevalue, truevalue][int(value)]
 
+    @staticmethod
+    def filter_format_number(value):
+        if isinstance(value, float):
+            return '{:,.3f}'.format(value).rstrip('0').replace('-', '−')
+        else:
+            return str(value).replace('-', '−')
+
     @classmethod
     def set_filters(kls, env):
         for name in dir(kls):

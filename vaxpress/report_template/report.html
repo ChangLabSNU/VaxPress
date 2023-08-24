@@ -43,11 +43,51 @@
 
 <h1>Task information</h1>
 <ul>
-    <li><b>Sequence name:</b> {{ seq.description }}</li>
-    <li><b>Started:</b> {{ status['time'][0] | localtime }}</li>
-    <li><b>Finished:</b> {{ status['time'][-1] | localtime }}</li>
-    <li><b>Command line:</b> {{ exec.command_line }}</li>
+  <li><b>Sequence name:</b> {{ seq.description }}</li>
+  <li><b>Started:</b> {{ status['time'][0] | localtime }}</li>
+  <li><b>Finished:</b> {{ status['time'][-1] | localtime }}</li>
+  <li><b>Command line:</b> {{ exec.command_line }}</li>
 </ul>
+
+
+{% if 'expected_end' in status -%}
+<h1>Current Best Sequence</h1>
+{%- else -%}
+<h1>Optimized Sequence</h1>
+{%- endif %}
+
+<h2>Sequence optimality metrics</h2>
+{% set metrics = checkpoints.filter(regex='^metric:').columns %}
+<table>
+  {% for names in metrics|batch(3, '') %}
+    <tr>
+    {%- for name in names %}
+      <th>{{ name.replace('metric:', '') }}</th>
+      <td>{{ checkpoints.iloc[-1][name] | format_number }}</td>
+    {%- endfor %}
+    </tr>
+  {% endfor %}
+</table>
+
+<h2>Local sequence metrics</h2>
+{{ plotters.sequence_evaluation_curves() }}
+
+{% if 'folding' in scoring and not scoring['folding']['off'] %}
+<h2>Predicted secondary structure</h2>
+<ul>
+  <li><b>MFE:</b> {{ status['evaluations']['optimized']['mfe'] | format_number }} kcal/mol</li>
+  <li><b>Total loop length (≥{{ scoring['folding']['loop_threshold'] }}):</b>
+    {{ status['evaluations']['optimized']['loops'] }}</li>
+</ul>
+<iframe src="http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/vaxpress&sequence={{ seq.seq.replace('T', 'U') }}&structure={{ status['evaluations']['optimized']['folding'] }}"
+ align="center" height="650px" width="100%" seamless='seamless' frameBorder="0" AllowFullScreen></iframe>
+{% endif %}
+
+
+<h1>Optimization Process</h1>
+{{ plotters.fitness_curve() }}
+{{ plotters.metric_curves() }}
+
 
 <h1>Parameters</h1>
 <h2>Program Options</h2>
@@ -114,28 +154,6 @@
   {% endfor %}
 </table>
 {% endfor %}
-
-
-  
-
-    <h1>Optimization Process</h1>
-{{ plotters.fitness_curve() }}
-{{ plotters.metric_curves() }}
-
-    <h1>Sequence Evaluations</h1>
-    <h2>Local sequence metrics</h2>
-{{ plotters.sequence_evaluation_curves() }}
-
-{% if 'folding' in scoring and not scoring['folding']['off'] %}
-    <h2>Predicted secondary structure</h2>
-    <ul>
-        <li><b>MFE:</b> {{ "%.1f"|format(status['evaluations']['optimized']['mfe']) }} kcal/mol</li>
-        <li><b>Total loop length (≥{{ scoring['folding']['loop_threshold'] }}):</b>
-            {{ status['evaluations']['optimized']['loops'] }}</li>
-    </ul>
-    <iframe src="http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/vaxpress&sequence={{ seq.seq.replace('T', 'U') }}&structure={{ status['evaluations']['optimized']['folding'] }}"
-     align="center" height="650px" width="100%" seamless='seamless' frameBorder="0" AllowFullScreen></iframe>
-{% endif %}
 
     <footer class="site-footer">
       <span class="site-footer-credits">The sequence was optimized by
