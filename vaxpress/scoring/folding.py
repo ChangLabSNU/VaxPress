@@ -26,6 +26,25 @@
 from . import ScoringFunction
 import re
 
+def find_stems(structure):
+    stack = []
+    stemgroups = []
+
+    for i, s in enumerate(structure):
+        if s == '(':
+            stack.append(i)
+        elif s == ')':
+            assert len(stack) >= 1
+            peer = stack.pop()
+            if (stemgroups and peer + 1 == stemgroups[-1][0][-1] and
+                    i - 1 == stemgroups[-1][1][-1]):
+                stemgroups[-1][0].append(peer)
+                stemgroups[-1][1].append(i)
+            else:
+                stemgroups.append(([peer], [i]))
+
+    return stemgroups
+
 class RNAFoldingFitness(ScoringFunction):
 
     single_submission = True
@@ -56,11 +75,18 @@ class RNAFoldingFitness(ScoringFunction):
                  '(default: 2)')),
         ('loop-weight', dict(metavar='WEIGHT',
             type=float, default=1.5, help='scoring weight for loops (default: 1.5)')),
+        ('longstem-threshold', dict(
+            type=int, default=27, metavar='N',
+            help='minimum length of stems to avoid (default: 27)')),
+        ('longstem-weight', dict(metavar='WEIGHT',
+            type=float, default=100.0,
+            help='penalty score for long stems (default: 100.0)')),
     ]
 
     def __init__(self, engine, mfe_weight,
                  start_structure_width, start_structure_weight,
                  loop_threshold, loop_weight,
+                 longstem_threshold, longstem_weight,
                  _length_cds, off=False):
         # `off' is handled by CDSEvolutionChamber.initialize_fitness_scorefuncs()
 
@@ -69,6 +95,8 @@ class RNAFoldingFitness(ScoringFunction):
         self.start_structure_weight = -start_structure_weight
         self.loop_threshold = loop_threshold
         self.loop_weight = -loop_weight / _length_cds
+        self.longstem_threshold = longstem_threshold
+        self.longstem_weight = -longstem_weight
         self.engine = engine
 
         if engine == 'vienna':
@@ -111,9 +139,20 @@ class RNAFoldingFitness(ScoringFunction):
             metrics['loop'] = loops
             scores['loop'] = loops * self.loop_weight
 
+        if self.longstem_weight != 0:
+            stems = find_stems(folding)
+            longstems = sum(len(loc5) >= self.longstem_threshold
+                            for loc5, _ in stems)
+            metrics['longstem'] = longstems
+            scores['longstem'] = longstems * self.longstem_weight
+
         return scores, metrics
 
     def annotate_sequence(self, seq):
         folding, mfe = self.fold(seq)
         loops = sum(map(len, self.find_loops.findall(folding)))
-        return {'folding': folding, 'mfe': mfe, 'loops': loops}
+        stems = find_stems(folding)
+        longstems = sum(len(loc5) >= self.longstem_threshold
+                        for loc5, _ in stems)
+        return {'folding': folding, 'mfe': mfe, 'loops': loops,
+                'longstems': longstems}
