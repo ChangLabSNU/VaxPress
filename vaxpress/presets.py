@@ -32,8 +32,8 @@ iteroptions_aliases = {
     'n_iterations': 'iterations',
     'n_offsprings': 'offsprings',
     'n_survivors': 'survivors',
+    'lineardesign_lambda': 'lineardesign',
 }
-iteroptions_aliases_rev = {v: k for k, v in iteroptions_aliases.items()}
 
 def dump_to_preset(scoreopts, iteropts, execopts):
     data = {}

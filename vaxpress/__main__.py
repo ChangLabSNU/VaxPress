@@ -90,8 +90,10 @@ def apply_preset(main_parser, preset):
             prefix = opt.help.split('(default:')[0]
             opt.help = f'{prefix}(default: {newval})'
 
+    ignore_options = ['addons', 'command_line']
+
     for argname, argval in preset.items():
-        if argname == 'addons':
+        if argname in ignore_options:
             continue
         elif argname != 'fitness':
             optname = '--' + argname.replace('_', '-')
