@@ -155,9 +155,10 @@ class RNAFoldingFitness(ScoringFunction):
         stems = find_stems(folding)
         longstems = sum(len(loc5) >= self.longstem_threshold
                         for loc5, _ in stems)
-        if self.find_loops is None:
-            return {'folding': folding, 'mfe': mfe, 'longstems': longstems}
-        else:
+        ret = {'folding': folding, 'mfe': mfe, 'longstems': longstems}
+
+        if self.find_loops is not None:
             loops = sum(map(len, self.find_loops.findall(folding)))
-        return {'folding': folding, 'mfe': mfe, 'loops': loops,
-                'longstems': longstems}
+            ret['loops'] = loops
+
+        return ret
