@@ -105,6 +105,22 @@ def apply_preset(main_parser, preset):
                 optname = f'--{grpname}-{optname}'.replace('_', '-')
                 fix_option(optmap[optname], optval)
 
+def check_lineardesign(args):
+    if args.lineardesign is None:
+        return
+
+    if args.lineardesign_dir is None:
+        print('Specify the path to the LinearDesign top directory with '
+              '--lineardesign-dir.', file=sys.stderr)
+        sys.exit(1)
+
+    executable = os.path.join(args.lineardesign_dir, 'bin', 'LinearDesign_2D')
+    if not os.path.exists(executable):
+        print('LinearDesign is not available. Please specify the correct path '
+              'to the LinearDesign top directory with --lineardesign-dir.',
+              file=sys.stderr)
+        sys.exit(1)
+
 def parse_options(scoring_funcs, preset):
     parser = argparse.ArgumentParser(
         prog='vaxpress',
@@ -183,6 +199,8 @@ def parse_options(scoring_funcs, preset):
         opts = scoring_opts[func.name] = {}
         for optname, varname in argmap:
             opts[varname] = getattr(args, optname[2:].replace('-', '_'))
+
+    check_lineardesign(args)
 
     return args, scoring_opts
 
