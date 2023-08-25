@@ -62,14 +62,27 @@
 <h2>Sequence optimality metrics</h2>
 {% set metrics = checkpoints.filter(regex='^metric:').columns %}
 <table>
-  {% for names in metrics|batch(3, '') %}
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Initial</th>
+      <th>Optimized</th>
+      <th>Metric</th>
+      <th>Initial</th>
+      <th>Optimized</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for names in metrics|batch(2, '') %}
     <tr>
     {%- for name in names %}
       <th>{{ name.replace('metric:', '') }}</th>
+      <td>{{ checkpoints.iloc[0][name] | format_number }}</td>
       <td>{{ checkpoints.iloc[-1][name] | format_number }}</td>
     {%- endfor %}
     </tr>
   {% endfor %}
+  </tbody>
 </table>
 
 <h2>Local sequence metrics</h2>
