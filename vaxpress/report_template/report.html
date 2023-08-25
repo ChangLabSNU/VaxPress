@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>VaxPress Result: {{ seq.name }}</title>
+    <title>VaxPress Result: {{ seq.name | e }}</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,7 +15,7 @@
 <body>
   <header class="page-header" role="banner">
     <h1 class="project-name">VaxPress Codon Optimization Result</h1>
-    <h2 class="project-tagline">{{ seq.description }}</h2>
+    <h2 class="project-tagline">{{ seq.description | e }}</h2>
 
     <a href="best-sequence.fasta" class="btn">Open Optimized Sequence</a>
     <a href="checkpoints.tsv" class="btn">View Score Changes</a>
@@ -46,7 +46,7 @@
 
 <h1>Task information</h1>
 <ul>
-  <li><b>Sequence name:</b> {{ seq.description }}</li>
+  <li><b>Sequence name:</b> {{ seq.description | e }}</li>
   <li><b>Started:</b> {{ status['time'][0] | localtime }}</li>
   <li><b>Finished:</b> {{ status['time'][-1] | localtime }}</li>
   <li><b>Command line:</b> {{ exec.command_line }}</li>
@@ -156,7 +156,7 @@
 <h2>Fitness Scoring</h2>
 {% for name, opts in scoring.items() %}
 {% set fun = scorefuncs[name] %}
-<h3>{{ fun.description }}</h3>
+<h3>{{ fun.description | e }}</h3>
 <table>
   {% set optlen = opts|length %}
   {% set bwidth = [optlen, 3]|min %}
