@@ -155,6 +155,7 @@ class CDSEvolutionChamber:
     def initialize_fitness_scorefuncs(self) -> None:
         self.scorefuncs_single = []
         self.scorefuncs_batch = []
+        self.penalty_metric_flags = {}
 
         additional_opts = {
             '_length_cds': self.length_cds,
@@ -178,6 +179,8 @@ class CDSEvolutionChamber:
                 self.scorefuncs_single.append(scorefunc_inst)
             else:
                 self.scorefuncs_batch.append(scorefunc_inst)
+
+            self.penalty_metric_flags.update(cls.penalty_metric_flags)
 
     def show_configuration(self) -> None:
         spec = self.mutantgen.compute_mutational_space()
@@ -387,14 +390,20 @@ class CDSEvolutionChamber:
         if len(rowstoshow) < 1:
             return
 
-        header = ['flags', 'score'] + sorted(metrics[rowstoshow[0]].keys())
+        metrics_to_show = sorted(k for k in metrics[rowstoshow[0]].keys()
+                                 if k not in self.penalty_metric_flags)
+        header = ['flags', 'score'] + metrics_to_show
         tabdata = []
         for rank, i in enumerate(rowstoshow):
-            is_parent = 'P' if i < n_parents else '-'
-            is_survivor = 'S' if rank < self.iteropts.n_survivors else '-'
+            flags = [
+                'P' if i < n_parents else '-', # is parent
+                'S ' if rank < self.iteropts.n_survivors else '- '] # is survivor
+            for name, flag in self.penalty_metric_flags.items():
+                flags.append(flag if metrics[i][name] != 0 in metrics[i] else '-')
+            
             f_total = total_scores[i]
             f_metrics = [metrics[i][name] for name in header[2:]]
-            tabdata.append([is_parent + is_survivor, f_total] +f_metrics)
+            tabdata.append([''.join(flags), f_total] +f_metrics)
 
         header_short = [h[:self.table_header_length] for h in header]
         self.printmsg(tabulate(tabdata, header_short, tablefmt='simple',

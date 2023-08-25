@@ -83,6 +83,8 @@ class RNAFoldingFitness(ScoringFunction):
             help='penalty score for long stems (default: 100.0)')),
     ]
 
+    penalty_metric_flags = {'start_str': 's', 'longstem': 'l'}
+
     def __init__(self, engine, mfe_weight,
                  start_structure_width, start_structure_weight,
                  loop_threshold, loop_weight,
