@@ -153,6 +153,23 @@ def check_argument_validity(args):
         else:
             args.conservative_start = f'{cons_iter}:{cons_width}'
 
+    if args.focused_mutagenesis is not None:
+        try:
+            if args.focused_mutagenesis.count(':') != 1:
+                raise ValueError
+
+            sw_wins, sw_full = args.focused_mutagenesis.split(':', 1)
+            sw_wins, sw_full = int(sw_wins), int(sw_full)
+
+            if sw_wins <= 0 or sw_full < 0:
+                raise ValueError
+        except ValueError:
+            print('Invalid format or value for --focused-mutagenesis.',
+                  file=sys.stderr)
+            sys.exit(1)
+        else:
+            args.focused_mutagenesis = f'{sw_wins}:{sw_full}'
+
 def parse_options(scoring_funcs, preset):
     parser = argparse.ArgumentParser(
         prog='vaxpress',
@@ -192,6 +209,12 @@ def parse_options(scoring_funcs, preset):
     grp.add_argument('--conservative-start', default=None, metavar='ITER[:WIDTH]',
                      help='conserve sequence for the first ITER iterations '
                           'except the first WIDTH amino acids')
+    grp.add_argument('--focused-mutagenesis', default=None,
+                     metavar='NWINDOWS:NFULL',
+                     help='focus mutation spots in regions divided into '
+                          'NWINDOWS in round-robin format. Additional NFULL '
+                          'rounds for unfocused mutations are appended at '
+                          'the end. See the manual for details.')
 
 
     grp = parser.add_argument_group('Optimization Options')
@@ -270,6 +293,7 @@ def run_vaxpress():
         processes=args.processes,
         random_initialization=args.random_initialization,
         conservative_start=args.conservative_start,
+        focused_mutagenesis=args.focused_mutagenesis,
         species=SPECIES_ALIASES.get(args.species, args.species),
         codon_table=args.codon_table,
         quiet=args.quiet,

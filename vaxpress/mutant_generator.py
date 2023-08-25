@@ -36,6 +36,7 @@ class MutantGenerator:
 
     cdsseq = None
     initial_codons = None
+    minimum_mutations_focused_windows = 2
 
     def __init__(self, cdsseq: str, random_state: np.random.RandomState,
                  codon_table: str='standard', is_protein: bool=False):
@@ -94,8 +95,25 @@ class MutantGenerator:
         self.choices = choices
         self.initial_codons = initial_codons
 
-    def prepare_alternative_choices(self, left, right) -> None:
+    def prepare_alternative_choices(self, left: int, right: int) -> list[tuple]:
         return [choice for choice in self.choices if left <= choice.pos < right]
+
+    def prepare_sliding_window_choices(self, num_regions: int,
+                                       num_full_rounds: int,
+                                       overlaps: int=2) -> list:
+        edges = np.linspace(0, len(self.choices), num_regions + 1 + overlaps,
+                            dtype=int)
+        fields = []
+        for left, right in zip(edges, edges[2:]):
+            if left >= right:
+                raise ValueError('Too many regions for the sequence length.')
+            fields.append((self.choices[left:right],
+                           self.minimum_mutations_focused_windows))
+
+        fields.extend([(None, 1)] * num_full_rounds)
+        self.rand.shuffle(fields)
+
+        return fields
 
     def randomize_initial_codons(self) -> None:
         self.initial_codons[:] = [
@@ -114,14 +132,15 @@ class MutantGenerator:
             rseq[i*3:i*3+3] for i in range(len(prot_om))]
 
     def generate_mutant(self, codons: list[str], mutation_rate: float,
-                        choices: list[MutationChoice]=None) -> list[str]:
+                        choices: list[MutationChoice]=None,
+                        min_mutations: int=1) -> list[str]:
         child = codons[:]
         if choices is None:
             choices = self.choices
 
         # Draw number of mutations from binomial distribution
         n_mutations = self.rand.binomial(len(choices), mutation_rate)
-        n_mutations = max(1, min(n_mutations, len(choices)))
+        n_mutations = max(min_mutations, min(n_mutations, len(choices)))
 
         # Select mutations
         mutation_choices = self.rand.choice(len(choices),

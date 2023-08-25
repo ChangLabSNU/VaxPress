@@ -49,6 +49,7 @@ IterationOptions = namedtuple('IterationOptions', [
 ExecutionOptions = namedtuple('ExecutionOptions', [
     'output', 'command_line', 'overwrite', 'seed', 'processes',
     'random_initialization', 'conservative_start',
+    'focused_mutagenesis',
     'species', 'codon_table', 'protein', 'quiet',
     'seq_description', 'print_top_mutants', 'addons',
     'lineardesign_dir', 'lineardesign_lambda', 'lineardesign_omit_start',
@@ -151,6 +152,14 @@ class CDSEvolutionChamber:
         else:
             self.alternative_mutation_fields = []
 
+        if self.execopts.focused_mutagenesis is not None:
+            fm_nwin, fm_full = self.execopts.focused_mutagenesis.split(':')
+            pools = self.mutantgen.prepare_sliding_window_choices(
+                int(fm_nwin), int(fm_full))
+            self.mutation_fields = cycle(pools)
+        else:
+            self.mutation_fields = cycle([(None, 1)])
+
         self.initialize_fitness_scorefuncs()
 
         self.initial_sequence_evaluation = (
@@ -206,16 +215,18 @@ class CDSEvolutionChamber:
     def mutate_population(self, iter_no0: int) -> None:
         nextgeneration = self.population[:]
 
-        choices = None
         for begin, end, altchoices in self.alternative_mutation_fields:
             if begin <= iter_no0 < end:
-                choices = altchoices
+                choices = cycle([(altchoices, 1)])
                 break
+        else:
+            choices = self.mutation_fields
 
         n_new_mutants = max(0, self.iteropts.n_offsprings - len(self.population))
-        for parent, _ in zip(cycle(self.population), range(n_new_mutants)):
+        for parent, (field, minmuts), _ in zip(
+                cycle(self.population), choices, range(n_new_mutants)):
             child = self.mutantgen.generate_mutant(parent, self.mutation_rate,
-                                                   choices)
+                                                   field, minmuts)
             nextgeneration.append(child)
 
         self.population[:] = nextgeneration
@@ -416,7 +427,7 @@ class CDSEvolutionChamber:
                 'S ' if rank < self.iteropts.n_survivors else '- '] # is survivor
             for name, flag in self.penalty_metric_flags.items():
                 flags.append(flag if metrics[i][name] != 0 in metrics[i] else '-')
-            
+
             f_total = total_scores[i]
             f_metrics = [metrics[i][name] for name in header[2:]]
             tabdata.append([''.join(flags), f_total] +f_metrics)
