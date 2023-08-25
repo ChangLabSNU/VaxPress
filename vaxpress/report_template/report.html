@@ -25,7 +25,9 @@
   <main id="content" class="main-content" role="main">
 {% if 'expected_end' in status %}
 <blockquote>
-  <p><b><i>The optimization is in progress.</i></b></p>
+  <p><b><i>The optimization is in progress.</i></b><br>
+    This report is updated every {{ args.report_interval }} minutes.
+  </p>
 
   <p>
     <label for="file">Iteration {{ status['iter_no'] }} / {{ iter.n_iterations }}:</label>
@@ -34,8 +36,8 @@
   </p>
 
   <ul>
-    <li><b>Expected end:</b> {{ status['expected_end'] | localtime }}</li>
-    <li><b>Speed:</b> {{ "%.2f"|format(status['speed']) }} s/it</li>
+    <li><b>Estimated completion time:</b> {{ status['expected_end'] | localtime }}</li>
+    <li><b>Current Speed:</b> {{ "%.2f"|format(status['speed']) }} s/it</li>
   </ul>
 </blockquote>
 
