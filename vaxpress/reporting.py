@@ -43,6 +43,17 @@ class TemplateFiltersMixin:
     def filter_format_bool(value, truevalue, falsevalue):
         return [falsevalue, truevalue][int(value)]
 
+    @staticmethod
+    def filter_format_number(value):
+        if isinstance(value, float):
+            return '{:,.3f}'.format(value).rstrip('0').replace('-', '−')
+        else:
+            return str(value).replace('-', '−')
+
+    @staticmethod
+    def filter_pluralize(value, singular, plural):
+        return [singular, plural][int(value != 1)]
+
     @classmethod
     def set_filters(kls, env):
         for name in dir(kls):
@@ -57,7 +68,7 @@ class ReportPlotsMixin:
 
     default_panel_height = [0, 400, 600, 700, 800] # by number of panels
 
-    def plot_fitness_curve(self, skip_initial=True):
+    def plot_fitness_curve(self, skip_initial=False):
         fig = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.05)
         view = slice(1, None) if skip_initial else slice(None)
 
@@ -95,7 +106,7 @@ class ReportPlotsMixin:
 
         return pyo.plot(fig, output_type='div', include_plotlyjs=False)
 
-    def plot_metric_curves(self, skip_initial=True):
+    def plot_metric_curves(self, skip_initial=False):
         metrics = self.checkpoints.filter(regex='^metric:').columns
 
         fig = make_subplots(rows=len(metrics), cols=1, shared_xaxes=True,

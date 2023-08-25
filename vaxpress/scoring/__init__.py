@@ -40,6 +40,9 @@ class ScoringFunction:
     # Command line arguments
     arguments = []
 
+    # One letter flags for showing penalty metrics in the console.
+    penalty_metric_flags = {}
+
     @classmethod
     def add_argument_parser(cls, parser):
         grp = parser.add_argument_group('Fitness - ' + cls.description)

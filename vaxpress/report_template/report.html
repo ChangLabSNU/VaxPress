@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>VaxPress Result: {{ seq.name }}</title>
+    <title>VaxPress Result: {{ seq.name | e }}</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,7 +15,7 @@
 <body>
   <header class="page-header" role="banner">
     <h1 class="project-name">VaxPress Codon Optimization Result</h1>
-    <h2 class="project-tagline">{{ seq.description }}</h2>
+    <h2 class="project-tagline">{{ seq.description | e }}</h2>
 
     <a href="best-sequence.fasta" class="btn">Open Optimized Sequence</a>
     <a href="checkpoints.tsv" class="btn">View Score Changes</a>
@@ -25,7 +25,10 @@
   <main id="content" class="main-content" role="main">
 {% if 'expected_end' in status %}
 <blockquote>
-  <p><b><i>The optimization is in progress.</i></b></p>
+  <p><b><i>The optimization is in progress.</i></b><br>
+    This report is updated every {{ args.report_interval }}
+    minute{{ args.report_interval | pluralize('', 's') }}.
+  </p>
 
   <p>
     <label for="file">Iteration {{ status['iter_no'] }} / {{ iter.n_iterations }}:</label>
@@ -34,8 +37,8 @@
   </p>
 
   <ul>
-    <li><b>Expected end:</b> {{ status['expected_end'] | localtime }}</li>
-    <li><b>Speed:</b> {{ "%.2f"|format(status['speed']) }} s/it</li>
+    <li><b>Estimated completion time:</b> {{ status['expected_end'] | localtime }}</li>
+    <li><b>Current Speed:</b> {{ "%.2f"|format(status['speed']) }} s/it</li>
   </ul>
 </blockquote>
 
@@ -43,11 +46,64 @@
 
 <h1>Task information</h1>
 <ul>
-    <li><b>Sequence name:</b> {{ seq.description }}</li>
-    <li><b>Started:</b> {{ status['time'][0] | localtime }}</li>
-    <li><b>Finished:</b> {{ status['time'][-1] | localtime }}</li>
-    <li><b>Command line:</b> {{ exec.command_line }}</li>
+  <li><b>Sequence name:</b> {{ seq.description | e }}</li>
+  <li><b>Started:</b> {{ status['time'][0] | localtime }}</li>
+  <li><b>Finished:</b> {{ status['time'][-1] | localtime }}</li>
+  <li><b>Command line:</b> {{ exec.command_line }}</li>
 </ul>
+
+
+{% if 'expected_end' in status -%}
+<h1>Current Best Sequence</h1>
+{%- else -%}
+<h1>Optimized Sequence</h1>
+{%- endif %}
+
+<h2>Sequence optimality metrics</h2>
+{% set metrics = checkpoints.filter(regex='^metric:').columns %}
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Initial</th>
+      <th>Optimized</th>
+      <th>Metric</th>
+      <th>Initial</th>
+      <th>Optimized</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for names in metrics|batch(2, '') %}
+    <tr>
+    {%- for name in names %}
+      <th>{{ name.replace('metric:', '') }}</th>
+      <td>{{ checkpoints.iloc[0][name] | format_number }}</td>
+      <td>{{ checkpoints.iloc[-1][name] | format_number }}</td>
+    {%- endfor %}
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h2>Local sequence metrics</h2>
+{{ plotters.sequence_evaluation_curves() }}
+
+{% if 'folding' in scoring and not scoring['folding']['off'] %}
+<h2>Predicted secondary structure</h2>
+<ul>
+  <li><b>MFE:</b> {{ status['evaluations']['optimized']['mfe'] | format_number }} kcal/mol</li>
+  <li><b>Total loop length (≥{{ scoring['folding']['loop_threshold'] }}):</b>
+    {{ status['evaluations']['optimized']['loops'] }}</li>
+</ul>
+<iframe src="https://pub-forna.qbio.io/?id=url/vaxpress{{ status['version'] }}&sequence={{ checkpoints.iloc[-1]['seq'] }}&structure={{ status['evaluations']['optimized']['folding'] }}"
+ align="center" height="650px" width="100%" seamless='seamless' frameBorder="0" AllowFullScreen></iframe>
+{% endif %}
+
+
+<h1>Optimization Process</h1>
+{{ plotters.fitness_curve() }}
+{{ plotters.metric_curves() }}
+
 
 <h1>Parameters</h1>
 <h2>Program Options</h2>
@@ -68,12 +124,17 @@
     </td>
   </tr>
   <tr>
+    <th>Conservative start</th>
+    <td>
+      {%- if exec.conservative_start is none -%}
+        off
+      {%- else -%}
+        {{ exec.conservative_start }}
+      {%- endif -%}
     <th>Species</th>
     <td>{{ exec.species }}</td>
     <th>Codon table</th>
     <td>{{ exec.codon_table }}</td>
-    <th></th>
-    <td></td>
   </tr>
 </table>
 
@@ -100,7 +161,7 @@
 <h2>Fitness Scoring</h2>
 {% for name, opts in scoring.items() %}
 {% set fun = scorefuncs[name] %}
-<h3>{{ fun.description }}</h3>
+<h3>{{ fun.description | e }}</h3>
 <table>
   {% set optlen = opts|length %}
   {% set bwidth = [optlen, 3]|min %}
@@ -114,28 +175,6 @@
   {% endfor %}
 </table>
 {% endfor %}
-
-
-  
-
-    <h1>Optimization Process</h1>
-{{ plotters.fitness_curve() }}
-{{ plotters.metric_curves() }}
-
-    <h1>Sequence Evaluations</h1>
-    <h2>Local sequence metrics</h2>
-{{ plotters.sequence_evaluation_curves() }}
-
-{% if 'folding' in scoring and not scoring['folding']['off'] %}
-    <h2>Predicted secondary structure</h2>
-    <ul>
-        <li><b>MFE:</b> {{ "%.1f"|format(status['evaluations']['optimized']['mfe']) }} kcal/mol</li>
-        <li><b>Total loop length (≥{{ scoring['folding']['loop_threshold'] }}):</b>
-            {{ status['evaluations']['optimized']['loops'] }}</li>
-    </ul>
-    <iframe src="http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/vaxpress&sequence={{ seq.seq.replace('T', 'U') }}&structure={{ status['evaluations']['optimized']['folding'] }}"
-     align="center" height="650px" width="100%" seamless='seamless' frameBorder="0" AllowFullScreen></iframe>
-{% endif %}
 
     <footer class="site-footer">
       <span class="site-footer-credits">The sequence was optimized by
