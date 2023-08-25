@@ -415,8 +415,11 @@ class CDSEvolutionChamber:
                 'P' if i < n_parents else '-', # is parent
                 'S ' if rank < self.iteropts.n_survivors else '- '] # is survivor
             for name, flag in self.penalty_metric_flags.items():
-                flags.append(flag if metrics[i][name] != 0 in metrics[i] else '-')
-            
+                if name in metrics[i]: 
+                    flags.append(flag if metrics[i][name] != 0 in metrics[i] else '-')
+                else:
+                    continue
+
             f_total = total_scores[i]
             f_metrics = [metrics[i][name] for name in header[2:]]
             tabdata.append([''.join(flags), f_total] +f_metrics)
