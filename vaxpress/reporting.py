@@ -50,6 +50,10 @@ class TemplateFiltersMixin:
         else:
             return str(value).replace('-', '−')
 
+    @staticmethod
+    def filter_pluralize(value, singular, plural):
+        return [singular, plural][int(value != 1)]
+
     @classmethod
     def set_filters(kls, env):
         for name in dir(kls):

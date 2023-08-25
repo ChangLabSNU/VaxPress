@@ -26,7 +26,8 @@
 {% if 'expected_end' in status %}
 <blockquote>
   <p><b><i>The optimization is in progress.</i></b><br>
-    This report is updated every {{ args.report_interval }} minutes.
+    This report is updated every {{ args.report_interval }}
+    minute{{ args.report_interval | pluralize('', 's') }}.
   </p>
 
   <p>
