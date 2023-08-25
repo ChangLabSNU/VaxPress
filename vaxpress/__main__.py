@@ -23,7 +23,7 @@
 # THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-from . import scoring, __version__
+from . import scoring, config, __version__
 from .evolution_chamber import (
     CDSEvolutionChamber, IterationOptions, ExecutionOptions)
 from .presets import load_preset
@@ -43,20 +43,20 @@ SPECIES_ALIASES = {
     'macaque': 'Macaca mulatta',
 }
 
-def preparse_preset_and_addons():
+def preparse_config_preset_addons():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('--preset', type=str, required=False, default=None)
     parser.add_argument('--addon', type=str, action='append')
     args, _ = parser.parse_known_args()
 
+    preset = config.load_config()
+
     if args.preset is not None:
         try:
-            preset = load_preset(open(args.preset).read())
+            preset.update(load_preset(open(args.preset).read()))
         except Exception:
             print(f'Failed to load the preset from {args.preset}.')
             sys.exit(1)
-    else:
-        preset = None
 
     addon_paths = []
     if preset is not None and 'addons' in preset:
@@ -190,7 +190,7 @@ def parse_options(scoring_funcs, preset):
         argmap = func.add_argument_parser(parser)
         argmaps.append((func, argmap))
 
-    if preset is not None:
+    if preset:
         apply_preset(parser, preset)
 
     args = parser.parse_args()
@@ -200,12 +200,13 @@ def parse_options(scoring_funcs, preset):
         for optname, varname in argmap:
             opts[varname] = getattr(args, optname[2:].replace('-', '_'))
 
+    config.initialize_config_if_needed(args)
     check_lineardesign(args)
 
     return args, scoring_opts
 
 def run_vaxpress():
-    preset, addon_paths = preparse_preset_and_addons()
+    preset, addon_paths = preparse_config_preset_addons()
     scoring_funcs = scoring.discover_scoring_functions(addon_paths)
 
     args, scoring_options = parse_options(scoring_funcs, preset)
