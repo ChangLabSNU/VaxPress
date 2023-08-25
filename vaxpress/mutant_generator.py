@@ -94,6 +94,9 @@ class MutantGenerator:
         self.choices = choices
         self.initial_codons = initial_codons
 
+    def prepare_alternative_choices(self, left, right) -> None:
+        return [choice for choice in self.choices if left <= choice.pos < right]
+
     def randomize_initial_codons(self) -> None:
         self.initial_codons[:] = [
             self.rand.choice([codon] + self.synonymous_codons[codon])
@@ -110,29 +113,26 @@ class MutantGenerator:
         self.initial_codons[omitstart:] = [
             rseq[i*3:i*3+3] for i in range(len(prot_om))]
 
-    def generate_mutant(self, codons: list[str],
-                        mutation_rate: float) -> list[str]:
+    def generate_mutant(self, codons: list[str], mutation_rate: float,
+                        choices: list[MutationChoice]=None) -> list[str]:
         child = codons[:]
+        if choices is None:
+            choices = self.choices
 
         # Draw number of mutations from binomial distribution
-        n_mutations = self.rand.binomial(len(self.choices), mutation_rate)
-        n_mutations = max(1, min(n_mutations, len(self.choices)))
+        n_mutations = self.rand.binomial(len(choices), mutation_rate)
+        n_mutations = max(1, min(n_mutations, len(choices)))
 
         # Select mutations
-        mutation_choices = self.rand.choice(len(self.choices),
+        mutation_choices = self.rand.choice(len(choices),
                                             n_mutations, replace=False)
 
         # Apply mutations
         for i in mutation_choices:
-            mut = self.choices[i]
+            mut = choices[i]
             child[mut.pos] = self.synonymous_codons[child[mut.pos]][mut.altcodon]
 
         return child
-
-    def generate_mutants(self, parent: list[str], n_progeny: int,
-                         mutation_rate: float) -> list[list[str]]:
-        return [self.generate_mutant(parent, mutation_rate)
-                for i in range(n_progeny)]
 
     def compute_expected_mutations(self, mutation_rate: float) -> float:
         return len(self.choices) * mutation_rate
@@ -146,11 +146,3 @@ class MutantGenerator:
             'singles': len(self.choices),
             'total': totalcases,
         }
-
-if __name__ == '__main__':
-    rand = np.random.RandomState(922)
-    mg = MutantGenerator('AUGCCUGAUUUUACGAUGUAA', rand, 'standard')
-    current = mg.initial_codons
-    print(current)
-    new = mg.generate_mutants(current, 10, 0.1)
-    print(new)

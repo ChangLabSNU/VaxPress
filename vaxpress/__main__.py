@@ -43,6 +43,8 @@ SPECIES_ALIASES = {
     'macaque': 'Macaca mulatta',
 }
 
+CONSERVATIVE_START_DEFAULT_WIDTH = 7
+
 def preparse_config_preset_addons():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('--preset', type=str, required=False, default=None)
@@ -121,6 +123,36 @@ def check_lineardesign(args):
               file=sys.stderr)
         sys.exit(1)
 
+def check_argument_validity(args):
+    check_lineardesign(args)
+
+    if args.conservative_start is not None:
+        try:
+            if args.conservative_start.count(':') == 1:
+                cons_iter, cons_width = args.conservative_start.split(':', 1)
+                cons_iter, cons_width = int(cons_iter), int(cons_width)
+            elif ':' in args.conservative_start:
+                raise ValueError
+            else:
+                cons_iter = int(args.conservative_start)
+                cons_width = CONSERVATIVE_START_DEFAULT_WIDTH
+
+            if not (1 <= cons_iter <= args.iterations):
+                print('Invalid value for --conservative-start. ITER must be '
+                      'between 1 and the maximum iteration number.',
+                      file=sys.stderr)
+                sys.exit(1)
+            if cons_width <= 0:
+                print('Invalid value for --conservative-start. WIDTH must be '
+                      'a positive integer.', file=sys.stderr)
+                sys.exit(1)
+        except ValueError:
+            print('Invalid format for --conservative-start. Use '
+                'ITER[:WIDTH] format.', file=sys.stderr)
+            sys.exit(1)
+        else:
+            args.conservative_start = f'{cons_iter}:{cons_width}'
+
 def parse_options(scoring_funcs, preset):
     parser = argparse.ArgumentParser(
         prog='vaxpress',
@@ -157,6 +189,10 @@ def parse_options(scoring_funcs, preset):
                      help='codon table (default: standard)')
     grp.add_argument('--random-initialization', action='store_true',
                      default=False, help='randomize all codons at the beginning')
+    grp.add_argument('--conservative-start', default=None, metavar='ITER[:WIDTH]',
+                     help='conserve sequence for the first ITER iterations '
+                          'except the first WIDTH amino acids')
+
 
     grp = parser.add_argument_group('Optimization Options')
     grp.add_argument('--iterations', type=int, default=10, metavar='N',
@@ -201,7 +237,7 @@ def parse_options(scoring_funcs, preset):
             opts[varname] = getattr(args, optname[2:].replace('-', '_'))
 
     config.initialize_config_if_needed(args)
-    check_lineardesign(args)
+    check_argument_validity(args)
 
     return args, scoring_opts
 
@@ -233,6 +269,7 @@ def run_vaxpress():
         seed=args.seed,
         processes=args.processes,
         random_initialization=args.random_initialization,
+        conservative_start=args.conservative_start,
         species=SPECIES_ALIASES.get(args.species, args.species),
         codon_table=args.codon_table,
         quiet=args.quiet,

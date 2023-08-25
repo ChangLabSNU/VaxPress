@@ -48,7 +48,8 @@ IterationOptions = namedtuple('IterationOptions', [
 
 ExecutionOptions = namedtuple('ExecutionOptions', [
     'output', 'command_line', 'overwrite', 'seed', 'processes',
-    'random_initialization', 'species', 'codon_table', 'protein', 'quiet',
+    'random_initialization', 'conservative_start',
+    'species', 'codon_table', 'protein', 'quiet',
     'seq_description', 'print_top_mutants', 'addons',
     'lineardesign_dir', 'lineardesign_lambda', 'lineardesign_omit_start',
 ])
@@ -142,6 +143,14 @@ class CDSEvolutionChamber:
         self.length_aa = len(self.population[0])
         self.length_cds = len(self.cdsseq)
 
+        if self.execopts.conservative_start is not None:
+            cstart_iter, cstart_width = self.execopts.conservative_start.split(':')
+            self.alternative_mutation_fields = [
+                (0, int(cstart_iter),
+                 self.mutantgen.prepare_alternative_choices(0, int(cstart_width)))]
+        else:
+            self.alternative_mutation_fields = []
+
         self.initialize_fitness_scorefuncs()
 
         self.initial_sequence_evaluation = (
@@ -194,12 +203,19 @@ class CDSEvolutionChamber:
         self.printmsg(f' * Command line: {" ".join(sys.argv)}')
         self.printmsg()
 
-    def mutate_population(self) -> None:
+    def mutate_population(self, iter_no0: int) -> None:
         nextgeneration = self.population[:]
+
+        choices = None
+        for begin, end, altchoices in self.alternative_mutation_fields:
+            if begin <= iter_no0 < end:
+                choices = altchoices
+                break
 
         n_new_mutants = max(0, self.iteropts.n_offsprings - len(self.population))
         for parent, _ in zip(cycle(self.population), range(n_new_mutants)):
-            child = self.mutantgen.generate_mutant(parent, self.mutation_rate)
+            child = self.mutantgen.generate_mutant(parent, self.mutation_rate,
+                                                   choices)
             nextgeneration.append(child)
 
         self.population[:] = nextgeneration
@@ -338,7 +354,7 @@ class CDSEvolutionChamber:
                               f'  mut_rate: {self.mutation_rate:.5f} --',
                               f'E(muts): {self.expected_total_mutations:.1f}')
 
-                self.mutate_population()
+                self.mutate_population(i)
                 total_scores, scores, metrics = self.evaluate_population(executor)
                 if total_scores is None:
                     # Termination due to errors from one or more scoring functions

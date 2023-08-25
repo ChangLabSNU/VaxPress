@@ -124,12 +124,17 @@
     </td>
   </tr>
   <tr>
+    <th>Conservative start</th>
+    <td>
+      {%- if exec.conservative_start is none -%}
+        off
+      {%- else -%}
+        {{ exec.conservative_start }}
+      {%- endif -%}
     <th>Species</th>
     <td>{{ exec.species }}</td>
     <th>Codon table</th>
     <td>{{ exec.codon_table }}</td>
-    <th></th>
-    <td></td>
   </tr>
 </table>
 
