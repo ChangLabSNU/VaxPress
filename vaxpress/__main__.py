@@ -171,8 +171,8 @@ def parse_options(scoring_funcs, preset):
                      help='do not print progress')
     grp.add_argument('--print-top', type=int, default=10, metavar='N',
                      help='print top and bottom N sequences (default: 10)')
-    grp.add_argument('--report-interval', type=int, default=10, metavar='MIN',
-                     help='report interval in minutes (default: 10)')
+    grp.add_argument('--report-interval', type=int, default=5, metavar='MIN',
+                     help='report interval in minutes (default: 5)')
 
     grp = parser.add_argument_group('Execution Options')
     grp.add_argument('--preset', type=str, required=False, default=None,
