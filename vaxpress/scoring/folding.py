@@ -150,9 +150,12 @@ class RNAFoldingFitness(ScoringFunction):
 
     def annotate_sequence(self, seq):
         folding, mfe = self.fold(seq)
-        loops = sum(map(len, self.find_loops.findall(folding)))
         stems = find_stems(folding)
         longstems = sum(len(loc5) >= self.longstem_threshold
                         for loc5, _ in stems)
+        if self.find_loops is None:
+            return {'folding': folding, 'mfe': mfe, 'longstems': longstems}
+        else:
+            loops = sum(map(len, self.find_loops.findall(folding)))
         return {'folding': folding, 'mfe': mfe, 'loops': loops,
                 'longstems': longstems}
