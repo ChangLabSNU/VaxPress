@@ -83,7 +83,7 @@ class RNAFoldingFitness(ScoringFunction):
             help='penalty score for long stems (default: 100.0)')),
     ]
 
-    penalty_metric_flags = {'start_str': 's', 'longstem': 'l'}
+    penalty_metric_flags = {}
 
     def __init__(self, engine, mfe_weight,
                  start_structure_width, start_structure_weight,
@@ -119,6 +119,12 @@ class RNAFoldingFitness(ScoringFunction):
         else:
             self.find_loops = None
 
+        if longstem_weight != 0:
+            self.penalty_metric_flags['longstem'] = 'l'
+
+        if start_structure_weight != 0:
+            self.penalty_metric_flags['start_str'] = 's'
+
     def score(self, seq):
         folding, mfe = self.fold(seq)
 
@@ -152,9 +158,16 @@ class RNAFoldingFitness(ScoringFunction):
 
     def annotate_sequence(self, seq):
         folding, mfe = self.fold(seq)
-        loops = sum(map(len, self.find_loops.findall(folding)))
-        stems = find_stems(folding)
-        longstems = sum(len(loc5) >= self.longstem_threshold
-                        for loc5, _ in stems)
-        return {'folding': folding, 'mfe': mfe, 'loops': loops,
-                'longstems': longstems}
+
+        anno = {'folding': folding, 'mfe': mfe}
+        if self.find_loops is not None:
+            loops = sum(map(len, self.find_loops.findall(folding)))
+            anno['loops'] = loops
+
+        if self.longstem_weight != 0:
+            stems = find_stems(folding)
+            longstems = sum(len(loc5) >= self.longstem_threshold
+                            for loc5, _ in stems)
+            anno['longstems'] = longstems
+
+        return anno
