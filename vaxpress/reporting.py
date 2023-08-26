@@ -130,6 +130,8 @@ class ReportPlotsMixin:
     def plot_sequence_evaluation_curves(self):
         plotdata_initial = self.status['evaluations']['initial']['local-metrics']
         plotdata_optimized = self.status['evaluations']['optimized']['local-metrics']
+        if not plotdata_initial or not plotdata_optimized:
+            return ''
 
         fig = make_subplots(rows=len(plotdata_initial), cols=1, shared_xaxes=True,
                             vertical_spacing=0.02)
