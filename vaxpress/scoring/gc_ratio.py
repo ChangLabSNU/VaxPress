@@ -36,7 +36,7 @@ def gc_content_sliding_window(seq, winsize, stride):
 
 def compute_gc_penalty(seq, winsize, stride):
     gc = gc_content_sliding_window(seq, winsize, stride)
-    return -(10**np.log2(np.abs(gc - 0.5) + 0.05)).sum()
+    return -(10 ** np.log2(np.abs(gc - 0.5) + 0.1)).sum()
 
 class GCRatioFitness(ScoringFunction):
 
