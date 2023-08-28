@@ -23,7 +23,9 @@
 # THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-class ScoringFunction:
+import abc
+
+class ScoringFunction(abc.ABC):
 
     name = 'noname'
     description = 'no description'
@@ -59,6 +61,7 @@ class ScoringFunction:
         except KeyboardInterrupt:
             return None
 
+    @abc.abstractmethod
     def score(self, seqs):
         raise NotImplementedError
 
