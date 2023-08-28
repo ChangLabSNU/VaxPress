@@ -339,6 +339,17 @@ class CDSEvolutionChamber:
         error_code = 0
 
         with futures.ProcessPoolExecutor(max_workers=self.n_processes) as executor:
+
+            if self.iteropts.n_iterations == 0:
+                # Only the initial sequence is evaluated
+                self.flatten_seqs = [''.join(self.population[0])]
+                total_scores, scores, metrics = self.evaluate_population(executor)
+                if total_scores is None:
+                    error_code = 1
+                else:
+                    self.write_checkpoint(0, [0], total_scores, scores, metrics)
+                    timelogs.append(time.time())
+
             for i in range(self.iteropts.n_iterations):
                 iter_no = i + 1
                 n_parents = len(self.population)

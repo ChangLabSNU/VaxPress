@@ -100,6 +100,7 @@
 {% endif %}
 
 
+{% if iter['n_iterations'] > 0 %}
 <h1>Optimization Process</h1>
 {{ plotters.fitness_curve() }}
 {{ plotters.metric_curves() }}
@@ -137,6 +138,7 @@
     <td>{{ exec.codon_table }}</td>
   </tr>
 </table>
+{% endif %}
 
 <h2>Optimization</h2>
 <table>
