@@ -44,6 +44,7 @@ SPECIES_ALIASES = {
 }
 
 CONSERVATIVE_START_DEFAULT_WIDTH = 7
+BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH = 15
 
 def preparse_config_preset_addons():
     parser = argparse.ArgumentParser(add_help=False)
@@ -153,6 +154,32 @@ def check_argument_validity(args):
         else:
             args.conservative_start = f'{cons_iter}:{cons_width}'
 
+    if args.boost_loop_mutations is not None:
+        try:
+            if args.boost_loop_mutations.count(':') == 1:
+                boost_weight, boost_start = args.boost_loop_mutations.split(':', 1)
+                boost_weight, boost_start = float(boost_weight), int(boost_start)
+            elif ':' in args.boost_loop_mutations:
+                raise ValueError
+            else:
+                boost_weight = float(args.boost_loop_mutations)
+                boost_start = BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH
+
+            if boost_weight < 0:
+                print('Invalid value for --boost-loop-mutations. WEIGHT must be '
+                      'a non-negative number.', file=sys.stderr)
+                sys.exit(1)
+            if boost_start < 0:
+                print('Invalid value for --boost-loop-mutations. START must be '
+                      'a non-negative integer.', file=sys.stderr)
+                sys.exit(1)
+        except ValueError:
+            print('Invalid format for --boost-loop-mutations. Use '
+                'WEIGHT[:START] format.', file=sys.stderr)
+            sys.exit(1)
+        else:
+            args.boost_loop_mutations = f'{boost_weight}:{boost_start}'
+
 def parse_options(scoring_funcs, preset):
     parser = argparse.ArgumentParser(
         prog='vaxpress',
@@ -173,6 +200,7 @@ def parse_options(scoring_funcs, preset):
                      help='print top and bottom N sequences (default: 10)')
     grp.add_argument('--report-interval', type=int, default=5, metavar='MIN',
                      help='report interval in minutes (default: 5)')
+    grp.add_argument('--version', action='version', version=__version__)
 
     grp = parser.add_argument_group('Execution Options')
     grp.add_argument('--preset', type=str, required=False, default=None,
@@ -183,18 +211,17 @@ def parse_options(scoring_funcs, preset):
                      help='number of processes to use (default: 4)')
     grp.add_argument('--seed', type=int, default=922, metavar='NUMBER',
                      help='random seed (default: 922)')
-    grp.add_argument('--species', default='human', metavar='NAME',
-                     help='target species (default: human)')
-    grp.add_argument('--codon-table', default='standard', metavar='NAME',
-                     help='codon table (default: standard)')
+    grp.add_argument('--folding-engine', default='vienna', metavar='NAME',
+                     choices=['vienna', 'linearfold'],
+                     help='RNA folding engine: vienna or linearfold '
+                          '(default: vienna)')
+
+    grp = parser.add_argument_group('Optimization Options')
     grp.add_argument('--random-initialization', action='store_true',
                      default=False, help='randomize all codons at the beginning')
     grp.add_argument('--conservative-start', default=None, metavar='ITER[:WIDTH]',
                      help='conserve sequence for the first ITER iterations '
                           'except the first WIDTH amino acids')
-
-
-    grp = parser.add_argument_group('Optimization Options')
     grp.add_argument('--iterations', type=int, default=10, metavar='N',
                      help='number of iterations (default: 10)')
     grp.add_argument('--offsprings', type=int, default=20, metavar='N',
@@ -204,12 +231,22 @@ def parse_options(scoring_funcs, preset):
     grp.add_argument('--initial-mutation-rate', type=float, default=0.1,
                      metavar='RATE',
                      help='initial mutation rate (default: 0.1)')
+    grp.add_argument('--boost-loop-mutations',
+                     default=f'5:{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH}',
+                     metavar='WEIGHT[:START]', type=str,
+                     help='boost mutations in loops after position START '
+                          'by WEIGHT (default: 5:'
+                          f'{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH})')
     grp.add_argument('--winddown-trigger', type=int, default=15, metavar='N',
                      help='number of iterations with the same best score to '
                           'trigger mutation stabilization (default: 15)')
     grp.add_argument('--winddown-rate', type=float, default=0.9, metavar='RATE',
                      help='mutation rate multiplier when mutation stabilization '
                           'is triggered (default: 0.9)')
+    grp.add_argument('--species', default='human', metavar='NAME',
+                     help='target species (default: human)')
+    grp.add_argument('--codon-table', default='standard', metavar='NAME',
+                     help='codon table (default: standard)')
 
     grp = parser.add_argument_group('LinearDesign Options')
     grp.add_argument('--lineardesign', type=float, default=None,
@@ -270,6 +307,7 @@ def run_vaxpress():
         processes=args.processes,
         random_initialization=args.random_initialization,
         conservative_start=args.conservative_start,
+        boost_loop_mutations=args.boost_loop_mutations,
         species=SPECIES_ALIASES.get(args.species, args.species),
         codon_table=args.codon_table,
         quiet=args.quiet,
@@ -280,6 +318,7 @@ def run_vaxpress():
         lineardesign_dir=args.lineardesign_dir,
         lineardesign_lambda=args.lineardesign,
         lineardesign_omit_start=args.lineardesign_omit_start,
+        folding_engine=args.folding_engine,
     )
 
     next_report = 0 # Generate the first report immediately.

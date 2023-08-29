@@ -29,13 +29,14 @@ import sys
 import os
 import shutil
 from textwrap import wrap
-from tqdm import tqdm
 from tabulate import tabulate
 from collections import namedtuple
 from concurrent import futures
 from itertools import cycle
 from .mutant_generator import MutantGenerator, STOP
+from .sequence_evaluator import SequenceEvaluator
 from .presets import dump_to_preset
+from .console import hbar, hbar_double
 from . import __version__
 
 PROTEIN_ALPHABETS = 'ACDEFGHIKLMNPQRSTVWY' + STOP
@@ -48,15 +49,15 @@ IterationOptions = namedtuple('IterationOptions', [
 
 ExecutionOptions = namedtuple('ExecutionOptions', [
     'output', 'command_line', 'overwrite', 'seed', 'processes',
-    'random_initialization', 'conservative_start',
+    'random_initialization', 'conservative_start', 'boost_loop_mutations',
     'species', 'codon_table', 'protein', 'quiet',
     'seq_description', 'print_top_mutants', 'addons',
     'lineardesign_dir', 'lineardesign_lambda', 'lineardesign_omit_start',
+    'folding_engine',
 ])
 
 class CDSEvolutionChamber:
 
-    hbar = '-' * 80
     stop_threshold = 0.2
     table_header_length = 6
 
@@ -126,7 +127,8 @@ class CDSEvolutionChamber:
         self.rand = np.random.RandomState(self.execopts.seed)
         self.mutantgen = MutantGenerator(self.cdsseq, self.rand,
                                          self.execopts.codon_table,
-                                         self.execopts.protein)
+                                         self.execopts.protein,
+                                         self.execopts.boost_loop_mutations)
         if self.execopts.lineardesign_lambda is not None:
             self.printmsg('==> Initializing sequence with LinearDesign...')
 
@@ -137,6 +139,7 @@ class CDSEvolutionChamber:
         elif self.execopts.random_initialization or self.execopts.protein:
             self.mutantgen.randomize_initial_codons()
         self.population = [self.mutantgen.initial_codons]
+        self.population_foldings = [None]
 
         self.mutation_rate = self.iteropts.initial_mutation_rate
 
@@ -151,51 +154,24 @@ class CDSEvolutionChamber:
         else:
             self.alternative_mutation_fields = []
 
-        self.initialize_fitness_scorefuncs()
+        self.seqeval = SequenceEvaluator(self.scoringfuncs, self.scoreopts,
+                                    self.execopts, self.mutantgen, self.species,
+                                    self.length_cds, self.quiet, self.printmsg)
+        self.penalty_metric_flags = self.seqeval.penalty_metric_flags # XXX
 
         self.initial_sequence_evaluation = (
-            self.prepare_sequence_evaluation_data(''.join(self.population[0])))
+            self.seqeval.prepare_evaluation_data(''.join(self.population[0])))
 
         self.best_scores = []
         self.elapsed_times = []
         self.checkpoint_file = open(self.checkpoint_path, 'w')
         self.checkpoint_header_written = False
 
-    def initialize_fitness_scorefuncs(self) -> None:
-        self.scorefuncs_single = []
-        self.scorefuncs_batch = []
-        self.penalty_metric_flags = {}
-
-        additional_opts = {
-            '_length_cds': self.length_cds,
-        }
-
-        for funcname, cls in self.scoringfuncs.items():
-            opts = self.scoreopts[funcname]
-            if (('weight' in opts and opts['weight'] == 0) or
-                ('off' in opts and opts['off'])):
-                continue
-            opts.update(additional_opts)
-            for reqattr in cls.requires:
-                opts['_' + reqattr] = getattr(self, reqattr)
-
-            try:
-                scorefunc_inst = cls(**opts)
-            except EOFError:
-                continue
-
-            if cls.single_submission:
-                self.scorefuncs_single.append(scorefunc_inst)
-            else:
-                self.scorefuncs_batch.append(scorefunc_inst)
-
-            self.penalty_metric_flags.update(cls.penalty_metric_flags)
-
     def show_configuration(self) -> None:
         spec = self.mutantgen.compute_mutational_space()
 
         self.printmsg(f'VaxPress Codon Optimizer for mRNA Vaccines {__version__}')
-        self.printmsg('=' * len(self.hbar))
+        self.printmsg(hbar_double)
         self.printmsg(f' * Name: {self.seq_description}')
         self.printmsg(f' * CDS length: {self.length_cds} nt')
         self.printmsg(f' * Possible single mutations: {spec["singles"]}')
@@ -212,122 +188,18 @@ class CDSEvolutionChamber:
                 choices = altchoices
                 break
 
+        assert len(self.population) == len(self.population_foldings)
+
         n_new_mutants = max(0, self.iteropts.n_offsprings - len(self.population))
-        for parent, _ in zip(cycle(self.population), range(n_new_mutants)):
+        for parent, parent_folding, _ in zip(cycle(self.population),
+                                             cycle(self.population_foldings),
+                                             range(n_new_mutants)):
             child = self.mutantgen.generate_mutant(parent, self.mutation_rate,
-                                                   choices)
+                                                   choices, parent_folding)
             nextgeneration.append(child)
 
         self.population[:] = nextgeneration
         self.flatten_seqs = [''.join(p) for p in self.population]
-
-    def evaluate_population(self, executor) -> None:
-        scores = [{} for i in range(len(self.population))]
-        metrics = [{} for i in range(len(self.population))]
-        errors = []
-
-        def collect_scores_batch(future):
-            nonlocal pbar
-
-            try:
-                ret = future.result()
-                if ret is None:
-                    errors.append('KeyboardInterrupt')
-                    if pbar is not None:
-                        pbar.close()
-                    pbar = None
-                    return
-                scoreupdates, metricupdates = ret
-            except Exception as exc:
-                return handle_exception(exc)
-
-            if pbar is not None:
-                pbar.update()
-
-            # Update scores
-            for k, updates in scoreupdates.items():
-                assert len(updates) == len(scores)
-                for s, u in zip(scores, updates):
-                    s[k] = u
-
-            # Update metrics
-            for k, updates in metricupdates.items():
-                assert len(updates) == len(metrics)
-                for s, u in zip(metrics, updates):
-                    s[k] = u
-
-        def collect_scores_single(future):
-            nonlocal pbar
-
-            try:
-                ret = future.result()
-                if ret is None:
-                    errors.append('KeyboardInterrupt')
-                    if pbar is not None:
-                        pbar.close()
-                    pbar = None
-                    return
-                scoreupdates, metricupdates = ret
-            except Exception as exc:
-                return handle_exception(exc)
-            i = future._seqidx
-            scores[i].update(scoreupdates)
-            metrics[i].update(metricupdates)
-
-            if pbar is not None:
-                pbar.update()
-
-        def handle_exception(exc):
-            self.printmsg('=*' * (len(self.hbar) // 2) + '=', force=True)
-            self.printmsg('Error occurred in a scoring function:', force=True)
-
-            import traceback
-            import io
-            errormsg = io.StringIO()
-            traceback.print_exc(file=errormsg)
-            self.printmsg(errormsg.getvalue(), force=True)
-
-            self.printmsg('=*' * (len(self.hbar) // 2) + '=', force=True)
-            self.printmsg(force=True)
-            self.printmsg('Termination in progress. Waiting for running tasks '
-                          'to finish before closing the program.', force=True)
-            errors.append(exc.args)
-
-        num_tasks = (len(self.scorefuncs_batch) +
-                     len(self.scorefuncs_single) * len(self.flatten_seqs))
-        self.printmsg('')
-        pbar = tqdm(total=num_tasks, disable=self.quiet, file=sys.stderr,
-                    unit='task', desc='Scoring fitness')
-        jobs = []
-        for scorefunc in self.scorefuncs_batch:
-            if errors:
-                continue
-            future = executor.submit(scorefunc, self.flatten_seqs)
-            future.add_done_callback(collect_scores_batch)
-            jobs.append(future)
-
-        for scorefunc in self.scorefuncs_single:
-            for i, seq in enumerate(self.flatten_seqs):
-                if errors:
-                    continue
-                future = executor.submit(scorefunc, seq)
-                future._seqidx = i
-                future.add_done_callback(collect_scores_single)
-                jobs.append(future)
-
-        if not errors:
-            futures.wait(jobs)
-
-        if pbar is not None:
-            pbar.close()
-        self.printmsg('')
-
-        if errors:
-            return None, None, None
-
-        total_scores = [sum(s.values()) for s in scores]
-
-        return total_scores, scores, metrics
 
     def run(self) -> dict:
         if not self.quiet:
@@ -343,7 +215,8 @@ class CDSEvolutionChamber:
             if self.iteropts.n_iterations == 0:
                 # Only the initial sequence is evaluated
                 self.flatten_seqs = [''.join(self.population[0])]
-                total_scores, scores, metrics = self.evaluate_population(executor)
+                total_scores, scores, metrics, foldings = self.seqeval.evaluate(
+                                                    self.flatten_seqs, executor)
                 if total_scores is None:
                     error_code = 1
                 else:
@@ -360,20 +233,23 @@ class CDSEvolutionChamber:
                     self.printmsg('==> Stopping: expected mutation reaches the minimum')
                     break
 
-                self.printmsg(self.hbar)
+                self.printmsg(hbar)
                 self.printmsg(f'Iteration {iter_no}/{self.iteropts.n_iterations}  --',
                               f'  mut_rate: {self.mutation_rate:.5f} --',
                               f'E(muts): {self.expected_total_mutations:.1f}')
 
                 self.mutate_population(i)
-                total_scores, scores, metrics = self.evaluate_population(executor)
+                total_scores, scores, metrics, foldings = self.seqeval.evaluate(
+                                                    self.flatten_seqs, executor)
                 if total_scores is None:
                     # Termination due to errors from one or more scoring functions
                     error_code = 1
                     break
 
                 ind_sorted = np.argsort(total_scores)[::-1]
-                survivors = [self.population[i] for i in ind_sorted[:n_survivors]]
+                survivor_indices = ind_sorted[:n_survivors]
+                survivors = [self.population[i] for i in survivor_indices]
+                survivor_foldings = [foldings[i] for i in survivor_indices]
                 self.best_scores.append(total_scores[ind_sorted[0]])
 
                 # Write the evaluation result of the initial sequence in
@@ -382,10 +258,11 @@ class CDSEvolutionChamber:
                     self.write_checkpoint(0, [0], total_scores, scores, metrics)
 
                 self.print_eval_results(total_scores, metrics, ind_sorted, n_parents)
-                self.write_checkpoint(iter_no, ind_sorted[:n_survivors], total_scores,
+                self.write_checkpoint(iter_no, survivor_indices, total_scores,
                                       scores, metrics)
 
                 self.population[:] = survivors
+                self.population_foldings[:] = survivor_foldings
 
                 self.printmsg(' # Last best scores:',
                               ' '.join(f'{s:.3f}' for s in self.best_scores[-5:]))
@@ -488,25 +365,9 @@ class CDSEvolutionChamber:
         # Prepare the evaluation results of the best sequence
         return {
             'initial': self.initial_sequence_evaluation,
-            'optimized': self.prepare_sequence_evaluation_data(bestseq)
+            'optimized': self.seqeval.prepare_evaluation_data(bestseq)
         }
 
     def save_optimization_parameters(self, path: str) -> None:
         optdata = dump_to_preset(self.scoreopts, self.iteropts, self.execopts)
         open(path, 'w').write(optdata)
-
-    def prepare_sequence_evaluation_data(self, seq):
-        seqevals = {}
-        seqevals['local-metrics'] = localmet = {}
-        for fun in self.scorefuncs_batch + self.scorefuncs_single:
-            if hasattr(fun, 'evaluate_local'):
-                localmet.update(fun.evaluate_local(seq))
-
-            if hasattr(fun, 'annotate_sequence'):
-                seqevals.update(fun.annotate_sequence(seq))
-
-        return seqevals
-
-
-if __name__ == '__main__':
-    pass
