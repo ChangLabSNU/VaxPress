@@ -46,7 +46,7 @@ class ScoringFunction:
     @classmethod
     def add_argument_parser(cls, parser):
         grp = parser.add_argument_group('Fitness - ' + cls.description)
-        argprefix = f'--{cls.name}-'
+        argprefix = '--{name}-'.format(name=cls.name.replace('_', '-'))
         argmap = []
         for argname, argopts in cls.arguments:
             grp.add_argument(argprefix + argname, **argopts)
