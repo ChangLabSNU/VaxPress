@@ -28,8 +28,6 @@ import pytrf
 
 class TandemRepeatsFitness(ScoringFunction):
 
-    single_submission = True
-
     name = 'repeats'
     description = 'Tandem Repeats'
     priority = 60
@@ -55,13 +53,16 @@ class TandemRepeatsFitness(ScoringFunction):
         self.min_repeats = min_repeats
         self.min_length = min_length
 
-    def score(self, seq):
-        repeats = pytrf.GTRFinder('name', seq, min_repeat=self.min_repeats,
-                                min_length=self.min_length)
-        total_repeat_length = sum(r.length for r in repeats)
-        repeat_score = total_repeat_length * self.weight
+    def score(self, seqs):
+        replengths = []
+        for seq in seqs:
+            repeats = pytrf.GTRFinder('name', seq, min_repeat=self.min_repeats,
+                                    min_length=self.min_length)
+            replengths.append(sum(r.length for r in repeats))
 
-        metrics = {'repeat': total_repeat_length}
+        repeat_score = [l * self.weight for l in replengths]
+
+        metrics = {'repeat': replengths}
         scores = {'repeat': repeat_score}
 
         return scores, metrics

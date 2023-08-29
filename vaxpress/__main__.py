@@ -173,6 +173,7 @@ def parse_options(scoring_funcs, preset):
                      help='print top and bottom N sequences (default: 10)')
     grp.add_argument('--report-interval', type=int, default=5, metavar='MIN',
                      help='report interval in minutes (default: 5)')
+    grp.add_argument('--version', action='version', version=__version__)
 
     grp = parser.add_argument_group('Execution Options')
     grp.add_argument('--preset', type=str, required=False, default=None,
@@ -183,18 +184,17 @@ def parse_options(scoring_funcs, preset):
                      help='number of processes to use (default: 4)')
     grp.add_argument('--seed', type=int, default=922, metavar='NUMBER',
                      help='random seed (default: 922)')
-    grp.add_argument('--species', default='human', metavar='NAME',
-                     help='target species (default: human)')
-    grp.add_argument('--codon-table', default='standard', metavar='NAME',
-                     help='codon table (default: standard)')
+    grp.add_argument('--folding-engine', default='vienna', metavar='NAME',
+                     choices=['vienna', 'linearfold'],
+                     help='RNA folding engine: vienna or linearfold '
+                          '(default: vienna)')
+
+    grp = parser.add_argument_group('Optimization Options')
     grp.add_argument('--random-initialization', action='store_true',
                      default=False, help='randomize all codons at the beginning')
     grp.add_argument('--conservative-start', default=None, metavar='ITER[:WIDTH]',
                      help='conserve sequence for the first ITER iterations '
                           'except the first WIDTH amino acids')
-
-
-    grp = parser.add_argument_group('Optimization Options')
     grp.add_argument('--iterations', type=int, default=10, metavar='N',
                      help='number of iterations (default: 10)')
     grp.add_argument('--offsprings', type=int, default=20, metavar='N',
@@ -210,6 +210,10 @@ def parse_options(scoring_funcs, preset):
     grp.add_argument('--winddown-rate', type=float, default=0.9, metavar='RATE',
                      help='mutation rate multiplier when mutation stabilization '
                           'is triggered (default: 0.9)')
+    grp.add_argument('--species', default='human', metavar='NAME',
+                     help='target species (default: human)')
+    grp.add_argument('--codon-table', default='standard', metavar='NAME',
+                     help='codon table (default: standard)')
 
     grp = parser.add_argument_group('LinearDesign Options')
     grp.add_argument('--lineardesign', type=float, default=None,
@@ -280,6 +284,7 @@ def run_vaxpress():
         lineardesign_dir=args.lineardesign_dir,
         lineardesign_lambda=args.lineardesign,
         lineardesign_omit_start=args.lineardesign_omit_start,
+        folding_engine=args.folding_engine,
     )
 
     next_report = 0 # Generate the first report immediately.

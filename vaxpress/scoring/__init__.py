@@ -31,10 +31,10 @@ class ScoringFunction:
     # Command line help shows in ascending order of this priority
     priority = 99
 
-    # If True, the scoring function is called for each individual sequence.
-    single_submission = False
+    # If True, score() method is called with a list of folding predictions.
+    uses_folding = False
 
-    # Specifies the additional required arguments for the scoring function.
+    # Specifies the additional required arguments for the constructor
     requires = []
 
     # Command line arguments
@@ -53,9 +53,9 @@ class ScoringFunction:
             argmap.append((argprefix + argname, argname.replace('-', '_')))
         return argmap
 
-    def __call__(self, seqs):
+    def __call__(self, seqs, *args, **kwargs):
         try:
-            return self.score(seqs)
+            return self.score(seqs, *args, **kwargs)
         except KeyboardInterrupt:
             return None
 
