@@ -158,11 +158,13 @@ class SequenceEvaluator:
 
     def evaluate(self, seqs, executor):
         with SequenceEvaluationSession(self, seqs, executor) as sess:
-            total_scores = sess.evaluate()
-            if total_scores is None:
-                return None, None, None, None
-            else:
+            sess.evaluate()
+
+            if not sess.errors:
+                total_scores = [sum(s.values()) for s in sess.scores]
                 return total_scores, sess.scores, sess.metrics, sess.foldings
+            else:
+                return None, None, None, None
 
     def get_folding(self, seq):
         if seq not in self.folding_cache:
@@ -226,7 +228,7 @@ class SequenceEvaluationSession:
             self.pbar.close()
         self.printmsg('')
 
-    def evaluate(self) -> list[float]:
+    def evaluate(self) -> None:
         jobs = set()
 
         # Secondary structure prediction is the first set of tasks.
@@ -243,7 +245,7 @@ class SequenceEvaluationSession:
 
             future = self.executor.submit(self.foldeval, seq)
             future._seqidx = i
-            future.add_done_callback(self.collect_folding)
+            future._type = 'folding'
             jobs.add(future)
 
         # Then, scoring functions that does not require folding are executed.
@@ -252,13 +254,18 @@ class SequenceEvaluationSession:
                 continue
 
             future = self.executor.submit(scorefunc, self.seqs)
-            future.add_done_callback(self.collect_scores)
+            future._type = 'scoring'
             jobs.add(future)
 
         # Wait until all folding tasks are finished.
-        while not self.errors and self.foldings_remaining > 0:
-            _, jobs = futures.wait(jobs, timeout=0.1,
-                                   return_when=futures.FIRST_COMPLETED)
+        while jobs and not self.errors and self.foldings_remaining > 0:
+            done, jobs = futures.wait(jobs, timeout=0.1,
+                                      return_when=futures.FIRST_COMPLETED)
+            for future in done:
+                if future._type == 'folding':
+                    self.collect_folding(future)
+                elif future._type == 'scoring':
+                    self.collect_scores(future)
 
         # Scoring functions requiring folding are executed.
         for scorefunc in self.scorefuncs_folding:
@@ -267,16 +274,16 @@ class SequenceEvaluationSession:
 
             future = self.executor.submit(scorefunc, self.seqs,
                                           self.foldings)
-            future.add_done_callback(self.collect_scores)
+            future._type = 'scoring'
             jobs.add(future)
 
-        if not self.errors:
-            futures.wait(jobs)
-
-        if self.errors:
-            return None
-
-        return [sum(s.values()) for s in self.scores]
+        while jobs and not self.errors:
+            done, jobs = futures.wait(jobs, timeout=0.1)
+            for future in done:
+                if future._type == 'folding':
+                    self.collect_folding(future)
+                elif future._type == 'scoring':
+                    self.collect_scores(future)
 
     def collect_scores(self, future):
         try:
