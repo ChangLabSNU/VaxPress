@@ -77,7 +77,7 @@ def discover_scoring_functions(addon_paths):
     def scan_module(mod):
         for objname in dir(mod):
             obj = getattr(mod, objname)
-            if (obj is not ScoringFunction and type(obj) == type and
+            if (obj is not ScoringFunction and type(obj) == abc.ABCMeta and
                     issubclass(obj, ScoringFunction)):
                 funcs[obj.name] = obj
 
