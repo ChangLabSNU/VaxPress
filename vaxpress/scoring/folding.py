@@ -45,6 +45,21 @@ def find_stems(structure):
 
     return stemgroups
 
+def unfold_unstable_structure(folding, stems):
+    # TODO: This needs to be revised based on the thermodynamic model of RNA
+    # folding later.
+    lonepairs = [p for p in stems if len(p[0]) == 1]
+    if not lonepairs:
+        return folding, stems
+
+    folding = list(folding)
+    for p5, p3 in lonepairs:
+        folding[p5[0]] = '.'
+        folding[p3[0]] = '.'
+    newstems = [p for p in stems if len(p[0]) > 1]
+
+    return ''.join(folding), newstems
+
 class RNAFoldingFitness(ScoringFunction):
 
     single_submission = True
@@ -142,13 +157,19 @@ class RNAFoldingFitness(ScoringFunction):
             metrics['start_str'] = start_folded
             scores['start_str'] = start_folded * self.start_structure_weight
 
+        if self.find_loops is None and self.longstem_weight == 0:
+            # No need to parse the stem lengths.
+            return scores, metrics
+
+        stems = find_stems(folding)
+        folding, stems = unfold_unstable_structure(folding, stems)
+
         if self.find_loops is not None:
             loops = sum(map(len, self.find_loops.findall(folding)))
             metrics['loop'] = loops
             scores['loop'] = loops * self.loop_weight
 
         if self.longstem_weight != 0:
-            stems = find_stems(folding)
             longstems = sum(len(loc5) >= self.longstem_threshold
                             for loc5, _ in stems)
             metrics['longstem'] = longstems
