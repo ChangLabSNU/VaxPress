@@ -160,9 +160,9 @@ class SequenceEvaluator:
         with SequenceEvaluationSession(self, seqs, executor) as sess:
             total_scores = sess.evaluate()
             if total_scores is None:
-                return None, None, None
+                return None, None, None, None
             else:
-                return total_scores, sess.scores, sess.metrics
+                return total_scores, sess.scores, sess.metrics, sess.foldings
 
     def get_folding(self, seq):
         if seq not in self.folding_cache:
@@ -246,7 +246,7 @@ class SequenceEvaluationSession:
             future.add_done_callback(self.collect_folding)
             jobs.add(future)
 
-        # Then, scoring functions that does not folding are executed.
+        # Then, scoring functions that does not require folding are executed.
         for scorefunc in self.scorefuncs_nofolding:
             if self.errors:
                 continue

@@ -44,6 +44,7 @@ SPECIES_ALIASES = {
 }
 
 CONSERVATIVE_START_DEFAULT_WIDTH = 7
+BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH = 15
 
 def preparse_config_preset_addons():
     parser = argparse.ArgumentParser(add_help=False)
@@ -153,6 +154,32 @@ def check_argument_validity(args):
         else:
             args.conservative_start = f'{cons_iter}:{cons_width}'
 
+    if args.boost_loop_mutations is not None:
+        try:
+            if args.boost_loop_mutations.count(':') == 1:
+                boost_weight, boost_start = args.boost_loop_mutations.split(':', 1)
+                boost_weight, boost_start = float(boost_weight), int(boost_start)
+            elif ':' in args.boost_loop_mutations:
+                raise ValueError
+            else:
+                boost_weight = float(args.boost_loop_mutations)
+                boost_start = BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH
+
+            if boost_weight < 0:
+                print('Invalid value for --boost-loop-mutations. WEIGHT must be '
+                      'a non-negative number.', file=sys.stderr)
+                sys.exit(1)
+            if boost_start < 0:
+                print('Invalid value for --boost-loop-mutations. START must be '
+                      'a non-negative integer.', file=sys.stderr)
+                sys.exit(1)
+        except ValueError:
+            print('Invalid format for --boost-loop-mutations. Use '
+                'WEIGHT[:START] format.', file=sys.stderr)
+            sys.exit(1)
+        else:
+            args.boost_loop_mutations = f'{boost_weight}:{boost_start}'
+
 def parse_options(scoring_funcs, preset):
     parser = argparse.ArgumentParser(
         prog='vaxpress',
@@ -204,6 +231,12 @@ def parse_options(scoring_funcs, preset):
     grp.add_argument('--initial-mutation-rate', type=float, default=0.1,
                      metavar='RATE',
                      help='initial mutation rate (default: 0.1)')
+    grp.add_argument('--boost-loop-mutations',
+                     default=f'5:{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH}',
+                     metavar='WEIGHT[:START]', type=str,
+                     help='boost mutations in loops after position START '
+                          'by WEIGHT (default: 5:'
+                          f'{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH})')
     grp.add_argument('--winddown-trigger', type=int, default=15, metavar='N',
                      help='number of iterations with the same best score to '
                           'trigger mutation stabilization (default: 15)')
@@ -274,6 +307,7 @@ def run_vaxpress():
         processes=args.processes,
         random_initialization=args.random_initialization,
         conservative_start=args.conservative_start,
+        boost_loop_mutations=args.boost_loop_mutations,
         species=SPECIES_ALIASES.get(args.species, args.species),
         codon_table=args.codon_table,
         quiet=args.quiet,

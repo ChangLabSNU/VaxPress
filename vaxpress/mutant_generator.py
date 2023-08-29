@@ -38,7 +38,8 @@ class MutantGenerator:
     initial_codons = None
 
     def __init__(self, cdsseq: str, random_state: np.random.RandomState,
-                 codon_table: str='standard', is_protein: bool=False):
+                 codon_table: str='standard', is_protein: bool=False,
+                 boost_loop_mutations: str=None):
         self.initialize_codon_table(codon_table)
 
         if is_protein:
@@ -49,6 +50,13 @@ class MutantGenerator:
             raise ValueError('Invalid CDS sequence length')
 
         self.rand = np.random if random_state is None else random_state
+
+        if boost_loop_mutations is not None:
+            tokens = boost_loop_mutations.split(':')
+            (self.boost_loop_mutations_weight,
+             self.boost_loop_mutations_start) = float(tokens[0]), int(tokens[1])
+        else:
+            self.boost_loop_mutations_weight = 0
 
         self.setup_choices()
 
@@ -113,8 +121,20 @@ class MutantGenerator:
         self.initial_codons[omitstart:] = [
             rseq[i*3:i*3+3] for i in range(len(prot_om))]
 
+    def calc_probabilities(self, choices: list[MutationChoice],
+                           folding: dict) -> np.ndarray:
+        minimum_position = self.boost_loop_mutations_start
+        loop_positions = set([i // 3 for i, code in enumerate(folding['folding'])
+                              if code == '.'])
+
+        weightmap = [1, self.boost_loop_mutations_weight]
+        probs = [weightmap[mut.pos in loop_positions and mut.pos >= minimum_position]
+                 for mut in choices]
+        return np.array(probs) / sum(probs)
+
     def generate_mutant(self, codons: list[str], mutation_rate: float,
-                        choices: list[MutationChoice]=None) -> list[str]:
+                        choices: list[MutationChoice]=None,
+                        folding: dict=None) -> list[str]:
         child = codons[:]
         if choices is None:
             choices = self.choices
@@ -123,9 +143,14 @@ class MutantGenerator:
         n_mutations = self.rand.binomial(len(choices), mutation_rate)
         n_mutations = max(1, min(n_mutations, len(choices)))
 
+        prob_dist = (
+            self.calc_probabilities(choices, folding)
+            if self.boost_loop_mutations_weight != 0 and folding is not None
+            else None)
+
         # Select mutations
-        mutation_choices = self.rand.choice(len(choices),
-                                            n_mutations, replace=False)
+        mutation_choices = self.rand.choice(len(choices), n_mutations,
+                                            replace=False, p=prob_dist)
 
         # Apply mutations
         for i in mutation_choices:

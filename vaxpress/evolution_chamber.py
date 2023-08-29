@@ -49,7 +49,7 @@ IterationOptions = namedtuple('IterationOptions', [
 
 ExecutionOptions = namedtuple('ExecutionOptions', [
     'output', 'command_line', 'overwrite', 'seed', 'processes',
-    'random_initialization', 'conservative_start',
+    'random_initialization', 'conservative_start', 'boost_loop_mutations',
     'species', 'codon_table', 'protein', 'quiet',
     'seq_description', 'print_top_mutants', 'addons',
     'lineardesign_dir', 'lineardesign_lambda', 'lineardesign_omit_start',
@@ -127,7 +127,8 @@ class CDSEvolutionChamber:
         self.rand = np.random.RandomState(self.execopts.seed)
         self.mutantgen = MutantGenerator(self.cdsseq, self.rand,
                                          self.execopts.codon_table,
-                                         self.execopts.protein)
+                                         self.execopts.protein,
+                                         self.execopts.boost_loop_mutations)
         if self.execopts.lineardesign_lambda is not None:
             self.printmsg('==> Initializing sequence with LinearDesign...')
 
@@ -138,6 +139,7 @@ class CDSEvolutionChamber:
         elif self.execopts.random_initialization or self.execopts.protein:
             self.mutantgen.randomize_initial_codons()
         self.population = [self.mutantgen.initial_codons]
+        self.population_foldings = [None]
 
         self.mutation_rate = self.iteropts.initial_mutation_rate
 
@@ -186,10 +188,14 @@ class CDSEvolutionChamber:
                 choices = altchoices
                 break
 
+        assert len(self.population) == len(self.population_foldings)
+
         n_new_mutants = max(0, self.iteropts.n_offsprings - len(self.population))
-        for parent, _ in zip(cycle(self.population), range(n_new_mutants)):
+        for parent, parent_folding, _ in zip(cycle(self.population),
+                                             cycle(self.population_foldings),
+                                             range(n_new_mutants)):
             child = self.mutantgen.generate_mutant(parent, self.mutation_rate,
-                                                   choices)
+                                                   choices, parent_folding)
             nextgeneration.append(child)
 
         self.population[:] = nextgeneration
@@ -209,7 +215,7 @@ class CDSEvolutionChamber:
             if self.iteropts.n_iterations == 0:
                 # Only the initial sequence is evaluated
                 self.flatten_seqs = [''.join(self.population[0])]
-                total_scores, scores, metrics = self.seqeval.evaluate(
+                total_scores, scores, metrics, foldings = self.seqeval.evaluate(
                                                     self.flatten_seqs, executor)
                 if total_scores is None:
                     error_code = 1
@@ -233,7 +239,7 @@ class CDSEvolutionChamber:
                               f'E(muts): {self.expected_total_mutations:.1f}')
 
                 self.mutate_population(i)
-                total_scores, scores, metrics = self.seqeval.evaluate(
+                total_scores, scores, metrics, foldings = self.seqeval.evaluate(
                                                     self.flatten_seqs, executor)
                 if total_scores is None:
                     # Termination due to errors from one or more scoring functions
@@ -241,7 +247,9 @@ class CDSEvolutionChamber:
                     break
 
                 ind_sorted = np.argsort(total_scores)[::-1]
-                survivors = [self.population[i] for i in ind_sorted[:n_survivors]]
+                survivor_indices = ind_sorted[:n_survivors]
+                survivors = [self.population[i] for i in survivor_indices]
+                survivor_foldings = [foldings[i] for i in survivor_indices]
                 self.best_scores.append(total_scores[ind_sorted[0]])
 
                 # Write the evaluation result of the initial sequence in
@@ -250,10 +258,11 @@ class CDSEvolutionChamber:
                     self.write_checkpoint(0, [0], total_scores, scores, metrics)
 
                 self.print_eval_results(total_scores, metrics, ind_sorted, n_parents)
-                self.write_checkpoint(iter_no, ind_sorted[:n_survivors], total_scores,
+                self.write_checkpoint(iter_no, survivor_indices, total_scores,
                                       scores, metrics)
 
                 self.population[:] = survivors
+                self.population_foldings[:] = survivor_foldings
 
                 self.printmsg(' # Last best scores:',
                               ' '.join(f'{s:.3f}' for s in self.best_scores[-5:]))
