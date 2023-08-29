@@ -33,6 +33,9 @@ class TandemRepeatsFitness(ScoringFunction):
     priority = 60
 
     arguments = [
+        ('weight',
+         dict(type=float, default=1.0, metavar='WEIGHT',
+              help='scoring weight for tandem repeats (default: 1.0)')),
         ('min-repeats',
          dict(type=int, default=2, metavar='N',
               help='minimum number of repeats to be considered as a tandem '
@@ -41,9 +44,6 @@ class TandemRepeatsFitness(ScoringFunction):
          dict(type=int, default=10, metavar='LENGTH',
               help='minimum length of repeats to be considered as a tandem '
                    'repeat (default: 10)')),
-        ('weight',
-         dict(type=float, default=1.0, metavar='WEIGHT',
-              help='scoring weight for tandem repeats (default: 1.0)')),
     ]
 
     penalty_metric_flags = {'repeat': 'r'}
