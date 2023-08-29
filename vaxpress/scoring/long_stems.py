@@ -28,7 +28,7 @@ from . import ScoringFunction
 class LongStemFitness(ScoringFunction):
 
     name = 'longstem'
-    description = 'RNA Folding - Long Stems'
+    description = 'RNA Folding (Long Stems)'
     priority = 43
     uses_folding = True
 
