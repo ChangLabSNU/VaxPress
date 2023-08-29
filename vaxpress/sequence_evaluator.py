@@ -25,6 +25,7 @@
 
 import sys
 import re
+import pylru
 from tqdm import tqdm
 from concurrent import futures
 from collections import Counter
@@ -108,6 +109,8 @@ class FoldEvaluator:
 
 class SequenceEvaluator:
 
+    folding_cache_size = 8192
+
     def __init__(self, scoring_funcs, scoreopts, execopts, mutantgen, species,
                  length_cds, quiet, printmsg):
         self.scoring_funcs = scoring_funcs
@@ -125,7 +128,7 @@ class SequenceEvaluator:
 
     def initialize(self):
         self.foldeval = FoldEvaluator(self.execopts.folding_engine)
-        self.folding_cache = {}
+        self.folding_cache = pylru.lrucache(self.folding_cache_size)
 
         self.scorefuncs_nofolding = []
         self.scorefuncs_folding = []

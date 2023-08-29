@@ -71,6 +71,7 @@ setup(
         'tabulate >= 0.9',
         'Jinja2 >= 3.1',
         'plotly >= 5.0',
+        'pylru >= 1.2',
     ],
     extras_require={
         'nonfree': ['linearfold-unofficial'],
