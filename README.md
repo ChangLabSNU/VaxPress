@@ -97,10 +97,10 @@ function's weight to `0` effectively disables it.
 
 ```bash
 # Concentrate on the stable secondary structure (more weight to the MFE)
-vaxpress -i ./testseq/vegfa.fa -o ../test_run --mfe-weights 10
+vaxpress -i spike.fa -o result-spike --mfe-weights 10
 
 # Turn off the consideration of repeated sequences
-vaxpress -i ./testseq/vegfa.fa -o ../test_run --repeats-weight 0
+vaxpress -i spike.fa -o result-spike --repeats-weight 0
 ```
 
 ### Custom Scoring Functions
@@ -141,10 +141,10 @@ mutation would emerge with a higher mutation rate.
 
 ```bash
 # Running VaxPress with LinearDesign
-vaxpress -i vegfa.fa -o results/vegfa --processes 36 \
+vaxpress -i spike.fa -o results-spike --processes 36 \
          --iterations 500 --lineardesign 1.0 \
          --lineardesign-dir /path/to/LinearDesign \
-         --conservative-start 10:7 --initial-mutation-rate 0.01
+         --conservative-start 10 --initial-mutation-rate 0.01
 ```
 
 ## Output
