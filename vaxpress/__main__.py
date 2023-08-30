@@ -232,10 +232,10 @@ def parse_options(scoring_funcs, preset):
                      metavar='RATE',
                      help='initial mutation rate (default: 0.1)')
     grp.add_argument('--boost-loop-mutations',
-                     default=f'5:{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH}',
+                     default=f'3:{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH}',
                      metavar='WEIGHT[:START]', type=str,
                      help='boost mutations in loops after position START '
-                          'by WEIGHT (default: 5:'
+                          'by WEIGHT (default: 3:'
                           f'{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH})')
     grp.add_argument('--winddown-trigger', type=int, default=15, metavar='N',
                      help='number of iterations with the same best score to '
