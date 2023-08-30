@@ -220,7 +220,8 @@ class CDSEvolutionChamber:
                 if total_scores is None:
                     error_code = 1
                 else:
-                    self.write_checkpoint(0, [0], total_scores, scores, metrics)
+                    self.write_checkpoint(0, [0], total_scores, scores, metrics,
+                                          foldings)
                     timelogs.append(time.time())
 
             for i in range(self.iteropts.n_iterations):
@@ -255,11 +256,12 @@ class CDSEvolutionChamber:
                 # Write the evaluation result of the initial sequence in
                 # the first iteration
                 if i == 0:
-                    self.write_checkpoint(0, [0], total_scores, scores, metrics)
+                    self.write_checkpoint(0, [0], total_scores, scores,
+                                          metrics, foldings)
 
                 self.print_eval_results(total_scores, metrics, ind_sorted, n_parents)
                 self.write_checkpoint(iter_no, survivor_indices, total_scores,
-                                      scores, metrics)
+                                      scores, metrics, foldings)
 
                 self.population[:] = survivors
                 self.population_foldings[:] = survivor_foldings
@@ -329,7 +331,7 @@ class CDSEvolutionChamber:
         self.printmsg(f' # {elapsed_str}s/it  --  Expected finish: {expected_end}')
 
     def write_checkpoint(self, iter_no, survivors, total_scores, scores,
-                         metrics) -> None:
+                         metrics, foldings) -> None:
         ind = survivors[0]
 
         fields = [('iter_no', iter_no), ('mutation_rate', self.mutation_rate),
@@ -341,6 +343,7 @@ class CDSEvolutionChamber:
             ('score:' + name, value)
             for name, value in sorted(scores[ind].items())])
         fields.append(('seq', self.flatten_seqs[ind]))
+        fields.append(('structure', foldings[ind]['folding']))
 
         if not self.checkpoint_header_written:
             header = [f[0] for f in fields]
