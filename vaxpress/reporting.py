@@ -46,7 +46,7 @@ class TemplateFiltersMixin:
     @staticmethod
     def filter_format_number(value):
         if isinstance(value, float):
-            return '{:,.3f}'.format(value).rstrip('0').replace('-', '−')
+            return '{:,.3f}'.format(value).rstrip('0').rstrip('.').replace('-', '−')
         else:
             return str(value).replace('-', '−')
 
