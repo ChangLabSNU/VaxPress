@@ -2,11 +2,14 @@
 
 # Introduction
 
-*그림 첨부*
-
-VaxPress is a powerful codon optimization tool designed specifically for mRNA vaccine development. Vaxpress uses genetic algorithm to optimize mRNA cds or protein sequence, while fitness evaluation metrics are defined as scoring functions.
-
-Full documentation which includes detailed information about all the options and algorithmic features used in VaxPress is available on [Vaxpress documentation page](#Welcome_page).
+VaxPress is a codon optimizer platform tailored for mRNA vaccine
+development. It refines coding sequences starting from protein or
+RNA sequences to boost both storage stability and *in vivo* protein
+expression. Plus, additional properties can be easily programmed
+into the optimization process with just a few lines of code via a
+pluggable interface. For the detailed information about VaxPress,
+including its options and algorithmic features, please refer to the
+[VaxPress documentation page](https://link.to/page).
 
 # Installation
 
@@ -15,87 +18,161 @@ Full documentation which includes detailed information about all the options and
 You can install VaxPress via pip:
 
 ```bash
-# To install from PyPI package:
+# To install from pip
 pip install vaxpress
 
-# To install from github source:
+# To install from pip with LinearFold (only for non-commercial uses)
+pip install 'vaxpress[nonfree]'
+
+# To install from github source
 git clone https://github.com/ChangLabSNU/VaxPress.git
-cd ./VaxPress
+cd VaxPress
 pip install .
 ```
 
-### conda
-VaxPress conda package is also available:
+### Conda
+
+Alternatively, you may also install VaxPress via a conda package:
+
 ```bash
-conda install -c conda-forge -c bioconda -c changlabsnu vaxpress
+conda install -c changlabsnu -c bioconda -c conda-forge vaxpress
 ```
 
 ### Singularity
-First, you will need to install [Singularity CE](https://sylabs.io/singularity/). Once Singularity is installed, you can download the VaxPress image from this GitHub repository and run using the following command:
+
+First, you will need to install [Singularity CE](https://sylabs.io/singularity/).
+Once Singularity is installed, you can download the VaxPress image from this
+GitHub repository and run using the following command:
 
 ```bash
 singularity vaxpress.sif ...
 ```
 
-
 # Usage
+
 ## Quick Start
-Basic command-line usage of vaxpress looks like below, with 2 required options(```-i```, ```-o```):
+
+Here's a basic command-line instruction to start using VaxPress.
+Note that `-i` and `-o` options are mandatory:
+
 ```bash
 vaxpress -i {path_to_input.fa} -o {path_to_output_directory} --iterations {n_iterations} -p {n_processes}
 ```
-### Input Files
--  mRNA cds sequence in fasta format. Protein sequence in fasta format is also available as an input using ```--protein``` option.
-### Output Files
--  output directory will contain the following 5 files:
-   -  ```best-sequence.fasta```: Optimized mRNA cds sequence.
-   - ```checkpoints.tsv```: Stores the  best-scoring mRNA sequence and its scores on each objectives in each iteration.
-   - ```log.txt```: Stores the program log displayed on terminal.
-   - ```parameters.json```: Stores parameters used when running the optimization. You can load these parameter values directly into next optimization using ```--preset``` option.
-   - ```report.html```: Optimization summary report.
-### Iterations
-Default value of ```--iterations``` option is set to 10. To have an output sequence sufficiently converged, at least 500 iterations are recommended. It is recommended to increase the number of iterations if the optimization process ends before sufficient convergence. Guide to set the appropriate iteration numbers and other optimization parameters can be found [here](#page).
-### Multiprocessing
-Multiprocessing is supported in VaxPress, with ```-p```, ```--processes``` option.
 
-## Adjusting the scoring criteria
-Current scoring functions consider both the features involved in the production and distribution process, as well as features affecting the efficacy *in vivo* such as immunogenecity and translational efficiency. Principles of all scoring functions in VaxPress is listed on [VaxPress optimization algorithm](#algorithm_page).
+### Input
 
-### Changing weights
-You can change the evaluation criteria of the optimization by changing weights of the individual scoring functions with ```—{func}-weight``` option. Each scoring function can be practically turned off by setting ```—{func}-weight``` to 0.
+Provide a CDS sequence in FASTA format. Alternatively, if you have
+a protein sequence in FASTA format, use the `--protein` option.
+
+### Number of Iterations
+
+By default, the `--iterations` option is set to 10.  For a comprehensive
+optimization, it's suggested to use a minimum of 500 iterations.
+However, the ideal number of iterations can vary based on the input's
+length, composition, and chosen optimization settings. Note that
+the optimization process might halt before completing all specified
+iterations if no improvement is detected over several consecutive
+cycles.
+
+### Multi-Core Support
+
+You can use multiple CPU cores for optimization with the `-p` or
+`--processes` option.
+
+## Adjusting the Fitness Scoring Scheme
+
+VaxPress optimizes synonymous codon selections to potentially enhance
+the fitness of coding sequences for mRNA vaccines. This fitness is
+derived from a cumulative score of various metrics, including the
+codon adaptation index, GC ratio, among others. To emphasize or
+de-emphasize a specific feature, simply adjust its weight. A deeper
+understanding of the scoring functions' principles is available on
+the [optimization algorithm page](#algorithm_page).
+
+### Setting Weights
+
+To fine-tune the optimization, adjust the weights of individual
+scoring functions using the `--{func}-weight` option. Setting a
+function's weight to `0` effectively disables it.
+
 ```bash
-# Example command to set mfe weights higher:
-vaxpress -i ./testseq/vegfa.fa -o ../test_run --iterations 500 --folding-mfe-weights 10
+# Concentrate on the stable secondary structure (more weight to the MFE)
+vaxpress -i ./testseq/vegfa.fa -o ../test_run --mfe-weights 10
 
-# Example command to turn off the scoring based on repeats:
-vaxpress -i ./testseq/vegfa.fa -o ../test_run --iterations 500 --repeats-weight 0
+# Turn off the consideration of repeated sequences
+vaxpress -i ./testseq/vegfa.fa -o ../test_run --repeats-weight 0
 ```
 
-### Adding a third-party scoring function
-In addition to the existing ones, you can add custom scoring functions that will be considered during the optimization using ```--addon``` option. For detailed information on how to add and use third-party scoring functions in VaxPress, please refer to [Adding a scoring function](#scoring_func) page.
+### Custom Scoring Functions
 
+VaxPress allows users to add their custom scoring functions. This
+feature enables a more targeted optimization process by integrating
+new sequence attributes of interest. For detailed instructions,
+please refer to the [Adding a scoring function page](#scoring_func).
 
-## Starting from LinearDesign-optimized sequence
-[LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign)(He Zhang, Liang Zhang, Ang Lin, Congcong Xu et al., 2023) is another tool for codon optimization. While LinearDesign optimizes mRNA sequences based on MFE and CAI, Vaxpress can be used for further optimization of the LinearDesign output sequence since it takes more evaluation metrics into account such as ucount, iCodon-predicted stability and local GC ratio.
+### Using LinearDesign for Optimization Initialization
 
-To start VaxPress optimization from LinearDesign output sequence, you can use ```--lineardesign``` option inside VaxPress. Before using the option, LinearDesign should be installed separately following instructions in the [github page](https://github.com/LinearDesignSoftware/LinearDesign). Installed path should be specified as an argument with ```--lineardesign-dir```.
+[LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign)
+(Zhang *et al.,* 2023) offers ultra-fast optimization, focusing on
+near-optimal MFE and CAI values. By using the `--lineardesign`
+option, VaxPress invokes LinearDesign internally then begins its
+optimization with a sequence already refined by LinearDesign.
+Subsequent VaxPress optimizations further improves the sequences
+for features like secondary structures near the start codon, uridine
+count, in-cell stability, tandem repeats, and local GC content.
 
-Using ```—conservative-start``` option with ```--lineardesign``` is recommended to prevent initial de-optimization of MFE while trying to get rid of folding structures near the start codon. Adjusting ```--initial-mutation-rate``` down to 0.01 is also recommended, since higher initial mutation rate usually causes large MFE deterioration from the initial MFE-optimized LinearDesign output sequence, preventing the sequence from evolving.
+To utilize the LinearDesign integration, provide the path to the
+installed directory of LinearDesign using the `--lineardesign-dir`
+option. This option can be omitted in subsequent uses. The
+`--lineardesign` option also needs a LAMBDA parameter, which influences
+the balance between MFE and CAI. Values between 0.5 and 4 are usually
+suitable starting points. For insights into the LAMBDA value's
+implications, consult Zhang *et al.* (2023).
+
+Note that sequences straight from LinearDesign often have suboptimal
+structures around the start codon. Under the high mutation rate at
+the beginning, this causes the main sequence body to lose its optimal
+MFE structure. The `-—conservative-start` option tackles this by
+focusing on the start codon region before optimizing the rest. Also,
+given that LinearDesign's outputs are already quite optimal, the
+`--initial-mutation-rate` can be reduced to 0.01.  This ensures
+efficient optimization as there's a minimal likelihood that a better
+mutation would emerge with a higher mutation rate.
+
 ```bash
-#Example command to start optimization from lineardesign output sequence
-vaxpress -i ./testseq/vegfa.fa\
-         -o ../test_run\
-         --iterations 500\
-         --lineardesign 1\
-         --lineardiesign-dir ../LinearDesign\
-         --conservative-start 10[:7]
-         --initial-mutation-rate 0.01
+# Running VaxPress with LinearDesign
+vaxpress -i vegfa.fa -o results/vegfa --processes 36 \
+         --iterations 500 --lineardesign 1.0 \
+         --lineardesign-dir /path/to/LinearDesign \
+         --conservative-start 10:7 --initial-mutation-rate 0.01
 ```
 
+## Output
+
+Once you've run VaxPress, the specified output directory will contain
+the following five files:
+
+- ``report.html``: A summary report detailing the result and
+  optimization process.
+- ``best-sequence.fasta``: The refined coding sequence.
+- ``checkpoints.tsv``: The best sequences and the evaluation results
+  at each iteration.
+- ``log.txt``: Contains the logs that were displayed in the console.
+- ``parameters.json``: Contains the parameters employed for the optimization.
+  This file can be feeded to VaxPress with the `--preset` option to duplicate
+  the set-up for other sequence.
+
+## Citing VaxPress
+
+If you employed our software in your research, please
+kindly reference our publication:
+
+Ju, Ku, and Chang (2023) Title. Journal. Volume.
 
 ## License
-This project is licensed under the MIT License.
 
-## Contact
-If you have any questions or feedback, please feel free to contact us.
-*email_address*
+VaxPress is distributed under the terms of the MIT License.
+
+LinearFold and LinearDesign are licensed for non-commercial use
+only. If considering commercial use, be cautious about using options
+such as `--lineardesign` and `--folding-engine linearfold`.
