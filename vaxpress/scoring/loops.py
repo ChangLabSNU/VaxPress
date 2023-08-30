@@ -49,7 +49,8 @@ class LoopLengthFitness(ScoringFunction):
         loop_lengths = []
         scores = []
         for fold in foldings:
-            looplen = sum(count for length, count in fold['loops'].items()
+            looplen = sum(length * count
+                          for length, count in fold['loops'].items()
                           if length >= self.threshold)
             loop_lengths.append(looplen)
             scores.append(looplen * self.weight)
@@ -57,6 +58,7 @@ class LoopLengthFitness(ScoringFunction):
         return {'loop': scores}, {'loop': loop_lengths}
 
     def annotate_sequence(self, seq, folding):
-        looplen = sum(count for length, count in folding['loops'].items()
+        looplen = sum(length * count
+                      for length, count in folding['loops'].items()
                       if length >= self.threshold)
         return {'loop': looplen}
