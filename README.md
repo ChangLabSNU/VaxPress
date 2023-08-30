@@ -1,7 +1,5 @@
 # VaxPress
 
-# Introduction
-
 VaxPress is a codon optimizer platform tailored for mRNA vaccine
 development. It refines coding sequences starting from protein or
 RNA sequences to boost both storage stability and *in vivo* protein
@@ -18,13 +16,13 @@ including its options and algorithmic features, please refer to the
 You can install VaxPress via pip:
 
 ```bash
-# To install from pip
+# To install using pip
 pip install vaxpress
 
-# To install from pip with LinearFold (only for non-commercial uses)
+# To install using pip with LinearFold (only for non-commercial uses)
 pip install 'vaxpress[nonfree]'
 
-# To install from github source
+# To install from the GitHub
 git clone https://github.com/ChangLabSNU/VaxPress.git
 cd VaxPress
 pip install .
@@ -110,7 +108,7 @@ feature enables a more targeted optimization process by integrating
 new sequence attributes of interest. For detailed instructions,
 please refer to the [Adding a scoring function page](#scoring_func).
 
-### Using LinearDesign for Optimization Initialization
+## Using LinearDesign for Optimization Initialization
 
 [LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign)
 (Zhang *et al.,* 2023) offers ultra-fast optimization, focusing on
@@ -162,14 +160,14 @@ the following five files:
   This file can be feeded to VaxPress with the `--preset` option to duplicate
   the set-up for other sequence.
 
-## Citing VaxPress
+# Citing VaxPress
 
 If you employed our software in your research, please
 kindly reference our publication:
 
 Ju, Ku, and Chang (2023) Title. Journal. Volume.
 
-## License
+# License
 
 VaxPress is distributed under the terms of the MIT License.
 
