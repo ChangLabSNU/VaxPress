@@ -32,7 +32,7 @@ setup(
     author='Hyeshik Chang',
     author_email='hyeshik@snu.ac.kr',
     url='https://github.com/ChangLabSNU/VaxPress',
-    download_url='https://github.com/ChangLabSNU/python-linearfold/releases',
+    download_url='https://github.com/ChangLabSNU/VaxPress/releases',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     keywords=[
