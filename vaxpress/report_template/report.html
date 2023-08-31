@@ -92,7 +92,7 @@
 <ul>
   <li><b>MFE:</b> {{ status['evaluations']['optimized']['mfe'] | format_number }} kcal/mol</li>
   <li><b>Total loop length (≥{{ scoring['loop']['threshold'] }}):</b>
-    {{ status['evaluations']['optimized']['loops'] }}</li>
+    {{ status['evaluations']['optimized']['loop'] }}</li>
 </ul>
 <iframe src="https://pub-forna.qbio.io/?id=url/vaxpress{{ status['version'] }}&sequence={{ checkpoints.iloc[-1]['seq'] }}&structure={{ checkpoints.iloc[-1]['structure'] }}"
  align="center" height="650px" width="100%" seamless='seamless' frameBorder="0" AllowFullScreen></iframe>
