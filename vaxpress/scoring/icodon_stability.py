@@ -31,6 +31,20 @@ ICODON_SPECIES_MAPPING = {
     'Danio rerio': 'zebrafish',
 }
 
+def check_iCodon_availability(kls):
+    try:
+        import rpy2.robjects.packages as rpackages
+    except ModuleNotFoundError:
+        return
+
+    try:
+        rpackages.importr('iCodon')
+    except rpackages.PackageNotInstalledError:
+        return
+
+    return kls
+
+@check_iCodon_availability
 class iCodonStabilityFitness(ScoringFunction):
 
     iCodon_initialized = False

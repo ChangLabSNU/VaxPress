@@ -65,7 +65,7 @@ setup(
         'numpy >= 1.15',
         'pandas >= 2.0',
         'pytrf >= 1.0.1',
-        'rpy2 >= 3.0',
+        #'rpy2 >= 3.0', # required for iCodon
         'ViennaRNA >= 2.4',
         'tqdm >= 4.0',
         'tabulate >= 0.9',
