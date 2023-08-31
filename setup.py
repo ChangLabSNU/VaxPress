@@ -27,7 +27,7 @@ from setuptools import setup
 
 setup(
     name='vaxpress',
-    version='0.2',
+    version='0.3',
     description='Codon Optimizer for mRNA Vaccine Design',
     author='Hyeshik Chang',
     author_email='hyeshik@snu.ac.kr',
