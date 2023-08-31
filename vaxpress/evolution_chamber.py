@@ -135,7 +135,8 @@ class CDSEvolutionChamber:
             self.mutantgen.lineardesign_initial_codons(
                 self.execopts.lineardesign_lambda,
                 self.execopts.lineardesign_dir,
-                self.execopts.lineardesign_omit_start)
+                self.execopts.lineardesign_omit_start,
+                self.quiet)
         elif self.execopts.random_initialization or self.execopts.protein:
             self.mutantgen.randomize_initial_codons()
         self.population = [self.mutantgen.initial_codons]

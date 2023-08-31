@@ -110,11 +110,11 @@ class MutantGenerator:
             self.rand.choice([codon] + self.synonymous_codons[codon])
             for codon in self.initial_codons]
 
-    def lineardesign_initial_codons(self, lmd, lddir, omitstart) -> None:
+    def lineardesign_initial_codons(self, lmd, lddir, omitstart, quiet) -> None:
         prot = self.translate(self.cdsseq)
 
         prot_om = prot[omitstart:]
-        res = lineardesign.run_lineardesign(lddir, prot_om, lmd)
+        res = lineardesign.run_lineardesign(lddir, prot_om, lmd, quiet)
         assert len(res['seq']) == len(res['str']) == len(prot_om) * 3
 
         rseq = res['seq']
