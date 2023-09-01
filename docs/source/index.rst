@@ -6,14 +6,22 @@ It refines coding sequences starting from protein or RNA sequences to boost both
 Plus, additional properties can be easily programmed into the optimization process with just a few lines of code via a pluggable interface.
 Due to its versatile nature, VaxPress can be used not only for mRNA vaccine development, but also for mRNA-based therapeutics and the other codon optimizations for various purposes.
 
+.. _prerequisites:
 -------------
 Prerequisites
 -------------
 
 VaxPress is a python-based tool.
 To install VaxPress via ``pip`` or ``conda``, you will need a python installation (version >= ??).
+
+.. note::
+    If you install VaxPress via pip, ``R``, ``rpy2`` and ``iCodon`` aren't included as dependencies.
+    If you want to utilize iCodon's predicted stability in the fitness function, you'll need to install these separately.
+    For iCodon installation, see `iCodon's GitHub page <https://github.com/santiago1234/iCodon/>`_.
+
 To install via ``singularity``, you will need to install `Singularity CE <https://sylabs.io/singularity/>`_ first.
 To use ``--lineardesign`` options, `LinearDesign <https://github.com/LinearDesignSoftware/LinearDesign>`_ installation is required apart from VaxPress installation.
+
 
 ------------
 Installation
@@ -139,6 +147,7 @@ Contents
    execution_input_output_options
    optimization_parameters
    fitness_function_parameters
+   troubleshooting
 
 ------------------
 Indices and tables
