@@ -3,6 +3,11 @@ Input/Output and Execution Options
 
 List of all arguments related to input/output and general execution of the program.
 
+
+- ``-h``, ``--help``
+
+  Show help messages for Vaxpress and exit.
+
 ---------------------
 Input/Output Options
 ---------------------
@@ -31,17 +36,17 @@ Optional Arguments
   Do not print progress messages to stdout.
 - ``--print-top`` N
   
-  Print top and bottom N sequences (default: 10)
+  Print top and bottom N sequences. (default: 10)
 - ``--report-interval`` MIN
   
-  Report interval in minutes (default: 5)
+  Report interval in minutes. In other words, report.html will be updated by this time interval.(default: 5)
 
 ---------------------
 Execution Options
 ---------------------
 - ``--preset`` FILE
   
-  Use preset values in ``parameters.json``, which is one of the output files from the VaxPress run. If some of the options are specified along with ``--preset``, the specified arguments will override the preset values.
+  Use preset values in ``parameters.json``, which is one of the output files from the VaxPress run. If some of the options are specified along with ``--preset``, the specified arguments including addons will override the preset values.
 
   Example command to use preset values::
 
