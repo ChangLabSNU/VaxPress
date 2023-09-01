@@ -2,6 +2,12 @@ Input/Output and Execution Options
 *************************************
 
 List of all arguments related to input/output and general execution of the program.
+--------------------
+Basic option
+--------------------
+- ``-h``, ``--help``
+
+  Show help messages for Vaxpress and exit.
 
 ---------------------
 Input/Output Options
