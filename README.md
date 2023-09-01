@@ -53,9 +53,9 @@ GitHub repository and run using the following command:
 singularity run vaxpress-0.3.sif --help
 ```
 
-When using the Singularity image, both the input and output must be
-in your home directory for VaxPress to run without complicated directory
-binding configurations for Singularity.
+When using the Singularity image, both the input and output must
+be somewhere inside your home directory for VaxPress to run without
+complicated directory binding configurations for Singularity.
 
 # Usage
 
