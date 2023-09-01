@@ -13,7 +13,10 @@ including its options and algorithmic features, please refer to the
 
 ### pip
 
-You can install VaxPress via pip:
+You can install VaxPress via pip.  However, note that `rpy2` and
+`iCodon` aren't included as dependencies by default. If you want
+to utilize iCodon's predicted stability in the fitness function,
+you'll need to install these separately.
 
 ```bash
 # To install using pip
@@ -33,7 +36,9 @@ pip install .
 Alternatively, you may also install VaxPress via a conda package:
 
 ```bash
-conda install -c changlabsnu -c bioconda -c conda-forge vaxpress
+conda create -n vaxpress -c changlabsnu -c bioconda -c conda-forge vaxpress
+
+conda run -n vaxpress --live-stream vaxpress --help
 ```
 
 ### Singularity
