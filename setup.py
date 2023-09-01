@@ -54,7 +54,8 @@ setup(
     packages=['vaxpress', 'vaxpress.scoring', 'vaxpress.data'],
     package_data={'vaxpress': ['report_template/*']},
     data_files=[('share/vaxpress/examples',
-        ['examples/count_homotrimers.py', 'examples/restriction_site.py'])],
+        ['examples/count_homotrimers.py', 'examples/restriction_site.py',
+         'examples/adenosine_in_stems.py'])],
     entry_points={
         'console_scripts': [
             'vaxpress = vaxpress.__main__:run_vaxpress',
