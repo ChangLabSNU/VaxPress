@@ -36,8 +36,10 @@ pip install .
 Alternatively, you may also install VaxPress via a conda package:
 
 ```bash
+# Install VaxPress into a new conda environment
 conda create -n vaxpress -c changlabsnu -c bioconda -c conda-forge vaxpress
 
+# Run VaxPress
 conda run -n vaxpress --live-stream vaxpress --help
 ```
 
@@ -48,8 +50,12 @@ Once Singularity is installed, you can download the VaxPress image from this
 GitHub repository and run using the following command:
 
 ```bash
-singularity vaxpress.sif ...
+singularity run vaxpress-0.3.sif --help
 ```
+
+When using the Singularity image, both the input and output must be
+in your home directory for VaxPress to run without complicated directory
+binding configurations for Singularity.
 
 # Usage
 
