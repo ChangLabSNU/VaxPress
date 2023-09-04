@@ -59,9 +59,7 @@ To adjust it, run Vaxpress with random offspring numbers, and find proper value 
 Below is an example process with 10, 100, 1000 offsprings on CDS sequence length 1701 bp.
 
 * command line
-    :: 
-        vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --offsprings OFFSPRING -p 64
-     
+    vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --offsprings OFFSPRING -p 64
     (OFFSPRING = 10,100,1000)
 * Fitness changes over the iterations from report.html
     1. 10 offsprings
@@ -114,9 +112,7 @@ Below is examples for adjust initial mutation rate for all cases.
 **Case 1 : LinearDesign is NOT applied**
 
 * command line
-    :: 
-        vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE -p 64
-        
+    vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE -p 64 
     (MUT_RATE = 0.005,0.01,0.1,0.3)
 * Fitness changes over the iterations from report.html
     1. initial mutation rate = 0.005
@@ -161,9 +157,7 @@ So for enough number of iteration, initial mutation rate is not important.
 **Case 2 : LinearDesign is applied**
 
 * command line
-    ::
-        vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE --lineardesign 1 --lineardesign-dir /Directory/of/LinearDesign -p 64
-        
+    vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE --lineardesign 1 --lineardesign-dir /Directory/of/LinearDesign -p 64  
     (MUT_RATE = 0.005,0.01,0.1,0.3)
 * Fitness changes over the iterations from report.html
     1. initial mutation rate = 0.005
@@ -226,8 +220,7 @@ Default weights of the fitness functions which are used in example sample are as
     Firstly, just run without any special options.
     
     * command line
-        :: 
-            vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 -p 64
+        vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 -p 64
     * Metrics' Trend from `report.html`
     
     .. image:: _images/weightTuning1.png
@@ -243,8 +236,7 @@ Default weights of the fitness functions which are used in example sample are as
     Raise weight of MFE from defalut to 7.0
     
     * command line
-        :: 
-            vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 -p 64
+        vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 -p 64
     * Metrics' Trend from `report.html`
     
     .. image:: _images/weightTuning2.png
@@ -260,8 +252,7 @@ Default weights of the fitness functions which are used in example sample are as
     Raise weight of loop from defalut to 7.0
     
     * command line
-        :: 
-            vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 7 -p 64
+        vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 7 -p 64
     * Metrics' Trend from `report.html`
     
     .. image:: _images/weightTuning3.png
@@ -277,8 +268,7 @@ Default weights of the fitness functions which are used in example sample are as
     Raise weight of Ucount weight to 5 and lower loop weight to 5
     
     * command line
-        :: 
-            vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 5 --ucount-weight 5 -p 64
+        vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 5 --ucount-weight 5 -p 64
     * Metrics' Trend from `report.html`
     .. image:: _images/weightTuning4.png
         :width: 200px
