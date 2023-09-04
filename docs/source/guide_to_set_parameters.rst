@@ -11,12 +11,14 @@ Thus, to have an output sequence sufficiently converged, at least 500 iterations
 It is recommended to increase the number of iterations if the optimization process ends before sufficient convergence.
 
 Below is an example process with 500, 1000, 1500 iterations on CDS sequence length 1701 bp.
+
 * command line
      vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --iterations ITERATION -p 64
-  (ITERATION = 500,1000,1500)
+     (ITERATION = 500,1000,1500)
+     
 * Fitness changes over the iterations from report.html
     1. 500 iterations
-    .. image:: _images/500_iterations.png
+    .. image:: _images/iteration500.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -25,7 +27,7 @@ Below is an example process with 500, 1000, 1500 iterations on CDS sequence leng
     In this case, fitness score didn't reach plateau after 500 iterations, so it is recommended to increase the number of iterations.
 
     2. 1000 iterations
-    .. image:: _images/1000_iterations.png
+    .. image:: _images/iteration1000.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -34,7 +36,7 @@ Below is an example process with 500, 1000, 1500 iterations on CDS sequence leng
     In this case, fitness score didn't reach plateau after 1000 iterations, so it is recommended to increase the number of iterations.
 
     3. 1500 iterations
-    .. image:: _images/1000_iterations.png
+    .. image:: _images/iteration1500.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -52,12 +54,13 @@ Number of offspring is one of the key factors for genetic algorithm. But too hig
 To adjust it, run Vaxpress with random offspring numbers, and find proper value that makes no further difference.
 
 Below is an example process with 10, 100, 1000 offsprings on CDS sequence length 1701 bp.
+
 * command line
      vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --offsprings OFFSPRING -p 64
-  (OFFSPRING = 10,100,1000)
+     (OFFSPRING = 10,100,1000)
 * Fitness changes over the iterations from report.html
     1. 10 offsprings
-    .. image:: _images/500_iterations.png
+    .. image:: _images/offspring10.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -65,7 +68,7 @@ Below is an example process with 10, 100, 1000 offsprings on CDS sequence length
         :align: center
 
     2. 100 offsprings
-    .. image:: _images/500_iterations.png
+    .. image:: _images/offspring100.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -73,7 +76,7 @@ Below is an example process with 10, 100, 1000 offsprings on CDS sequence length
         :align: center
 
     3. 1000 offsprings
-    .. image:: _images/500_iterations.png
+    .. image:: _images/offspring1000.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -101,12 +104,13 @@ It's because result from LinearDesign is already optimized, so if the rate is to
 Below is examples for adjust initial mutation rate for all cases.
 
 **Case 1 : LinearDesign is NOT applied**
+
 * command line
      vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE -p 64
-  (MUT_RATE = 0.005,0.01,0.1,0.3)
+     (MUT_RATE = 0.005,0.01,0.1,0.3)
 * Fitness changes over the iterations from report.html
     1. initial mutation rate = 0.005
-    .. image:: _images/exmaple_on_initial_mutation_rate_0.005.png
+    .. image:: _images/nonLD_mutRate0.005.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -114,7 +118,7 @@ Below is examples for adjust initial mutation rate for all cases.
         :align: center
 
     2. initial mutation rate = 0.01
-    .. image:: _images/exmaple_on_initial_mutation_rate_0.01.png
+    .. image:: _images/nonLD_mutRate0.01.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -122,7 +126,7 @@ Below is examples for adjust initial mutation rate for all cases.
         :align: center
 
     3. initial mutation rate = 0.1
-    .. image:: _images/exmaple_on_initial_mutation_rate_0.1.png
+    .. image:: _images/nonLD_mutRate0.1.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -130,7 +134,7 @@ Below is examples for adjust initial mutation rate for all cases.
         :align: center
 
     4. initial mutation rate = 0.3
-    .. image:: _images/exmaple_on_initial_mutation_rate_0.3.png
+    .. image:: _images/nonLD_mutRate0.3.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -141,12 +145,13 @@ Below is examples for adjust initial mutation rate for all cases.
     So for enough number of iteration, initial mutation rate is not important.
 
 **Case 2 : LinearDesign is applied**
+
 * command line
      vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE --lineardesign 1 --lineardesign-dir /Directory/of/LinearDesign -p 64
-  (MUT_RATE = 0.005,0.01,0.1,0.3)
+     (MUT_RATE = 0.005,0.01,0.1,0.3)
 * Fitness changes over the iterations from report.html
 1. initial mutation rate = 0.005
-    .. image:: _images/exmaple_on_initial_mutation_rate_0.005_LD1.png
+    .. image:: _images/LD1_mutRate0.005.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -154,7 +159,7 @@ Below is examples for adjust initial mutation rate for all cases.
         :align: center
 
     2. initial mutation rate = 0.01
-    .. image:: _images/exmaple_on_initial_mutation_rate_0.01_LD1.png
+    .. image:: _images/LD1_mutRate0.01.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -162,7 +167,7 @@ Below is examples for adjust initial mutation rate for all cases.
         :align: center
 
     3. initial mutation rate = 0.1
-    .. image:: _images/exmaple_on_initial_mutation_rate_0.1_LD1.png
+    .. image:: _images/LD1_mutRate0.1.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -170,7 +175,7 @@ Below is examples for adjust initial mutation rate for all cases.
         :align: center
 
     4. initial mutation rate = 0.3
-    .. image:: _images/exmaple_on_initial_mutation_rate_0.3_LD1.png
+    .. image:: _images/LD1_mutRate0.3.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -191,17 +196,18 @@ Weights of many scoring functions are depending on user’s own purpose.
 To adjust them properly, you might refer to 4 steps below which are example for adjusting weights. 
 
 **FYI**
+
 Default weights of the fitness functions which are used in example sample are as follows:
 - MFE: 3.0
 - U count: 3.0
 - loop weight: .15
 
 1. Check Naive Optimizing Process
- Firstly, just run without any special options.
+    Firstly, just run without any special options.
     * command line
      vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 -p 64
     * Metrics' Trend from `report.html`
-    .. image:: _images/exmaple_on_metrics_move.png
+    .. image:: _images/weightTuning1.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -215,7 +221,7 @@ Default weights of the fitness functions which are used in example sample are as
     * command line
      vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 -p 64
     * Metrics' Trend from `report.html`
-    .. image:: _images/exmaple_on_metrics_move.png
+    .. image:: _images/weightTuning2.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -229,7 +235,7 @@ Default weights of the fitness functions which are used in example sample are as
   * command line
    vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 7 -p 64
   * Metrics' Trend from `report.html`
-    .. image:: _images/exmaple_on_metrics_move.png
+    .. image:: _images/weightTuning3.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -243,7 +249,7 @@ Default weights of the fitness functions which are used in example sample are as
   * command line
    vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 5 --ucount-weight 5 -p 64
   * Metrics' Trend from `report.html`
-    .. image:: _images/exmaple_on_metrics_move.png
+    .. image:: _images/weightTuning4.png
         :width: 200px
         :height: 100px
         :alt: alternate text
@@ -255,5 +261,5 @@ Default weights of the fitness functions which are used in example sample are as
     1. Take charge of slight elevation of `MFE`. 
     2. Raise weight of `MFE` more.
 
-    By doing choice 2, there might be several deteriorations for some other metrics.
+    By doing second choice, there might be several deteriorations for some other metrics.
     You can keep adjusting them just like above processes. It’s on your own purpose for using Vaxpress. 
