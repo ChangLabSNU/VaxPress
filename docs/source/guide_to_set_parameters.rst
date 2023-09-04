@@ -19,6 +19,7 @@ Below is an example process with 500, 1000, 1500 iterations on CDS sequence leng
      
 * Fitness changes over the iterations from report.html
     1. 500 iterations
+    
     .. image:: _images/iteration500.png
         :width: 200px
         :height: 100px
@@ -28,6 +29,7 @@ Below is an example process with 500, 1000, 1500 iterations on CDS sequence leng
     In this case, fitness score didn't reach plateau after 500 iterations, so it is recommended to increase the number of iterations.
 
     2. 1000 iterations
+    
     .. image:: _images/iteration1000.png
         :width: 200px
         :height: 100px
@@ -37,6 +39,7 @@ Below is an example process with 500, 1000, 1500 iterations on CDS sequence leng
     In this case, fitness score didn't reach plateau after 1000 iterations, so it is recommended to increase the number of iterations.
 
     3. 1500 iterations
+    
     .. image:: _images/iteration1500.png
         :width: 200px
         :height: 100px
@@ -62,6 +65,7 @@ Below is an example process with 10, 100, 1000 offsprings on CDS sequence length
      (OFFSPRING = 10,100,1000)
 * Fitness changes over the iterations from report.html
     1. 10 offsprings
+    
     .. image:: _images/offspring10.png
         :width: 200px
         :height: 100px
@@ -70,6 +74,7 @@ Below is an example process with 10, 100, 1000 offsprings on CDS sequence length
         :align: center
 
     2. 100 offsprings
+    
     .. image:: _images/offspring100.png
         :width: 200px
         :height: 100px
@@ -78,6 +83,7 @@ Below is an example process with 10, 100, 1000 offsprings on CDS sequence length
         :align: center
 
     3. 1000 offsprings
+    
     .. image:: _images/offspring1000.png
         :width: 200px
         :height: 100px
@@ -113,6 +119,7 @@ Below is examples for adjust initial mutation rate for all cases.
      (MUT_RATE = 0.005,0.01,0.1,0.3)
 * Fitness changes over the iterations from report.html
     1. initial mutation rate = 0.005
+    
     .. image:: _images/nonLD_mutRate0.005.png
         :width: 200px
         :height: 100px
@@ -121,6 +128,7 @@ Below is examples for adjust initial mutation rate for all cases.
         :align: center
 
     2. initial mutation rate = 0.01
+    
     .. image:: _images/nonLD_mutRate0.01.png
         :width: 200px
         :height: 100px
@@ -129,6 +137,7 @@ Below is examples for adjust initial mutation rate for all cases.
         :align: center
 
     3. initial mutation rate = 0.1
+    
     .. image:: _images/nonLD_mutRate0.1.png
         :width: 200px
         :height: 100px
@@ -137,6 +146,7 @@ Below is examples for adjust initial mutation rate for all cases.
         :align: center
 
     4. initial mutation rate = 0.3
+    
     .. image:: _images/nonLD_mutRate0.3.png
         :width: 200px
         :height: 100px
@@ -153,7 +163,8 @@ Below is examples for adjust initial mutation rate for all cases.
      vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE --lineardesign 1 --lineardesign-dir /Directory/of/LinearDesign -p 64
      (MUT_RATE = 0.005,0.01,0.1,0.3)
 * Fitness changes over the iterations from report.html
-1. initial mutation rate = 0.005
+    1. initial mutation rate = 0.005
+    
     .. image:: _images/LD1_mutRate0.005.png
         :width: 200px
         :height: 100px
@@ -162,6 +173,7 @@ Below is examples for adjust initial mutation rate for all cases.
         :align: center
 
     2. initial mutation rate = 0.01
+    
     .. image:: _images/LD1_mutRate0.01.png
         :width: 200px
         :height: 100px
@@ -170,6 +182,7 @@ Below is examples for adjust initial mutation rate for all cases.
         :align: center
 
     3. initial mutation rate = 0.1
+    
     .. image:: _images/LD1_mutRate0.1.png
         :width: 200px
         :height: 100px
@@ -178,6 +191,7 @@ Below is examples for adjust initial mutation rate for all cases.
         :align: center
 
     4. initial mutation rate = 0.3
+    
     .. image:: _images/LD1_mutRate0.3.png
         :width: 200px
         :height: 100px
@@ -210,6 +224,7 @@ Default weights of the fitness functions which are used in example sample are as
     * command line
      vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 -p 64
     * Metrics' Trend from `report.html`
+    
     .. image:: _images/weightTuning1.png
         :width: 200px
         :height: 100px
@@ -224,6 +239,7 @@ Default weights of the fitness functions which are used in example sample are as
     * command line
      vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 -p 64
     * Metrics' Trend from `report.html`
+    
     .. image:: _images/weightTuning2.png
         :width: 200px
         :height: 100px
@@ -235,9 +251,10 @@ Default weights of the fitness functions which are used in example sample are as
 
 3. Adjusting loop weight (`--loop-weight`)
   Raise weight of loop from defalut to 7.0
-  * command line
-   vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 7 -p 64
-  * Metrics' Trend from `report.html`
+    * command line
+     vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 7 -p 64
+    * Metrics' Trend from `report.html`
+    
     .. image:: _images/weightTuning3.png
         :width: 200px
         :height: 100px
@@ -249,9 +266,9 @@ Default weights of the fitness functions which are used in example sample are as
 
 4. Compromising between `loops` and `ucount`
   Raise weight of Ucount weight to 5 and lower loop weight to 5
-  * command line
-   vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 5 --ucount-weight 5 -p 64
-  * Metrics' Trend from `report.html`
+    * command line
+     vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 5 --ucount-weight 5 -p 64
+    * Metrics' Trend from `report.html`
     .. image:: _images/weightTuning4.png
         :width: 200px
         :height: 100px
