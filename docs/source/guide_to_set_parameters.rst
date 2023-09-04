@@ -14,6 +14,7 @@ Below is an example process with 500, 1000, 1500 iterations on CDS sequence leng
 
 * command line
      vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --iterations ITERATION -p 64
+     
      (ITERATION = 500,1000,1500)
      
 * Fitness changes over the iterations from report.html
@@ -57,6 +58,7 @@ Below is an example process with 10, 100, 1000 offsprings on CDS sequence length
 
 * command line
      vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --offsprings OFFSPRING -p 64
+     
      (OFFSPRING = 10,100,1000)
 * Fitness changes over the iterations from report.html
     1. 10 offsprings
@@ -107,6 +109,7 @@ Below is examples for adjust initial mutation rate for all cases.
 
 * command line
      vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE -p 64
+     
      (MUT_RATE = 0.005,0.01,0.1,0.3)
 * Fitness changes over the iterations from report.html
     1. initial mutation rate = 0.005
