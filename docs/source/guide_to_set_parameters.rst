@@ -221,6 +221,7 @@ Default weights of the fitness functions which are used in example sample are as
 
 1. Check Naive Optimizing Process
     Firstly, just run without any special options.
+    
     * command line
      vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 -p 64
     * Metrics' Trend from `report.html`
@@ -236,6 +237,7 @@ Default weights of the fitness functions which are used in example sample are as
 
 2. Adjusting MFE weight (`--mfe-weight`)
   Raise weight of MFE from defalut to 7.0
+    
     * command line
      vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 -p 64
     * Metrics' Trend from `report.html`
@@ -251,6 +253,7 @@ Default weights of the fitness functions which are used in example sample are as
 
 3. Adjusting loop weight (`--loop-weight`)
   Raise weight of loop from defalut to 7.0
+    
     * command line
      vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 7 -p 64
     * Metrics' Trend from `report.html`
@@ -266,6 +269,7 @@ Default weights of the fitness functions which are used in example sample are as
 
 4. Compromising between `loops` and `ucount`
   Raise weight of Ucount weight to 5 and lower loop weight to 5
+    
     * command line
      vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 5 --ucount-weight 5 -p 64
     * Metrics' Trend from `report.html`
