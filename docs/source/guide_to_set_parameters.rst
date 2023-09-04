@@ -13,9 +13,7 @@ It is recommended to increase the number of iterations if the optimization proce
 Below is an example process with 500, 1000, 1500 iterations on CDS sequence length 1701 bp.
 
 * command line
-    .. code-block:: html
     vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --iterations ITERATION -p 64
-        
     (ITERATION = 500,1000,1500)
      
 * Fitness changes over the iterations from report.html
