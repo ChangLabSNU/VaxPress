@@ -14,9 +14,7 @@ Below is an example process with 500, 1000, 1500 iterations on CDS sequence leng
 
 * command line
     .. code-block:: html
-    :linenos:
-
-    <h1>vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --iterations ITERATION -p 64</h1>
+    vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --iterations ITERATION -p 64
         
     (ITERATION = 500,1000,1500)
      
