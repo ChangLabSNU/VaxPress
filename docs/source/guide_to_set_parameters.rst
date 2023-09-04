@@ -13,9 +13,11 @@ It is recommended to increase the number of iterations if the optimization proce
 Below is an example process with 500, 1000, 1500 iterations on CDS sequence length 1701 bp.
 
 * command line
-    :: 
-        vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --iterations ITERATION -p 64
-     
+    .. code-block:: html
+    :linenos:
+
+    <h1>vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --iterations ITERATION -p 64</h1>
+        
     (ITERATION = 500,1000,1500)
      
 * Fitness changes over the iterations from report.html
@@ -115,101 +117,101 @@ Below is examples for adjust initial mutation rate for all cases.
 
 **Case 1 : LinearDesign is NOT applied**
 
-    * command line
-        :: 
-            vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE -p 64
+* command line
+    :: 
+        vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE -p 64
         
-        (MUT_RATE = 0.005,0.01,0.1,0.3)
-    * Fitness changes over the iterations from report.html
-        1. initial mutation rate = 0.005
+    (MUT_RATE = 0.005,0.01,0.1,0.3)
+* Fitness changes over the iterations from report.html
+    1. initial mutation rate = 0.005
         
-        .. image:: _images/nonLD_mutRate0.005.png
-            :width: 200px
-            :height: 100px
-            :alt: alternate text
-            :scale: 50 %
-            :align: center
+    .. image:: _images/nonLD_mutRate0.005.png
+        :width: 200px
+        :height: 100px
+        :alt: alternate text
+        :scale: 50 %
+        :align: center
 
-        2. initial mutation rate = 0.01
+    2. initial mutation rate = 0.01
         
-        .. image:: _images/nonLD_mutRate0.01.png
-            :width: 200px
-            :height: 100px
-            :alt: alternate text
-            :scale: 50 %
-            :align: center
+    .. image:: _images/nonLD_mutRate0.01.png
+        :width: 200px
+        :height: 100px
+        :alt: alternate text
+        :scale: 50 %
+        :align: center
 
-        3. initial mutation rate = 0.1
+    3. initial mutation rate = 0.1
         
-        .. image:: _images/nonLD_mutRate0.1.png
-            :width: 200px
-            :height: 100px
-            :alt: alternate text
-            :scale: 50 %
-            :align: center
+    .. image:: _images/nonLD_mutRate0.1.png
+        :width: 200px
+        :height: 100px
+        :alt: alternate text
+        :scale: 50 %
+        :align: center
 
-        4. initial mutation rate = 0.3
+    4. initial mutation rate = 0.3
         
-        .. image:: _images/nonLD_mutRate0.3.png
-            :width: 200px
-            :height: 100px
-            :alt: alternate text
-            :scale: 50 %
-            :align: center
+    .. image:: _images/nonLD_mutRate0.3.png
+        :width: 200px
+        :height: 100px
+        :alt: alternate text
+        :scale: 50 %
+        :align: center
 
-    The level of fitness score at convergence is not affected by initial mutation rate.
-    So for enough number of iteration, initial mutation rate is not important.
+The level of fitness score at convergence is not affected by initial mutation rate.
+So for enough number of iteration, initial mutation rate is not important.
 
 **Case 2 : LinearDesign is applied**
 
-    * command line
-        ::
-            vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE --lineardesign 1 --lineardesign-dir /Directory/of/LinearDesign -p 64
+* command line
+    ::
+        vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE --lineardesign 1 --lineardesign-dir /Directory/of/LinearDesign -p 64
         
-        (MUT_RATE = 0.005,0.01,0.1,0.3)
-    * Fitness changes over the iterations from report.html
-        1. initial mutation rate = 0.005
-        
-        .. image:: _images/LD1_mutRate0.005.png
-            :width: 200px
-            :height: 100px
-            :alt: alternate text
-            :scale: 50 %
-            :align: center
-
-        2. initial mutation rate = 0.01
-        
-        .. image:: _images/LD1_mutRate0.01.png
-            :width: 200px
-            :height: 100px
-            :alt: alternate text
-            :scale: 50 %
-            :align: center
-
-        3. initial mutation rate = 0.1
-        
-        .. image:: _images/LD1_mutRate0.1.png
-            :width: 200px
-            :height: 100px
-            :alt: alternate text
-            :scale: 50 %
-            :align: center
-
-        4. initial mutation rate = 0.3
-        
-        .. image:: _images/LD1_mutRate0.3.png
-            :width: 200px
-            :height: 100px
-            :alt: alternate text
-            :scale: 50 %
-            :align: center
+    (MUT_RATE = 0.005,0.01,0.1,0.3)
+* Fitness changes over the iterations from report.html
+    1. initial mutation rate = 0.005
     
-    For the high initial mutation rate(0.1,0.3), the fitness score varies a lot with no trend. 
-    Also, for the low initial mutation rate (0.01,0.005), the lower the initial mutation rate, the higher the fitness score is.
-    Moreover, lower initial mutation rate(0.005) make faster improvement. 
+    .. image:: _images/LD1_mutRate0.005.png
+        :width: 200px
+        :height: 100px
+        :alt: alternate text
+        :scale: 50 %
+        :align: center
 
-    Thus, low initial mutation rate is recommended for the case of LinearDesign applied.
-    After setting iteration number, you might try initial mutation rate under 0.01 and observe the fitness score to set proper rate.
+    2. initial mutation rate = 0.01
+        
+    .. image:: _images/LD1_mutRate0.01.png
+        :width: 200px
+        :height: 100px
+        :alt: alternate text
+        :scale: 50 %
+        :align: center
+
+    3. initial mutation rate = 0.1
+        
+    .. image:: _images/LD1_mutRate0.1.png
+        :width: 200px
+        :height: 100px
+        :alt: alternate text
+        :scale: 50 %
+        :align: center
+
+    4. initial mutation rate = 0.3
+        
+    .. image:: _images/LD1_mutRate0.3.png
+        :width: 200px
+        :height: 100px
+        :alt: alternate text
+        :scale: 50 %
+        :align: center
+    
+For the high initial mutation rate(0.1,0.3), the fitness score varies a lot with no trend. 
+Also, for the low initial mutation rate (0.01,0.005), the lower the initial mutation rate, the higher the fitness score is.
+Moreover, lower initial mutation rate(0.005) make faster improvement. 
+
+Thus, low initial mutation rate is recommended for the case of LinearDesign applied.
+After setting iteration number, you might try initial mutation rate under 0.01 and observe the fitness score to set proper rate.
 
 ----------------------------------
 Weights of the Fitness Functions
