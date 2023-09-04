@@ -13,11 +13,12 @@ It is recommended to increase the number of iterations if the optimization proce
 Below is an example process with 500, 1000, 1500 iterations on CDS sequence length 1701 bp.
 
 * command line
-     vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --iterations ITERATION -p 64
+    ::vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --iterations ITERATION -p 64
      
      (ITERATION = 500,1000,1500)
      
 * Fitness changes over the iterations from report.html
+
     1. 500 iterations
     
     .. image:: _images/iteration500.png
@@ -60,7 +61,7 @@ To adjust it, run Vaxpress with random offspring numbers, and find proper value 
 Below is an example process with 10, 100, 1000 offsprings on CDS sequence length 1701 bp.
 
 * command line
-     vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --offsprings OFFSPRING -p 64
+    ::vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --offsprings OFFSPRING -p 64
      
      (OFFSPRING = 10,100,1000)
 * Fitness changes over the iterations from report.html
@@ -113,91 +114,92 @@ Below is examples for adjust initial mutation rate for all cases.
 
 **Case 1 : LinearDesign is NOT applied**
 
-* command line
-     vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE -p 64
-     
-     (MUT_RATE = 0.005,0.01,0.1,0.3)
-* Fitness changes over the iterations from report.html
-    1. initial mutation rate = 0.005
-    
-    .. image:: _images/nonLD_mutRate0.005.png
-        :width: 200px
-        :height: 100px
-        :alt: alternate text
-        :scale: 50 %
-        :align: center
+    * command line
+        ::vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE -p 64
+        
+        (MUT_RATE = 0.005,0.01,0.1,0.3)
+    * Fitness changes over the iterations from report.html
+        1. initial mutation rate = 0.005
+        
+        .. image:: _images/nonLD_mutRate0.005.png
+            :width: 200px
+            :height: 100px
+            :alt: alternate text
+            :scale: 50 %
+            :align: center
 
-    2. initial mutation rate = 0.01
-    
-    .. image:: _images/nonLD_mutRate0.01.png
-        :width: 200px
-        :height: 100px
-        :alt: alternate text
-        :scale: 50 %
-        :align: center
+        2. initial mutation rate = 0.01
+        
+        .. image:: _images/nonLD_mutRate0.01.png
+            :width: 200px
+            :height: 100px
+            :alt: alternate text
+            :scale: 50 %
+            :align: center
 
-    3. initial mutation rate = 0.1
-    
-    .. image:: _images/nonLD_mutRate0.1.png
-        :width: 200px
-        :height: 100px
-        :alt: alternate text
-        :scale: 50 %
-        :align: center
+        3. initial mutation rate = 0.1
+        
+        .. image:: _images/nonLD_mutRate0.1.png
+            :width: 200px
+            :height: 100px
+            :alt: alternate text
+            :scale: 50 %
+            :align: center
 
-    4. initial mutation rate = 0.3
-    
-    .. image:: _images/nonLD_mutRate0.3.png
-        :width: 200px
-        :height: 100px
-        :alt: alternate text
-        :scale: 50 %
-        :align: center
+        4. initial mutation rate = 0.3
+        
+        .. image:: _images/nonLD_mutRate0.3.png
+            :width: 200px
+            :height: 100px
+            :alt: alternate text
+            :scale: 50 %
+            :align: center
 
     The level of fitness score at convergence is not affected by initial mutation rate.
     So for enough number of iteration, initial mutation rate is not important.
 
 **Case 2 : LinearDesign is applied**
 
-* command line
-     vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE --lineardesign 1 --lineardesign-dir /Directory/of/LinearDesign -p 64
-     (MUT_RATE = 0.005,0.01,0.1,0.3)
-* Fitness changes over the iterations from report.html
-    1. initial mutation rate = 0.005
-    
-    .. image:: _images/LD1_mutRate0.005.png
-        :width: 200px
-        :height: 100px
-        :alt: alternate text
-        :scale: 50 %
-        :align: center
+    * command line
+        ::vaxpress -i /input/fastaFile/directory/example.fa -o output/directory/ --initial-mutation-rate MUT_RATE --lineardesign 1 --lineardesign-dir /Directory/of/LinearDesign -p 64
+        
+        (MUT_RATE = 0.005,0.01,0.1,0.3)
+    * Fitness changes over the iterations from report.html
+        1. initial mutation rate = 0.005
+        
+        .. image:: _images/LD1_mutRate0.005.png
+            :width: 200px
+            :height: 100px
+            :alt: alternate text
+            :scale: 50 %
+            :align: center
 
-    2. initial mutation rate = 0.01
-    
-    .. image:: _images/LD1_mutRate0.01.png
-        :width: 200px
-        :height: 100px
-        :alt: alternate text
-        :scale: 50 %
-        :align: center
+        2. initial mutation rate = 0.01
+        
+        .. image:: _images/LD1_mutRate0.01.png
+            :width: 200px
+            :height: 100px
+            :alt: alternate text
+            :scale: 50 %
+            :align: center
 
-    3. initial mutation rate = 0.1
-    
-    .. image:: _images/LD1_mutRate0.1.png
-        :width: 200px
-        :height: 100px
-        :alt: alternate text
-        :scale: 50 %
-        :align: center
+        3. initial mutation rate = 0.1
+        
+        .. image:: _images/LD1_mutRate0.1.png
+            :width: 200px
+            :height: 100px
+            :alt: alternate text
+            :scale: 50 %
+            :align: center
 
-    4. initial mutation rate = 0.3
-    
-    .. image:: _images/LD1_mutRate0.3.png
-        :width: 200px
-        :height: 100px
-        :alt: alternate text
-        :scale: 50 %
-        :align: center
+        4. initial mutation rate = 0.3
+        
+        .. image:: _images/LD1_mutRate0.3.png
+            :width: 200px
+            :height: 100px
+            :alt: alternate text
+            :scale: 50 %
+            :align: center
     
     For the high initial mutation rate(0.1,0.3), the fitness score varies a lot with no trend. 
     Also, for the low initial mutation rate (0.01,0.005), the lower the initial mutation rate, the higher the fitness score is.
@@ -223,7 +225,7 @@ Default weights of the fitness functions which are used in example sample are as
     Firstly, just run without any special options.
     
     * command line
-     vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 -p 64
+    ::vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 -p 64
     * Metrics' Trend from `report.html`
     
     .. image:: _images/weightTuning1.png
@@ -236,10 +238,10 @@ Default weights of the fitness functions which are used in example sample are as
     There is elevation of `MFE` value. Since `MFE` value represents overall stability of structure, you might want to lower it.
 
 2. Adjusting MFE weight (`--mfe-weight`)
-  Raise weight of MFE from defalut to 7.0
+    Raise weight of MFE from defalut to 7.0
     
     * command line
-     vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 -p 64
+    ::vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 -p 64
     * Metrics' Trend from `report.html`
     
     .. image:: _images/weightTuning2.png
@@ -252,7 +254,7 @@ Default weights of the fitness functions which are used in example sample are as
     Now loops has increased, and you might want to keep the value low. 
 
 3. Adjusting loop weight (`--loop-weight`)
-  Raise weight of loop from defalut to 7.0
+    Raise weight of loop from defalut to 7.0
     
     * command line
      vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 7 -p 64
@@ -268,7 +270,7 @@ Default weights of the fitness functions which are used in example sample are as
     Now we have problem with `Ucount`. So let’s compromise between `loops` and `Ucount`.
 
 4. Compromising between `loops` and `ucount`
-  Raise weight of Ucount weight to 5 and lower loop weight to 5
+    Raise weight of Ucount weight to 5 and lower loop weight to 5
     
     * command line
      vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 5 --ucount-weight 5 -p 64
