@@ -221,6 +221,7 @@ Default weights of the fitness functions which are used in example sample are as
     
     * command line
         vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 -p 64
+    
     * Metrics' Trend from `report.html`
     
     .. image:: _images/weightTuning1.png
@@ -237,6 +238,7 @@ Default weights of the fitness functions which are used in example sample are as
     
     * command line
         vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 -p 64
+    
     * Metrics' Trend from `report.html`
     
     .. image:: _images/weightTuning2.png
@@ -253,6 +255,7 @@ Default weights of the fitness functions which are used in example sample are as
     
     * command line
         vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 7 -p 64
+    
     * Metrics' Trend from `report.html`
     
     .. image:: _images/weightTuning3.png
@@ -269,6 +272,7 @@ Default weights of the fitness functions which are used in example sample are as
     
     * command line
         vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 --mfe-weight 7 --loop-weight 5 --ucount-weight 5 -p 64
+    
     * Metrics' Trend from `report.html`
     .. image:: _images/weightTuning4.png
         :width: 200px
