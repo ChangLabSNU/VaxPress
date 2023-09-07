@@ -181,6 +181,17 @@ class CDSEvolutionChamber:
         self.printmsg()
 
     def mutate_population(self, iter_no0: int) -> None:
+        self.expected_total_mutations = (
+            self.mutantgen.compute_expected_mutations(self.mutation_rate))
+        if self.expected_total_mutations < self.stop_threshold:
+            self.printmsg('==> Stopping: expected mutation reaches the minimum')
+            raise StopIteration
+
+        self.printmsg(hbar)
+        self.printmsg(f'Iteration {iter_no0+1}/{self.iteropts.n_iterations}  --',
+                        f'  mut_rate: {self.mutation_rate:.5f} --',
+                        f'E(muts): {self.expected_total_mutations:.1f}')
+
         nextgeneration = self.population[:]
 
         choices = None
@@ -229,18 +240,11 @@ class CDSEvolutionChamber:
                 iter_no = i + 1
                 n_parents = len(self.population)
 
-                self.expected_total_mutations = (
-                    self.mutantgen.compute_expected_mutations(self.mutation_rate))
-                if self.expected_total_mutations < self.stop_threshold:
-                    self.printmsg('==> Stopping: expected mutation reaches the minimum')
+                try:
+                    self.mutate_population(i)
+                except StopIteration:
                     break
 
-                self.printmsg(hbar)
-                self.printmsg(f'Iteration {iter_no}/{self.iteropts.n_iterations}  --',
-                              f'  mut_rate: {self.mutation_rate:.5f} --',
-                              f'E(muts): {self.expected_total_mutations:.1f}')
-
-                self.mutate_population(i)
                 total_scores, scores, metrics, foldings = self.seqeval.evaluate(
                                                     self.flatten_seqs, executor)
                 if total_scores is None:
