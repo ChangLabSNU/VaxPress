@@ -37,18 +37,18 @@ This ensures efficient optimization as there's a minimal likelihood that a bette
 
 .. Note::
     Figures below demonstrates the effect of initial mutation rate on optimization process when the starting sequence is optimized with LinearDesign(λ = 0).
-    .. image:: _images/mut_rate0.1.png
-        :width: 200px
-        :height: 100px
-        :alt: alternate text
-        :scale: 50 %
+    
+    .. image:: _images/mutrate0.1.png
+        :width: 500px
+        :height: 350px
+        :alt: initial mutation rate 0.1
         :align: center
     When initial mutation rate is set as a default value(0.1), survivor sequence largely remains unchanged for initial several hundred iterations, until the mutation rate is sufficiently decreased by winddown.
-    .. image:: _images/mut_rate0.01.png
-        :width: 200px
-        :height: 100px
-        :alt: alternate text
-        :scale: 50 %
+    
+    .. image:: _images/mutrate0.01.png
+        :width: 500px
+        :height: 350px
+        :alt: initial mutation rate 0.01
         :align: center
     When initial mutation rate is adjusted to 0.01, the sequence can escape from initial MFE-optimized sequence earlier to be further optimized based on the given VaxPress evaluation metrics.
 
