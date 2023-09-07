@@ -15,11 +15,12 @@ VaxPress is a python-based tool.
 To install VaxPress via ``pip`` or ``conda``, you will need a python installation (version >= ??).
 
 .. note::
-    If you install VaxPress via pip, ``R``, ``rpy2`` and ``iCodon`` aren't included as dependencies.
+    If you install VaxPress via pip, ``R``, ``rpy2`` (version >= 3.0) and ``iCodon`` aren't included as dependencies.
     If you want to utilize iCodon's predicted stability in the fitness function, you'll need to install these separately.
     For iCodon installation, see `iCodon's GitHub page <https://github.com/santiago1234/iCodon/>`_.
 
 To install via ``singularity``, you will need to install `Singularity CE <https://sylabs.io/singularity/>`_ first.
+
 To use ``--lineardesign`` options, `LinearDesign <https://github.com/LinearDesignSoftware/LinearDesign>`_ installation is required apart from VaxPress installation.
 
 
@@ -140,13 +141,13 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   guide_to_set_parameters
    algorithmic_details
    adding_scorefunc
    running_with_lineardesign
    execution_input_output_options
    optimization_parameters
    fitness_function_parameters
+   guide_to_set_parameters
    troubleshooting
 
 ------------------

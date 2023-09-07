@@ -31,7 +31,7 @@ Since reinstalling makes the new scoring function incorporated as part of VaxPre
 this method is recommended when the new scoring function is to be used continuously.
 
 1) First, git clone VaxPress directory
-2) Add the scoring function .py file inside `VaxPress/vaxpress/scoring/` directory.
+2) Add the scoring function .py file inside ``VaxPress/vaxpress/scoring/`` directory.
 3) Reinstall VaxPress (``pip install .`` from the root directory of VaxPress.).
 
 .. code-block:: bash

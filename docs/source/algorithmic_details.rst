@@ -26,7 +26,9 @@ Composition of Scoring Function
 
 Vaxpress' scoring function consists of three main areas, each considering factors that can influence the optimization result:
 
-**1. Codon Usage:**
+====================
+1. Codon Usage
+====================
 
 Codon usage bias, the frequency difference of synonymous codons in a coding sequence, significantly affects mRNA stability and protein production. Vaxpress aims to recommend sequences for mRNA vaccine development by reflecting the actual *in vivo* frequency of codon usage. This area includes:
 
@@ -42,7 +44,9 @@ In addition, Vaxpress obtains raw data of codon RSCU values and codon pair score
     :scale: 50
     :alt: bicodon usage.
 
-**2. RNA Folding:**
+====================
+2. RNA Folding
+====================
 
 For stable mRNA vaccine development, RNA structural stability is crucial. Vaxpress incorporates scoring factors related to RNA folding, including:
 
@@ -60,7 +64,9 @@ For stable mRNA vaccine development, RNA structural stability is crucial. Vaxpre
     :scale: 50
     :alt: stem length.
 
-**3. Sequential Features:**
+===========================
+3. Sequential Features
+===========================
 
 This area includes various factors that influence RNA sequence stability and immunogenicity, such as:
 

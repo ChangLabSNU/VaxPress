@@ -28,7 +28,6 @@ The ``-—conservative-start`` :ref:`option <label_constart>` tackles this by fo
 
 Also, given that LinearDesign's outputs are already quite optimal, the ``--initial-mutation-rate`` can be reduced to 0.01. 
 This ensures efficient optimization as there's a minimal likelihood that a better mutation would emerge with a higher mutation rate.
-
 ::
     # Running VaxPress with LinearDesign
     vaxpress -i spike.fa -o results-spike --processes 36 \
