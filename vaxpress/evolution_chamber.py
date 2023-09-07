@@ -141,6 +141,11 @@ class CDSEvolutionChamber:
             self.mutantgen.randomize_initial_codons()
         self.population = [self.mutantgen.initial_codons]
         self.population_foldings = [None]
+        self.population_sources = [None]
+        parent_no_length = int(np.log10(self.iteropts.n_survivors)) + 1
+        self.format_parent_no = lambda n, length=parent_no_length: (
+            format(n, f'{length}d').replace(' ', '-')
+            if n is not None else '-' * length)
 
         self.mutation_rate = self.iteropts.initial_mutation_rate
         self.full_scan_interval = self.execopts.full_scan_interval
@@ -205,6 +210,7 @@ class CDSEvolutionChamber:
                         f'E(muts): {self.expected_total_mutations:.1f}')
 
         nextgeneration = self.population[:]
+        sources = list(range(len(nextgeneration)))
 
         choices = None
         for begin, end, altchoices in self.alternative_mutation_fields:
@@ -215,14 +221,16 @@ class CDSEvolutionChamber:
         assert len(self.population) == len(self.population_foldings)
 
         n_new_mutants = max(0, self.iteropts.n_population - len(self.population))
-        for parent, parent_folding, _ in zip(cycle(self.population),
-                                             cycle(self.population_foldings),
-                                             range(n_new_mutants)):
+        for parent, parent_folding, parent_no, _ in zip(
+                    cycle(self.population), cycle(self.population_foldings),
+                    cycle(range(len(self.population))), range(n_new_mutants)):
             child = self.mutantgen.generate_mutant(parent, self.mutation_rate,
                                                    choices, parent_folding)
             nextgeneration.append(child)
+            sources.append(parent_no)
 
         self.population[:] = nextgeneration
+        self.population_sources[:] = sources
         self.flatten_seqs = [''.join(p) for p in self.population]
 
     def prepare_full_scan(self, iter_no0: int) -> None:
@@ -239,6 +247,7 @@ class CDSEvolutionChamber:
             nextgeneration.append(child)
 
         self.population[:] = nextgeneration
+        self.population_sources[:] = [0] * len(nextgeneration)
         self.flatten_seqs = [''.join(p) for p in self.population]
 
     def run(self) -> dict:
@@ -335,11 +344,13 @@ class CDSEvolutionChamber:
         tabdata = []
         for rank, i in enumerate(rowstoshow):
             flags = [
-                'P' if i < n_parents else '-', # is parent
+                self.format_parent_no(None)
+                if i < n_parents or self.population_sources[i] is None
+                else self.format_parent_no(self.population_sources[i] + 1), # parent
                 'S ' if rank < self.iteropts.n_survivors else '- '] # is survivor
             for name, flag in self.penalty_metric_flags.items():
                 flags.append(flag if metrics[i][name] != 0 in metrics[i] else '-')
-            
+
             f_total = total_scores[i]
             f_metrics = [metrics[i][name] for name in header[2:]]
             tabdata.append([''.join(flags), f_total] +f_metrics)
