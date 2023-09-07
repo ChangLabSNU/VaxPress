@@ -1,4 +1,4 @@
-from vaxpress import ScoringFunction
+from vaxpress.scoring import ScoringFunction
 
 class AdenosineInStemFitness(ScoringFunction):
 
