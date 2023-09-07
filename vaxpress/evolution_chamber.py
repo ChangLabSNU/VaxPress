@@ -43,7 +43,7 @@ PROTEIN_ALPHABETS = 'ACDEFGHIKLMNPQRSTVWY' + STOP
 RNA_ALPHABETS = 'ACGU'
 
 IterationOptions = namedtuple('IterationOptions', [
-    'n_iterations', 'n_offsprings', 'n_survivors', 'initial_mutation_rate',
+    'n_iterations', 'n_population', 'n_survivors', 'initial_mutation_rate',
     'winddown_trigger', 'winddown_rate'
 ])
 
@@ -191,7 +191,7 @@ class CDSEvolutionChamber:
 
         assert len(self.population) == len(self.population_foldings)
 
-        n_new_mutants = max(0, self.iteropts.n_offsprings - len(self.population))
+        n_new_mutants = max(0, self.iteropts.n_population - len(self.population))
         for parent, parent_folding, _ in zip(cycle(self.population),
                                              cycle(self.population_foldings),
                                              range(n_new_mutants)):

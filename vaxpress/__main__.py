@@ -224,8 +224,8 @@ def parse_options(scoring_funcs, preset):
                           'except the first WIDTH amino acids')
     grp.add_argument('--iterations', type=int, default=10, metavar='N',
                      help='number of iterations (default: 10)')
-    grp.add_argument('--offsprings', type=int, default=20, metavar='N',
-                     help='number of offsprings per iteration (default: 20)')
+    grp.add_argument('--population', type=int, default=20, metavar='N',
+                     help='population size to keep (default: 20)')
     grp.add_argument('--survivors', type=int, default=2, metavar='N',
                      help='number of survivors per iteration (default: 2)')
     grp.add_argument('--initial-mutation-rate', type=float, default=0.1,
@@ -292,7 +292,7 @@ def run_vaxpress():
 
     iteration_options = IterationOptions(
         n_iterations=args.iterations,
-        n_offsprings=args.offsprings,
+        n_population=args.population,
         n_survivors=args.survivors,
         initial_mutation_rate=args.initial_mutation_rate,
         winddown_trigger=args.winddown_trigger,
