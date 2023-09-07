@@ -50,7 +50,7 @@ IterationOptions = namedtuple('IterationOptions', [
 ExecutionOptions = namedtuple('ExecutionOptions', [
     'output', 'command_line', 'overwrite', 'seed', 'processes',
     'random_initialization', 'conservative_start', 'boost_loop_mutations',
-    'species', 'codon_table', 'protein', 'quiet',
+    'full_scan_interval', 'species', 'codon_table', 'protein', 'quiet',
     'seq_description', 'print_top_mutants', 'addons',
     'lineardesign_dir', 'lineardesign_lambda', 'lineardesign_omit_start',
     'folding_engine',
@@ -143,6 +143,8 @@ class CDSEvolutionChamber:
         self.population_foldings = [None]
 
         self.mutation_rate = self.iteropts.initial_mutation_rate
+        self.full_scan_interval = self.execopts.full_scan_interval
+        self.in_final_full_scan = False
 
         self.length_aa = len(self.population[0])
         self.length_cds = len(self.cdsseq)
@@ -181,12 +183,22 @@ class CDSEvolutionChamber:
         self.printmsg()
 
     def mutate_population(self, iter_no0: int) -> None:
+        if (iter_no0 + 1) % self.full_scan_interval == 0:
+            return self.prepare_full_scan(iter_no0)
+
         self.expected_total_mutations = (
             self.mutantgen.compute_expected_mutations(self.mutation_rate))
         if self.expected_total_mutations < self.stop_threshold:
+            if not self.in_final_full_scan:
+                self.printmsg(hbar)
+                self.printmsg('==> Trying final full scan')
+                self.in_final_full_scan = True
+                return self.prepare_full_scan(iter_no0)
+
             self.printmsg('==> Stopping: expected mutation reaches the minimum')
             raise StopIteration
 
+        self.in_final_full_scan = False
         self.printmsg(hbar)
         self.printmsg(f'Iteration {iter_no0+1}/{self.iteropts.n_iterations}  --',
                         f'  mut_rate: {self.mutation_rate:.5f} --',
@@ -208,6 +220,22 @@ class CDSEvolutionChamber:
                                              range(n_new_mutants)):
             child = self.mutantgen.generate_mutant(parent, self.mutation_rate,
                                                    choices, parent_folding)
+            nextgeneration.append(child)
+
+        self.population[:] = nextgeneration
+        self.flatten_seqs = [''.join(p) for p in self.population]
+
+    def prepare_full_scan(self, iter_no0: int) -> None:
+        self.printmsg(hbar)
+        self.printmsg(f'Iteration {iter_no0+1}/{self.iteropts.n_iterations}  --',
+                        'FULL SCAN')
+
+        seedseq = self.population[0]
+        seedfold = self.population_foldings[0]
+
+        nextgeneration = [seedseq]
+
+        for child in self.mutantgen.traverse_all_single_mutations(seedseq, seedfold):
             nextgeneration.append(child)
 
         self.population[:] = nextgeneration

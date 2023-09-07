@@ -231,6 +231,9 @@ def parse_options(scoring_funcs, preset):
     grp.add_argument('--initial-mutation-rate', type=float, default=0.1,
                      metavar='RATE',
                      help='initial mutation rate (default: 0.1)')
+    grp.add_argument('--full-scan-interval', type=int, default=100, metavar='N',
+                     help='number of iterations between full scans of single '
+                          'mutations of unpaired bases (default: 100)')
     grp.add_argument('--boost-loop-mutations',
                      default=f'3:{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH}',
                      metavar='WEIGHT[:START]', type=str,
@@ -308,6 +311,7 @@ def run_vaxpress():
         random_initialization=args.random_initialization,
         conservative_start=args.conservative_start,
         boost_loop_mutations=args.boost_loop_mutations,
+        full_scan_interval=args.full_scan_interval,
         species=SPECIES_ALIASES.get(args.species, args.species),
         codon_table=args.codon_table,
         quiet=args.quiet,
