@@ -33,6 +33,6 @@ From: ubuntu:jammy
     /usr/local/bin/vaxpress $@
 
 %labels
-    Version 0.3
+    Version 0.4
 
 # ex: ts=8 sts=4 sw=4 et
