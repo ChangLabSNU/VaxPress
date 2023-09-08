@@ -231,14 +231,14 @@ def parse_options(scoring_funcs, preset):
     grp.add_argument('--initial-mutation-rate', type=float, default=0.1,
                      metavar='RATE',
                      help='initial mutation rate (default: 0.1)')
-    grp.add_argument('--full-scan-interval', type=int, default=100, metavar='N',
+    grp.add_argument('--full-scan-interval', type=int, default=300, metavar='N',
                      help='number of iterations between full scans of single '
-                          'mutations of unpaired bases (default: 100)')
+                          'mutations of unpaired bases (default: 300)')
     grp.add_argument('--boost-loop-mutations',
-                     default=f'3:{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH}',
+                     default=f'1.5:{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH}',
                      metavar='WEIGHT[:START]', type=str,
-                     help='boost mutations in loops after position START '
-                          'by WEIGHT (default: 3:'
+                     help='boost mutations in unpaired bases after position '
+                          'START by WEIGHT (default: 1.5:'
                           f'{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH})')
     grp.add_argument('--winddown-trigger', type=int, default=15, metavar='N',
                      help='number of iterations with the same best score to '

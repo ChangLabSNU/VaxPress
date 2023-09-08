@@ -188,7 +188,8 @@ class CDSEvolutionChamber:
         self.printmsg()
 
     def mutate_population(self, iter_no0: int) -> None:
-        if (iter_no0 + 1) % self.full_scan_interval == 0:
+        if self.full_scan_interval > 0 and (
+                iter_no0 + 1) % self.full_scan_interval == 0:
             return self.prepare_full_scan(iter_no0)
 
         self.expected_total_mutations = (
@@ -238,16 +239,17 @@ class CDSEvolutionChamber:
         self.printmsg(f'Iteration {iter_no0+1}/{self.iteropts.n_iterations}  --',
                         'FULL SCAN')
 
-        seedseq = self.population[0]
-        seedfold = self.population_foldings[0]
+        nextgeneration = self.population[:]
+        nextgen_sources = list(range(len(nextgeneration)))
 
-        nextgeneration = [seedseq]
-
-        for child in self.mutantgen.traverse_all_single_mutations(seedseq, seedfold):
-            nextgeneration.append(child)
+        for i, (seedseq, seedfold) in enumerate(
+                    zip(self.population, self.population_foldings)):
+            for child in self.mutantgen.traverse_all_single_mutations(seedseq, seedfold):
+                nextgeneration.append(child)
+                nextgen_sources.append(i)
 
         self.population[:] = nextgeneration
-        self.population_sources[:] = [0] * len(nextgeneration)
+        self.population_sources[:] = nextgen_sources
         self.flatten_seqs = [''.join(p) for p in self.population]
 
     def run(self) -> dict:
