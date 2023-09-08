@@ -144,6 +144,18 @@ vaxpress -i spike.fa -o results-spike --processes 36 \
          --lineardesign-dir /path/to/LinearDesign \
          --conservative-start 10 --initial-mutation-rate 0.01
 ```
+### Using VaxPress as a User-friendly Interface to LinearDesign
+Using `--conservative-start N` option only generates mutations in the start codon region during the initial N number of iterations, leaving the rest of the sequence as it is. Therefore, by assigning the same parameter for `--conservative-start` and `--iterations` options, VaxPress can be used as a convenient front-end interface for LinearDesign optimization.
+With the additional convenience provided by VaxPress, mRNA sequence can be directly used as an input. Also, users can both optimize the structures in the start codon region while optimizing the rest with LinearDesign using only 1 command.
+
+
+```bash
+# Example usage of VaxPress as an interface to LinearDesign
+vaxpress -i spike.fa -o results-spike --processes 36 \
+         --iterations 10 --lineardesign 1.0 \
+         --conservative-start 10 --initial-mutation-rate 0.01 \
+         --lineardesign-dir /path/to/LinearDesign \
+```
 
 ## Output
 
