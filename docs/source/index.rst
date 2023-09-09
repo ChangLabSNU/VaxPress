@@ -141,6 +141,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
+   tutorial
    algorithmic_details
    adding_scorefunc
    running_with_lineardesign
@@ -148,6 +149,7 @@ Contents
    optimization_parameters
    fitness_function_parameters
    guide_to_set_parameters
+   usage
    troubleshooting
 
 ------------------
