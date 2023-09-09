@@ -291,7 +291,11 @@ class CDSEvolutionChamber:
                     error_code = 1
                     break
 
-                ind_sorted = np.argsort(total_scores)[::-1]
+                if len(self.population) > self.iteropts.n_population:
+                    # Pick the best mutants in each parent to keep diversity
+                    ind_sorted = self.prioritized_sort_by_parents(total_scores)
+                else:
+                    ind_sorted = np.argsort(total_scores)[::-1]
                 survivor_indices = ind_sorted[:n_survivors]
                 survivors = [self.population[i] for i in survivor_indices]
                 survivor_foldings = [foldings[i] for i in survivor_indices]
@@ -330,6 +334,20 @@ class CDSEvolutionChamber:
                 yield {'iter_no': iter_no, 'error': error_code, 'time': timelogs}
 
         yield {'iter_no': -1, 'error': error_code, 'time': timelogs}
+
+    def prioritized_sort_by_parents(self, total_scores):
+        bestindices = []
+
+        for src in np.unique(self.population_sources):
+            matches = np.where(self.population_sources == src)[0]
+            bestidx = max(matches, key=total_scores.__getitem__)
+            bestindices.append(bestidx)
+
+        bestindices.sort(key=total_scores.__getitem__, reverse=True)
+
+        # No need to put the rest back because the number of sources equals to
+        # the number of survivors.
+        return bestindices
 
     def print_eval_results(self, total_scores, metrics, ind_sorted, n_parents) -> None:
         if self.quiet:
