@@ -50,6 +50,7 @@ def preparse_config_preset_addons():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('--preset', type=str, required=False, default=None)
     parser.add_argument('--addon', type=str, action='append')
+    parser.add_argument('--default-off', default=False, action='store_true')
     args, _ = parser.parse_known_args()
 
     preset = config.load_config()
@@ -73,9 +74,9 @@ def preparse_config_preset_addons():
                 print(f'Addon path {path} is missing.')
                 sys.exit(1)
 
-    return preset, addon_paths
+    return preset, addon_paths, args.default_off
 
-def apply_preset(main_parser, preset):
+def apply_preset(main_parser, preset, default_off):
     optmap = main_parser._option_string_actions
 
     def fix_option(opt, newval):
@@ -95,7 +96,14 @@ def apply_preset(main_parser, preset):
 
     ignore_options = ['addons', 'command_line']
 
-    for argname, argval in preset.items():
+    if default_off:
+        # Set default weights to zero on default_off
+        for optname, opt in optmap.items():
+            if optname.endswith('-weight'):
+                fix_option(opt, 0.0)
+
+    # Apply preset values
+    for argname, argval in preset.items() if preset else []:
         if argname in ignore_options:
             continue
         elif argname != 'fitness':
@@ -180,7 +188,7 @@ def check_argument_validity(args):
         else:
             args.boost_loop_mutations = f'{boost_weight}:{boost_start}'
 
-def parse_options(scoring_funcs, preset):
+def parse_options(scoring_funcs, preset, default_off):
     parser = argparse.ArgumentParser(
         prog='vaxpress',
         description='VaxPress: A Codon Optimizer for mRNA Vaccine Design')
@@ -215,6 +223,8 @@ def parse_options(scoring_funcs, preset):
                      choices=['vienna', 'linearfold'],
                      help='RNA folding engine: vienna or linearfold '
                           '(default: vienna)')
+    grp.add_argument('--default-off', default=False, action='store_true',
+                     help='turn all fitness functions off by default')
 
     grp = parser.add_argument_group('Optimization Options')
     grp.add_argument('--random-initialization', action='store_true',
@@ -266,8 +276,7 @@ def parse_options(scoring_funcs, preset):
         argmap = func.add_argument_parser(parser)
         argmaps.append((func, argmap))
 
-    if preset:
-        apply_preset(parser, preset)
+    apply_preset(parser, preset, default_off)
 
     args = parser.parse_args()
     scoring_opts = {}
@@ -282,10 +291,10 @@ def parse_options(scoring_funcs, preset):
     return args, scoring_opts
 
 def run_vaxpress():
-    preset, addon_paths = preparse_config_preset_addons()
+    preset, addon_paths, default_off = preparse_config_preset_addons()
     scoring_funcs = scoring.discover_scoring_functions(addon_paths)
 
-    args, scoring_options = parse_options(scoring_funcs, preset)
+    args, scoring_options = parse_options(scoring_funcs, preset, default_off)
 
     inputseq = next(SeqIO.parse(args.input, 'fasta'))
     seqdescr = inputseq.description
