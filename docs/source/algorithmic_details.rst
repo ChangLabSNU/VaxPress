@@ -3,66 +3,115 @@ Algorithmic Details of VaxPress
 -----------------
 Overall algorithm
 -----------------
-Vaxpress uses genetic algorithm to produce optimized mRNA cds sequence, while fitness evaluation metrics are defined as scoring functions. 
+Vaxpress uses genetic algorithm to produce optimized mRNA cds sequence, while fitness evaluation metrics are defined as scoring functions.
 
 Current scoring functions consider both the features involved in the production and distribution process, as well as features affecting the efficacy *in vivo* such as immunogenecity and translational efficiency.
-Third-party scoring functions can also be incorporated into the optimization process.
 
-If the input sequence is a protein, it will first be backtranslated into an RNA sequence. 
-The optimization process involves generating a population of RNA sequences with random mutations, 
-evaluating these sequences using scoring functions, selecting survivor sequences, and repeating this process for a specified number of iterations.
+If the input sequence is a protein, it will first be backtranslated into an RNA sequence.
+The initial population of RNA sequences generates randomly mutated "offspring" sequences, 
+up to a certain number of offspring specified as ``--offsprings``. 
+These sequences are then evaluated using scoring functions. 
+Based on the evaluation results, a selection process is carried out to choose survivor sequences, with the number of survivors specified as ``--survivors``. 
+From the chosen survivor sequences, new offspring sequences are produced once again. 
+This iterative process is repeated for a certain number of iterations specified as ``--iterations``.
 
-.. image:: path/to/image.png
-    :height: 250
-    :width: 250
-    :scale: 50
-    :alt: Genetic algorithm used in vaxpress. 
-
+.. image:: _images/overall.png
+    :width: 500px
+    :height: 350px
+    :align: center
+    :alt: Overview of the genetic algorithm used in vaxpress.
 
 
 -------------------------------
 Composition of Scoring Function
 -------------------------------
 
-Vaxpress' scoring function consists of three main areas, each considering factors that can influence the optimization result:
+Vaxpress' scoring function consists of 3 main areas, each considering factors that can influence the optimization result:
 
 ====================
 1. Codon Usage
 ====================
 
-Codon usage bias, the frequency difference of synonymous codons in a coding sequence, significantly affects mRNA stability and protein production. Vaxpress aims to recommend sequences for mRNA vaccine development by reflecting the actual *in vivo* frequency of codon usage. This area includes:
+Codon usage bias refers to difference of frequency of synonymous codons in coding seqeuence.
+It is well known that the stability of mRNA within cells and the amount of protein produced are significantly improved depending on the types of synonymous codons actually composing the CDS.[1],[2] 
+Since Vaxpress’ main goal is to recommend best sequence for mRNA vaccine development, it’s rational to reflect actual *in Vivo* frequency of codon usage. 
 
-- **CAI (Codon Adaptation Index):** A measure of codon usage bias that calculates the similarity between the test sequence's synonymous codon usage and a reference sequence's codon frequency. It uses the relative adaptiveness of codons to compute a score.
+- **CAI (Codon Adaptation Index):** 
+  Codon Adaptation Index is measure of codon usage bias. It calculates similarity between synonymous codon usage of test seqeunce and synonymous codon freqency of reference sequence. 
+  Especially, relative synonymous codon usage(RSCU) is needed to calculate CAI. RSCU is the ratio of the observations of a given codon calculated with respect to the sum of all observations of codons in highly expressed gene. 
+  Vaxpress uses relative adaptiveness of codon(:math:`w_{ij}`) as score of each codon, which is calculated as below.
 
-- **Bicodon Usage:** Considers the frequency of consecutive codon occurrences and calculates scores based on codon pairs.
+  .. math:: w_{ij} = RSCU_{ij}/RSCU_{i\;max}
 
-In addition, Vaxpress obtains raw data of codon RSCU values and codon pair scores from the CoCoPUTs codon usage database.
+  (where :math:`w_{ij}` is relative adaptiveness and :math:`RSCU_{ij}` is RSCU value of jth codon for ith amino acid. And :math:`RSCU_{i\;max}` is maximal RSCU value of ith amino acid among synonymous codons.) [1]
 
-.. image:: path/to/image.png
-    :height: 250
-    :width: 250
-    :scale: 50
+  Then Vaxpress obtain the average of these codon by codon values.
+
+- **Bicodon Usage:** 
+  It is well known that not only the frequency of usage of individual codons but also the frequency of consecutive codon occurrences significantly impacts gene design. 
+  Vaxpress reads the sequence in codon units, obtaining scores which is calculated as below.
+
+  .. math:: score = {F(ABCDEF) \over F(ABC)F(DEF)}
+
+  (where $ABCDEF$ is example codon pair and $F(ABC)$ is frequency of codon $ABC$.) [3]
+
+  Then Vaxpress obtain the average of these codon by codon values.
+
+  In addition, raw data of codon RSCU values and codon pair score is obtained from CoCoPUTs codon usage database. It’s automatically generated by ``prepare-codon-usage.py``, ``prepare-bicodon-usage.py`` [3] 
+
+.. image:: _images/bicodon.png
+    :width: 500px
+    :height: 350px
+    :align: center
     :alt: bicodon usage.
 
 ====================
 2. RNA Folding
 ====================
 
-For stable mRNA vaccine development, RNA structural stability is crucial. Vaxpress incorporates scoring factors related to RNA folding, including:
+For the development of stable mRNA vaccines, the structural stability of RNA is crucial. 
+In other words, it is favorable for the structures to be as limited in diversity as possible. 
+So Vaxpress has considered this as an objective and incorporated scoring factors. 
 
-- **MFE (Minimum Free Energy):** Represents the free energy of the most stable RNA structure. Vaxpress uses folding engines such as ViennaRNA and LinearFold to calculate MFE values.
+- **MFE (Minimum Free Energy):** 
+  MFE (a.k.a. Minimum Free Energy) represents the free energy of RNA when it forms the most stable structure. 
+  Finding RNA sequence which is corresponding to MFE is common strategy for vaccine development. [4],[5] 
+  To calculate MFE value, Vaxpress uses the ``ViennaRNA`` and ``LinearFold`` as folding engines. 
 
-- **Start Codon Structure:** Measures the length of the stem-loop structure near the start codon.
+  In detail, ``ViennaRNA`` employs dynamic programming techniques to compute the MFE structure of an RNA sequence. 
+  On the other side, ``LinearFold`` utilizes a linear-time dynamic programming approach, which significantly reduces the time complexity compared to more traditional dynamic programming methods. 
+  It considers different types of base pairs and loop structures to estimate the MFE structure efficiently.
 
-- **Loop (Unfolded) Length:** Considers the lengths of segments with unfolded loop structures.
+  Since ``ViennaRNA`` and ``LinearFold`` use different algorithm to estimate MFE, Vaxpress offers both as a options for folding engine.
 
-- **Stem Length:** Considers the length of the stem region to prevent immune responses.
+- **Start Codon Structure:**
+  Stem-loop structure near start codon is highly influential to RNA’s translational efficiency. 
+  It’s because tranlation initiation is affected a lot by mRNA’s secondary structure. 
+  Since actual proteins translated from mRNA vaccine matters, efficient translation is much more important. [6],[7]
 
-.. image:: path/to/image.png
-    :height: 250
-    :width: 250
-    :scale: 50
-    :alt: stem length.
+  In this section, the length of the stem formed near the start codon of RNA is measured and reflected as a score.
+  Similar to MFE, ``Viennarna`` and ``LinearFold`` are utilized as the primary folding engines for this purpose. 
+
+- **Loop (Unfolded) Length:** 
+  Loop length is one of the key factors influencing the stability of RNA secondary structures. 
+  Shorter loops generally contribute to more stable secondary structures due to reduced entropic costs and decreased structural variability. 
+  Thus, loop is usually considered to predict nucleic secondary structure stabilities. [8],[9] 
+
+  In Vaxpress, the lengths of all segments considered to have unfolded loop structures are summed for consideration.
+
+- **Stem Length:** 
+  One of the points to be careful about in the development of mRNA vaccines is that vaccine materials could be recognized as foreign substances, potentially triggering an immune response in our bodies. 
+  In relation to this, our bodies have a system called pattern recognition receptors(PRRs). 
+  These are receptors that recognize patterns commonly present in various antigens coming from the outside. 
+  Among them, MDA5 (Melanoma differentiation-associated gene-5), for instance, recognizes and breaks down viral double-stranded RNA. [10],[11]
+
+  In the secondary structure of mRNA vaccines, the stem region corresponds to this case. To prevent its breakdown, limitations on stem length have been established.
+
+.. image:: _images/stemloop.png
+    :width: 500px
+    :height: 350px
+    :align: center
+    :alt: stem-loop structure
 
 ===========================
 3. Sequential Features
@@ -70,13 +119,38 @@ For stable mRNA vaccine development, RNA structural stability is crucial. Vaxpre
 
 This area includes various factors that influence RNA sequence stability and immunogenicity, such as:
 
-- **iCodon-Predicted Stability:** Predicts the stability of RNA secondary structure using synonymous codons.
+- **iCodon-Predicted Stability:** 
+  A "synonymous codon" refers to different codons that encode the same amino acid. 
+  Accordingly, ``iCodon`` is an algorithm that predicts the stability of the coding sequence of RNA using synonymous codons.[12]
 
-- **Local GC Ratio:** Calculates the GC ratio within a window and transforms it into a score.
+  In Vaxpress, this is considered as an optimization factor for conducting sequence optimization. 
+  Particularly, it is regarded in terms of the in vivo stability of RNA secondary structure to propose the optimal RNA sequence.
 
-- **U Count:** Counts uridines in the sequence to minimize immune response.
+- **Local GC Ratio:** 
+  The production of mRNA vaccines is carried out through in vitro transcription. 
+  For this purpose, it's necessary to synthesize template DNA corresponding to the desired sequence. 
+  During this process, if the GC ratio is high, the DNA being synthesized has a potential to form stem-loop structures on its own, which can hinder the synthesis. 
+  Additionally, high GC content can significantly impede the amplification process that follows. 
+  Therefore, for the ease of vaccine production, maintaining a relatively low GC ratio is desirable.
 
-- **Repeat Length:** Quantifies tandem repeat lengths to facilitate cloning for vaccine production.
+  Vaxpress calculates the existence ratio of G and C within the window by moving it by the stride size, 
+  and then transform the window-specific GC ratio values (``gc``) using the following equation to determine the score.
+
+  .. math:: score = -\Sigma_{gc}(10^{log_2(|gc-0.5|)+0.05})
+
+- **U Count:**
+  RNA molecules that are extensively folded induce a severe interferon response, and a significant contributing factor to this is the number of uridines in the sequence. 
+  Therefore, when developing vaccines, there are 2 strategies to prevent immune response: 1) Replace uridine(U) to modified base such as psedouridine(Ψ)(Karikó et al., 2008)[13], 2) Minimize the number of uridines.[14]
+
+  Building upon this fact, Vaxpress choses second strategy. It counts the number of uridines as it seeks sequences that minimize the uridine count.
+
+- **Repeat Length:** 
+  For the mass production of mRNA vaccines, cloning using plasmids is necessary. 
+  This is achieved through the synthesis of the target sequence and vector. If the target sequence itself contains numerous tandem repeats, difficulties arise in this synthesis process. 
+  Therefore, it is important to proceed in a way that minimizes this issue.
+
+  In Vaxpress, tandem repeats are quantified by measuring their length. 
+  By using ``pytrf.GTRFinder``, Vaxpress finds all generic tandem repeats from given sequences. And add all of their lengths. 
 
 ---------------------------------------
 Scoring Function (Objective Function)
@@ -84,28 +158,36 @@ Scoring Function (Objective Function)
 
 The scoring function is a linear combination of the factors mentioned above, with associated weights. It is represented as follows:
 
-Scoring Function = Σ(factors * weights)
+.. math:: Scoring \, Function =  \Sigma_{f \in factors} f*weight
 
 -----------
 References
 -----------
 
-1. Sharp, Paul M., and Wen-Hsiung Li. "The codon adaptation index-a measure of directional synonymous codon usage bias, and its potential applications." Nucleic acids research 15.3 (1987): 1281-1295.
-
-2. Presnyak, Vladimir, et al. "Codon optimality is a major determinant of mRNA stability." Cell 160.6 (2015): 1111-1124.
-
-3. Alexaki, Aikaterini, et al. "Codon and codon-pair usage tables (CoCoPUTs): facilitating genetic variation analyses and recombinant gene design." Journal of molecular biology 431.13 (2019): 2434-2441.
-
-4. Zuker, Michael, and Patrick Stiegler. "Optimal computer folding of large RNA sequences using thermodynamics and auxiliary information." Nucleic acids research 9.1 (1981): 133-148.
-
-5. Hofacker, Ivo L. "Energy-directed RNA structure prediction." RNA Sequence, Structure, and Function: Computational and Bioinformatic Methods (2014): 71-84.
-
-6. Mauger, David M., et al. "mRNA structure regulates protein expression through changes in functional half-life." Proceedings of the National Academy of Sciences 116.48 (2019): 24075-24083.
-
-7. Kearse, Michael G., et al. "Ribosome queuing enables non-AUG translation to be resistant to multiple protein synthesis inhibitors." Genes & development 33.13-14 (2019): 871-885.
-
-8. Tinoco Jr, Ignacio, and Carlos Bustamante. "How RNA folds." Journal of molecular biology 293.2 (1999): 271-281.
-
-9. Turner, Douglas H., and David H. Mathews. "NNDB: the nearest neighbor parameter database for predicting stability of nucleic acid secondary structure." Nucleic acids research 38.suppl_1 (2010): D280-D282.
-
-10. Berke, Ian C., and Yorgo Modis. "MDA5 cooperatively forms dimers and ATP‐sensitive filaments upon binding double‐stranded RNA." The EMBO journal 31.7 (2012): 1714-1726
+1. Sharp, Paul M., and Wen-Hsiung Li. "The codon adaptation index-a measure of directional synonymous codon usage bias, and its potential applications." Nucleic acids research 15.3 (1987): 1281-1295.
+   
+2. Presnyak, Vladimir, et al. "Codon optimality is a major determinant of mRNA stability." *Cell* 160.6 (2015): 1111-1124.
+   
+3. Alexaki, Aikaterini, et al. "Codon and codon-pair usage tables (CoCoPUTs): facilitating genetic variation analyses and recombinant gene design." *Journal of molecular biology* 431.13 (2019): 2434-2441.
+   
+4. Zuker, Michael, and Patrick Stiegler. "Optimal computer folding of large RNA sequences using thermodynamics and auxiliary information." *Nucleic acids research* 9.1 (1981): 133-148.
+   
+5. Hofacker, Ivo L. "Energy-directed RNA structure prediction." *RNA Sequence, Structure, and Function: Computational and Bioinformatic Methods* (2014): 71-84.
+   
+6. Mauger, David M., et al. "mRNA structure regulates protein expression through changes in functional half-life." *Proceedings of the National Academy of Sciences* 116.48 (2019): 24075-24083.
+   
+7. Kearse, Michael G., et al. "Ribosome queuing enables non-AUG translation to be resistant to multiple protein synthesis inhibitors." *Genes & development* 33.13-14 (2019): 871-885.
+   
+8. Tinoco Jr, Ignacio, and Carlos Bustamante. "How RNA folds." *Journal of molecular biology* 293.2 (1999): 271-281.
+   
+9.  Turner, Douglas H., and David H. Mathews. "NNDB: the nearest neighbor parameter database for predicting stability of nucleic acid secondary structure." *Nucleic acids research* 38.suppl_1 (2010): D280-D282.
+    
+10. Berke, Ian C., and Yorgo Modis. "MDA5 cooperatively forms dimers and ATP‐sensitive filaments upon binding double‐stranded RNA." *The EMBO journal* 31.7 (2012): 1714-1726.
+    
+11. Wu, Bin, et al. "Structural basis for dsRNA recognition, filament formation, and antiviral signal activation by MDA5." *Cell* 152.1 (2013): 276-289.
+    
+12. Diez, Michay, et al. "iCodon customizes gene expression based on the codon composition." *Scientific Reports* 12.1 (2022): 12126.
+    
+13. Karikó, Katalin, et al. "Incorporation of pseudouridine into mRNA yields superior nonimmunogenic vector with increased translational capacity and biological stability." *Molecular therapy* 16.11 (2008): 1833-1840.
+    
+14. Vaidyanathan, Sriram, et al. "Uridine depletion and chemical modification increase Cas9 mRNA activity and reduce immunogenicity without HPLC purification." *Molecular Therapy-Nucleic Acids* 12 (2018): 530-542.

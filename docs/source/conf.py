@@ -19,12 +19,14 @@ release = '0.1'
 extensions = [
     'sphinx.ext.duration',
     'sphinx_rtd_theme',
+    'sphinx.ext.mathjax',
 ]
 
 templates_path = ['_templates']
 exclude_patterns = ['build', 'Thumbs.db', '.DS_Store']
 source_suffix = '.rst'
 master_doc = 'index'
+# mathjax_path = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
 
 
 

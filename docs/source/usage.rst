@@ -25,8 +25,9 @@ Especially, when the ``lambda`` parameter is set high(which means high weight on
     vaxpress -i spike.fa -o results-spike --processes 36 \
          --iterations 500 --lineardesign 1.0 \
          --lineardesign-dir /path/to/LinearDesign \
-         --conservative-start 10 --initial-mutation-rate 0.01
-         --mfe-weight 10 --repeats-weight 100 --cai-weight 1
+         --conservative-start 10 --initial-mutation-rate 0.01 \
+         --default-off \
+         --mfe-weight 10 --repeats-weight 10 --cai-weight 1 --gc-weight 3 --start-str-weight 1
 
 
 =============================================================
