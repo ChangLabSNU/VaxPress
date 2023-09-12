@@ -6,19 +6,19 @@ Examples showing the effect of each parameters on the optimization process can b
 
 - ``--iterations`` N
 
-  - number of iterations (default: 10)
+  Number of iterations (default: 10)
 - ``--offsprings`` N
 
-  - number of offsprings per iteration (default: 20)
+  Number of offsprings per iteration (default: 20)
 - ``--survivors`` N
 
-  - number of survivors per iteration (default: 2)
+  Number of survivors per iteration (default: 2)
 - ``--initial-mutation-rate`` RATE
 
-  - initial mutation rate (default: 0.1)
+  Initial mutation rate (default: 0.1)
 - ``--winddown-trigger`` N
 
-  - number of iterations with the same best score to trigger mutation stabilization (default: 15)
+  Number of iterations with the same best score to trigger mutation stabilization (default: 15)
 - ``--winddown-rate`` RATE
 
-  - mutation rate multiplier when mutation stabilization is triggered (default: 0.9)
+  Mutation rate multiplier when mutation stabilization is triggered (default: 0.9)
