@@ -43,14 +43,14 @@ PROTEIN_ALPHABETS = 'ACDEFGHIKLMNPQRSTVWY' + STOP
 RNA_ALPHABETS = 'ACGU'
 
 IterationOptions = namedtuple('IterationOptions', [
-    'n_iterations', 'n_offsprings', 'n_survivors', 'initial_mutation_rate',
+    'n_iterations', 'n_population', 'n_survivors', 'initial_mutation_rate',
     'winddown_trigger', 'winddown_rate'
 ])
 
 ExecutionOptions = namedtuple('ExecutionOptions', [
     'output', 'command_line', 'overwrite', 'seed', 'processes',
     'random_initialization', 'conservative_start', 'boost_loop_mutations',
-    'species', 'codon_table', 'protein', 'quiet',
+    'full_scan_interval', 'species', 'codon_table', 'protein', 'quiet',
     'seq_description', 'print_top_mutants', 'addons',
     'lineardesign_dir', 'lineardesign_lambda', 'lineardesign_omit_start',
     'folding_engine',
@@ -141,8 +141,15 @@ class CDSEvolutionChamber:
             self.mutantgen.randomize_initial_codons()
         self.population = [self.mutantgen.initial_codons]
         self.population_foldings = [None]
+        self.population_sources = [None]
+        parent_no_length = int(np.log10(self.iteropts.n_survivors)) + 1
+        self.format_parent_no = lambda n, length=parent_no_length: (
+            format(n, f'{length}d').replace(' ', '-')
+            if n is not None else '-' * length)
 
         self.mutation_rate = self.iteropts.initial_mutation_rate
+        self.full_scan_interval = self.execopts.full_scan_interval
+        self.in_final_full_scan = False
 
         self.length_aa = len(self.population[0])
         self.length_cds = len(self.cdsseq)
@@ -181,7 +188,30 @@ class CDSEvolutionChamber:
         self.printmsg()
 
     def mutate_population(self, iter_no0: int) -> None:
+        if self.full_scan_interval > 0 and (
+                iter_no0 + 1) % self.full_scan_interval == 0:
+            return self.prepare_full_scan(iter_no0)
+
+        self.expected_total_mutations = (
+            self.mutantgen.compute_expected_mutations(self.mutation_rate))
+        if self.expected_total_mutations < self.stop_threshold:
+            if not self.in_final_full_scan:
+                self.printmsg(hbar)
+                self.printmsg('==> Trying final full scan')
+                self.in_final_full_scan = True
+                return self.prepare_full_scan(iter_no0)
+
+            self.printmsg('==> Stopping: expected mutation reaches the minimum')
+            raise StopIteration
+
+        self.in_final_full_scan = False
+        self.printmsg(hbar)
+        self.printmsg(f'Iteration {iter_no0+1}/{self.iteropts.n_iterations}  --',
+                        f'  mut_rate: {self.mutation_rate:.5f} --',
+                        f'E(muts): {self.expected_total_mutations:.1f}')
+
         nextgeneration = self.population[:]
+        sources = list(range(len(nextgeneration)))
 
         choices = None
         for begin, end, altchoices in self.alternative_mutation_fields:
@@ -191,15 +221,35 @@ class CDSEvolutionChamber:
 
         assert len(self.population) == len(self.population_foldings)
 
-        n_new_mutants = max(0, self.iteropts.n_offsprings - len(self.population))
-        for parent, parent_folding, _ in zip(cycle(self.population),
-                                             cycle(self.population_foldings),
-                                             range(n_new_mutants)):
+        n_new_mutants = max(0, self.iteropts.n_population - len(self.population))
+        for parent, parent_folding, parent_no, _ in zip(
+                    cycle(self.population), cycle(self.population_foldings),
+                    cycle(range(len(self.population))), range(n_new_mutants)):
             child = self.mutantgen.generate_mutant(parent, self.mutation_rate,
                                                    choices, parent_folding)
             nextgeneration.append(child)
+            sources.append(parent_no)
 
         self.population[:] = nextgeneration
+        self.population_sources[:] = sources
+        self.flatten_seqs = [''.join(p) for p in self.population]
+
+    def prepare_full_scan(self, iter_no0: int) -> None:
+        self.printmsg(hbar)
+        self.printmsg(f'Iteration {iter_no0+1}/{self.iteropts.n_iterations}  --',
+                        'FULL SCAN')
+
+        nextgeneration = self.population[:]
+        nextgen_sources = list(range(len(nextgeneration)))
+
+        for i, (seedseq, seedfold) in enumerate(
+                    zip(self.population, self.population_foldings)):
+            for child in self.mutantgen.traverse_all_single_mutations(seedseq, seedfold):
+                nextgeneration.append(child)
+                nextgen_sources.append(i)
+
+        self.population[:] = nextgeneration
+        self.population_sources[:] = nextgen_sources
         self.flatten_seqs = [''.join(p) for p in self.population]
 
     def run(self) -> dict:
@@ -229,18 +279,11 @@ class CDSEvolutionChamber:
                 iter_no = i + 1
                 n_parents = len(self.population)
 
-                self.expected_total_mutations = (
-                    self.mutantgen.compute_expected_mutations(self.mutation_rate))
-                if self.expected_total_mutations < self.stop_threshold:
-                    self.printmsg('==> Stopping: expected mutation reaches the minimum')
+                try:
+                    self.mutate_population(i)
+                except StopIteration:
                     break
 
-                self.printmsg(hbar)
-                self.printmsg(f'Iteration {iter_no}/{self.iteropts.n_iterations}  --',
-                              f'  mut_rate: {self.mutation_rate:.5f} --',
-                              f'E(muts): {self.expected_total_mutations:.1f}')
-
-                self.mutate_population(i)
                 total_scores, scores, metrics, foldings = self.seqeval.evaluate(
                                                     self.flatten_seqs, executor)
                 if total_scores is None:
@@ -248,7 +291,11 @@ class CDSEvolutionChamber:
                     error_code = 1
                     break
 
-                ind_sorted = np.argsort(total_scores)[::-1]
+                if len(self.population) > self.iteropts.n_population:
+                    # Pick the best mutants in each parent to keep diversity
+                    ind_sorted = self.prioritized_sort_by_parents(total_scores)
+                else:
+                    ind_sorted = np.argsort(total_scores)[::-1]
                 survivor_indices = ind_sorted[:n_survivors]
                 survivors = [self.population[i] for i in survivor_indices]
                 survivor_foldings = [foldings[i] for i in survivor_indices]
@@ -288,6 +335,20 @@ class CDSEvolutionChamber:
 
         yield {'iter_no': -1, 'error': error_code, 'time': timelogs}
 
+    def prioritized_sort_by_parents(self, total_scores):
+        bestindices = []
+
+        for src in np.unique(self.population_sources):
+            matches = np.where(self.population_sources == src)[0]
+            bestidx = max(matches, key=total_scores.__getitem__)
+            bestindices.append(bestidx)
+
+        bestindices.sort(key=total_scores.__getitem__, reverse=True)
+
+        # No need to put the rest back because the number of sources equals to
+        # the number of survivors.
+        return bestindices
+
     def print_eval_results(self, total_scores, metrics, ind_sorted, n_parents) -> None:
         if self.quiet:
             return
@@ -303,11 +364,13 @@ class CDSEvolutionChamber:
         tabdata = []
         for rank, i in enumerate(rowstoshow):
             flags = [
-                'P' if i < n_parents else '-', # is parent
+                self.format_parent_no(None)
+                if i < n_parents or self.population_sources[i] is None
+                else self.format_parent_no(self.population_sources[i] + 1), # parent
                 'S ' if rank < self.iteropts.n_survivors else '- '] # is survivor
             for name, flag in self.penalty_metric_flags.items():
                 flags.append(flag if metrics[i][name] != 0 in metrics[i] else '-')
-            
+
             f_total = total_scores[i]
             f_metrics = [metrics[i][name] for name in header[2:]]
             tabdata.append([''.join(flags), f_total] +f_metrics)

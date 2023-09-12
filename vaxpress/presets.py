@@ -30,7 +30,7 @@ execopts_to_remove = [
     'protein']
 iteroptions_aliases = {
     'n_iterations': 'iterations',
-    'n_offsprings': 'offsprings',
+    'n_population': 'population',
     'n_survivors': 'survivors',
     'lineardesign_lambda': 'lineardesign',
 }

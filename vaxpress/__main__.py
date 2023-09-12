@@ -50,6 +50,7 @@ def preparse_config_preset_addons():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('--preset', type=str, required=False, default=None)
     parser.add_argument('--addon', type=str, action='append')
+    parser.add_argument('--default-off', default=False, action='store_true')
     args, _ = parser.parse_known_args()
 
     preset = config.load_config()
@@ -73,9 +74,9 @@ def preparse_config_preset_addons():
                 print(f'Addon path {path} is missing.')
                 sys.exit(1)
 
-    return preset, addon_paths
+    return preset, addon_paths, args.default_off
 
-def apply_preset(main_parser, preset):
+def apply_preset(main_parser, preset, default_off):
     optmap = main_parser._option_string_actions
 
     def fix_option(opt, newval):
@@ -95,7 +96,14 @@ def apply_preset(main_parser, preset):
 
     ignore_options = ['addons', 'command_line']
 
-    for argname, argval in preset.items():
+    if default_off:
+        # Set default weights to zero on default_off
+        for optname, opt in optmap.items():
+            if optname.endswith('-weight'):
+                fix_option(opt, 0.0)
+
+    # Apply preset values
+    for argname, argval in preset.items() if preset else []:
         if argname in ignore_options:
             continue
         elif argname != 'fitness':
@@ -180,7 +188,7 @@ def check_argument_validity(args):
         else:
             args.boost_loop_mutations = f'{boost_weight}:{boost_start}'
 
-def parse_options(scoring_funcs, preset):
+def parse_options(scoring_funcs, preset, default_off):
     parser = argparse.ArgumentParser(
         prog='vaxpress',
         description='VaxPress: A Codon Optimizer for mRNA Vaccine Design')
@@ -215,6 +223,8 @@ def parse_options(scoring_funcs, preset):
                      choices=['vienna', 'linearfold'],
                      help='RNA folding engine: vienna or linearfold '
                           '(default: vienna)')
+    grp.add_argument('--default-off', default=False, action='store_true',
+                     help='turn all fitness functions off by default')
 
     grp = parser.add_argument_group('Optimization Options')
     grp.add_argument('--random-initialization', action='store_true',
@@ -224,18 +234,21 @@ def parse_options(scoring_funcs, preset):
                           'except the first WIDTH amino acids')
     grp.add_argument('--iterations', type=int, default=10, metavar='N',
                      help='number of iterations (default: 10)')
-    grp.add_argument('--offsprings', type=int, default=20, metavar='N',
-                     help='number of offsprings per iteration (default: 20)')
+    grp.add_argument('--population', type=int, default=20, metavar='N',
+                     help='population size to keep (default: 20)')
     grp.add_argument('--survivors', type=int, default=2, metavar='N',
                      help='number of survivors per iteration (default: 2)')
     grp.add_argument('--initial-mutation-rate', type=float, default=0.1,
                      metavar='RATE',
                      help='initial mutation rate (default: 0.1)')
+    grp.add_argument('--full-scan-interval', type=int, default=300, metavar='N',
+                     help='number of iterations between full scans of single '
+                          'mutations of unpaired bases (default: 300)')
     grp.add_argument('--boost-loop-mutations',
-                     default=f'3:{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH}',
+                     default=f'1.5:{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH}',
                      metavar='WEIGHT[:START]', type=str,
-                     help='boost mutations in loops after position START '
-                          'by WEIGHT (default: 3:'
+                     help='boost mutations in unpaired bases after position '
+                          'START by WEIGHT (default: 1.5:'
                           f'{BOOST_LOOP_MUTATIONS_DEFAULT_WIDTH})')
     grp.add_argument('--winddown-trigger', type=int, default=15, metavar='N',
                      help='number of iterations with the same best score to '
@@ -263,8 +276,7 @@ def parse_options(scoring_funcs, preset):
         argmap = func.add_argument_parser(parser)
         argmaps.append((func, argmap))
 
-    if preset:
-        apply_preset(parser, preset)
+    apply_preset(parser, preset, default_off)
 
     args = parser.parse_args()
     scoring_opts = {}
@@ -279,10 +291,10 @@ def parse_options(scoring_funcs, preset):
     return args, scoring_opts
 
 def run_vaxpress():
-    preset, addon_paths = preparse_config_preset_addons()
+    preset, addon_paths, default_off = preparse_config_preset_addons()
     scoring_funcs = scoring.discover_scoring_functions(addon_paths)
 
-    args, scoring_options = parse_options(scoring_funcs, preset)
+    args, scoring_options = parse_options(scoring_funcs, preset, default_off)
 
     inputseq = next(SeqIO.parse(args.input, 'fasta'))
     seqdescr = inputseq.description
@@ -292,7 +304,7 @@ def run_vaxpress():
 
     iteration_options = IterationOptions(
         n_iterations=args.iterations,
-        n_offsprings=args.offsprings,
+        n_population=args.population,
         n_survivors=args.survivors,
         initial_mutation_rate=args.initial_mutation_rate,
         winddown_trigger=args.winddown_trigger,
@@ -308,6 +320,7 @@ def run_vaxpress():
         random_initialization=args.random_initialization,
         conservative_start=args.conservative_start,
         boost_loop_mutations=args.boost_loop_mutations,
+        full_scan_interval=args.full_scan_interval,
         species=SPECIES_ALIASES.get(args.species, args.species),
         codon_table=args.codon_table,
         quiet=args.quiet,

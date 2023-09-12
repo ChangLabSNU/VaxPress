@@ -16,7 +16,10 @@ for a complete tutorial.
 
 ### pip
 
-You can install VaxPress via pip:
+You can install VaxPress via pip.  However, note that `rpy2` and
+`iCodon` aren't included as dependencies by default. If you want
+to utilize iCodon's predicted stability in the fitness function,
+you'll need to install these separately.
 
 ```bash
 # To install using pip
@@ -36,7 +39,11 @@ pip install .
 Alternatively, you may also install VaxPress via a conda package:
 
 ```bash
-conda install -c changlabsnu -c bioconda -c conda-forge vaxpress
+# Install VaxPress into a new conda environment
+conda create -n vaxpress -c changlabsnu -c bioconda -c conda-forge vaxpress
+
+# Run VaxPress
+conda run -n vaxpress --live-stream vaxpress --help
 ```
 
 ### Singularity
@@ -46,8 +53,12 @@ Once Singularity is installed, you can download the VaxPress image from this
 GitHub repository and run using the following command:
 
 ```bash
-singularity vaxpress.sif ...
+singularity run vaxpress-0.3.sif --help
 ```
+
+When using the Singularity image, both the input and output must
+be somewhere inside your home directory for VaxPress to run without
+complicated directory binding configurations for Singularity.
 
 # Usage
 

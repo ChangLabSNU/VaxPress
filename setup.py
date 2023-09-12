@@ -27,7 +27,7 @@ from setuptools import setup
 
 setup(
     name='vaxpress',
-    version='0.3',
+    version='0.4',
     description='Codon Optimizer for mRNA Vaccine Design',
     author='Hyeshik Chang',
     author_email='hyeshik@snu.ac.kr',
@@ -54,7 +54,8 @@ setup(
     packages=['vaxpress', 'vaxpress.scoring', 'vaxpress.data'],
     package_data={'vaxpress': ['report_template/*']},
     data_files=[('share/vaxpress/examples',
-        ['examples/count_homotrimers.py', 'examples/restriction_site.py'])],
+        ['examples/count_homotrimers.py', 'examples/restriction_site.py',
+         'examples/adenosine_in_stems.py'])],
     entry_points={
         'console_scripts': [
             'vaxpress = vaxpress.__main__:run_vaxpress',

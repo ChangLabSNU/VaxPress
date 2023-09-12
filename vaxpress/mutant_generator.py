@@ -159,6 +159,23 @@ class MutantGenerator:
 
         return child
 
+    def traverse_all_single_mutations(self, parent: list[str],
+                                      fold: list[str],
+                                      choices: list[MutationChoice]=None):
+        if choices is None:
+            choices = self.choices
+
+        loop_positions = set([i // 3 for i, code in enumerate(fold['folding'])
+                              if code == '.'])
+
+        for choice in self.choices:
+            if choice.pos not in loop_positions:
+                continue
+
+            child = parent[:]
+            child[choice.pos] = self.synonymous_codons[child[choice.pos]][choice.altcodon]
+            yield child
+
     def compute_expected_mutations(self, mutation_rate: float) -> float:
         return len(self.choices) * mutation_rate
 
