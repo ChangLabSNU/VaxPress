@@ -13,8 +13,8 @@ Particular GenBank page for the Influenza A virus HA protein is `here <https://w
 FASTA file can be downloaded from the above page, or using the command like below:
 ::
     # Download a sequence from GenBank
-    $ ID="FJ981613.1"
-    $ wget -O Influenza_HA.fa "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=${ID}&rettype=fasta"
+    ID="FJ981613.1"
+    wget -O Influenza_HA.fa "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=${ID}&rettype=fasta"
 
 If you want to download other sequences, run the above command after changing the ``ID`` variable to the GenBank Accession Number of that sequence.
 
@@ -24,8 +24,8 @@ or using wget command with primary accession number (See `UniProt - Programmatic
 The corresponding protein sequence for the above HA sequence can be found `in here <https://www.uniprot.org/uniprotkb/C3W5X2/entry>`_.
 ::
     # Download a protein sequence from UniProt
-    $ ID="C3W5X2"
-    $ wget -O Influenza_HA_protein.fa https://www.uniprot.org/uniprotkb/${ID}.fasta
+    ID="C3W5X2"
+    wget -O Influenza_HA_protein.fa "https://www.uniprot.org/uniprotkb/${ID}.fasta"
 
 ----------------------------------------
 Step 2. Evaluating the initial sequence
@@ -34,46 +34,28 @@ Let's evaluate the sequence before any optimization.
 By setting ``--iterations`` option to 0, VaxPress will only evaluate the given sequence and generate a report.
 ::
     # Evaluate the initial sequence
-    $ vaxpress -i Influenza_HA.fa -o eval_results --iterations 0
+    vaxpress -i Influenza_HA.fa -o eval_results --iterations 0
 
 This command will generate a report file named ``report.html`` inside the output directory.
-Check the Sequence Optimality Metrics and Predicted Secondary Structure sections.
+Check the *Sequence Optimality Metrics and Predicted Secondary Structure sections*.
 In this case, metrics of the Initial and Optimized in Sequence Optimality Metrics will be the same since there was no optimization.
 
------------------------------------------------
-Step 3. Running LinearDesign through VaxPress
------------------------------------------------
-This step runs LinearDesign optimization through VaxPress. If you're going to run VaxPress optimization as well, you can go directly to Step 4.
-
-Assigning the same parameter for ``--conservative-start`` and ``--iterations`` options has the same effect as running LinearDesign optimization alone.
-Keep in mind that LinearDesign is not installed automatically with VaxPress, so you need to install it separately. 
-Give the path to the installed LinearDesign directory with ``--lineardesign-dir`` option.
-::
-    # Run LinearDesign optimization
-    $ vaxpress -i Influenza_HA.fa -o lineardesign_results \
-               --lineardesign 1.0 --lineardesign-dir ../LinearDesign \
-               --conservative-start 10 --iterations 10
-
-Check the ``report.html`` as in Step 2.
-In this case, differences between "Initial" and "Optimized" sequence should be minimal, since the mutations were only allowed at the start codon region.
-
-LAMBDA in ``--lineardesign LAMBDA`` option is a parameter to balance between MFE and CAI. Larger LAMBDA means more weights on CAI.
-
 --------------------------------------
-Step 4. Running VaxPress optimization
+Step 3. Running VaxPress optimization
 --------------------------------------
-Finally, let's run VaxPress optimization, starting from the sequence optimized by LinearDesign.
+Finally, all processes that are needed to run Vaxpress is ready. So, let's run VaxPress optimization, starting from the sequence optimized by LinearDesign.
+But before running, we are going to point out WHY we start from LinearDesign result.
+Since LinearDesign suggests sequence which is highly optimized in MFE(Minimum Free Energy) and CAI(Codon Adaptation Index) in linear time, it is efficient to optimize more rather than starting from naive seqeucne.
+(Zhang, He, et al. "Algorithm for optimized mRNA design improves stability and immunogenicity." Nature (2023): 1-3.)
 ::
     # Run VaxPress optimization
-    $ vaxpress -i Influenza_HA.fa -o vaxpress_results --processes 36 \
-               --lineardesign 1.0 --lineardesign-dir ../LinearDesign \
-               --conservative-start 10 --initial-mutation-rate 0.01 \
-               --iterations 2000
+    $vaxpress -i Influenza_HA.fa -o vaxpress_results --processes 36 \
+              --lineardesign 1.0 --lineardesign-dir ../LinearDesign \
+              --conservative-start 10 --initial-mutation-rate 0.01 \
+              --iterations 2000
 
 
-It is recommended to use ``-p`` or ``--processes`` option to make the runtime shorter.
-
-If you're using a protein sequence, the only thing you have to do is adding ``--protein`` option.
+It is recommended to use ``-p`` or ``--processes`` option to make the runtime shorter. If you're using a protein sequence, the only thing you have to do is adding ``--protein`` option.
 
 Now you can see the optimized sequence in the ``report.html``.
 In addition to the Sequence Optimality Metrics and Predicted Secondary Structure sections, plots in Optimization Process also contains useful information.

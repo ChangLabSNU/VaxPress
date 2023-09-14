@@ -9,9 +9,9 @@
 import sphinx_rtd_theme
 
 project = 'VaxPress'
-copyright = '2023, Sohyeon Ju, Jayoung Ku, Hyeshik Chang'
-author = 'Sohyeon Ju, Jayoung Ku, Hyeshik Chang'
-release = '0.1'
+copyright = '2023, Sohyeon Ju, Jayoung Ku, and Hyeshik Chang'
+author = 'Sohyeon Ju, Jayoung Ku, and Hyeshik Chang'
+release = '0.4'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
