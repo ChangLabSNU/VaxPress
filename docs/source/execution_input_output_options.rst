@@ -39,7 +39,10 @@ Optional Arguments
   Print top and bottom N sequences. (default: 10)
 - ``--report-interval`` MIN
   
-  Report interval in minutes. In other words, report.html will be updated by this time interval.(default: 5)
+  Report interval in minutes. In other words, report.html will be updated by this time interval. (default: 5)
+- ``--version``
+
+  show program's version number and exit.
 
 ---------------------
 Execution Options
@@ -91,3 +94,12 @@ For detailed information on how to use a third-party fitness function, please re
   
   Conserve sequence for the first ITER iterations, except the first WIDTH amino acids. (default WIDTH: 7)
   It's a recommended option to use when running VaxPress with LinearDesign initialization. See :doc:`Running VaxPress with Lineardesign </running_with_lineardesign>` for more information.
+
+- ``--folding-engine`` NAME
+
+  RNA folding engine: vienna or linearfold (default: vienna)
+
+- ``--species`` NAME
+
+  target species (default: human)
+  

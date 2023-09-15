@@ -22,3 +22,6 @@ Examples showing the effect of each parameters on the optimization process can b
 - ``--winddown-rate`` RATE
 
   Mutation rate multiplier when mutation stabilization is triggered (default: 0.9)
+- ``--boost-loop-mutations`` WEIGHT[:START]
+
+ boost mutations in loops after position START by WEIGHT (default: 3:15)

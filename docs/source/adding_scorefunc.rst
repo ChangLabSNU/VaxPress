@@ -1,14 +1,14 @@
 Adding a custom scoring function
 *************************************
-You can extend VaxPress’s optimization algorithm by adding custom scoring functions that contributes to the fitness evaluation of each sequence. 
+You can extend VaxPress optimization algorithm by adding custom scoring functions that contributes to the fitness evaluation of each sequence. 
 Example codes showing templates for additional scoring functions are in ``VaxPress/examples`` directory. 
-After preparing a python code for the new scoring function, you can add it to the optimization process with 2 ways:  
+After preparing a python code for the new scoring function, you can add it to the optimization process with two ways:  
 
 -------------------------------
-1. Using a command line option 
+Using a command line option 
 -------------------------------
-Pass the path to the python source file for the scoring function as an argument of ``—addon`` option. 
-If there are multiple scoring functions to add, ``—addon`` can be specified multiple times.
+Pass the path to the Python source file for the scoring function as an argument of ``-—addon`` option. 
+If there are multiple scoring functions to add, ``-—addon`` can be specified multiple times.
 ::
     # Example command to add homotrimer count to the fitness evaluation
 
@@ -23,7 +23,7 @@ If there are multiple scoring functions to add, ``—addon`` can be specified mu
 
 
 --------------------------------------------
-2. Install along with the VaxPress package
+Install along with the VaxPress package
 --------------------------------------------
 
 Another way is to reinstall VaxPress after adding a new scoring function to the source directory. 

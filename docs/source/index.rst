@@ -1,34 +1,24 @@
 Welcome to VaxPress's documentation!
 ************************************
+------------
+Installation
+------------
+There are several ways to install Vaxpress, and each ways have properties. 
+Firstly, pip is simple and easy to use since it can be operated in single command line. But you have to manage all the other dependencies separately.
+Secondly, using conda package is composed with single command line, and also it satisfies all the dependencies. But it'll be quite slow comparing to other ways.
+Lastly, singularity is fast, and automatically manage all dependencies. But it's hard to install singularity first. 
+Based on your on circumstance, select proper way to insatll Vaxrpess!
 
-VaxPress is a codon optimizer platform tailored for mRNA vaccine development.
-It refines coding sequences starting from protein or RNA sequences to boost both storage stability and in vivo protein expression.
-Plus, additional properties can be easily programmed into the optimization process with just a few lines of code via a pluggable interface.
-Due to its versatile nature, VaxPress can be used not only for mRNA vaccine development, but also for mRNA-based therapeutics and the other codon optimizations for various purposes.
+============================
+install VaxPress via ``pip``
+============================
 
-.. _prerequisites:
--------------
-Prerequisites
--------------
-
-VaxPress is a python-based tool.
-To install VaxPress via ``pip`` or ``conda``, you will need a python installation (version >= ??).
-
-.. note::
+.. prerequisite::
     If you install VaxPress via pip, ``R``, ``rpy2`` (version >= 3.0) and ``iCodon`` aren't included as dependencies.
     If you want to utilize iCodon's predicted stability in the fitness function, you'll need to install these separately.
     For iCodon installation, see `iCodon's GitHub page <https://github.com/santiago1234/iCodon/>`_.
 
-To install via ``singularity``, you will need to install `Singularity CE <https://sylabs.io/singularity/>`_ first.
-
-To use ``--lineardesign`` options, `LinearDesign <https://github.com/LinearDesignSoftware/LinearDesign>`_ installation is required apart from VaxPress installation.
-
-
-------------
-Installation
-------------
-
-You can install VaxPress via ``pip``:
+Installation:
 ::
     # To install using pip
     pip install vaxpress
@@ -41,25 +31,41 @@ You can install VaxPress via ``pip``:
     cd VaxPress
     pip install .
 
-VaxPress ``conda`` package is also available:
+======================================
+Install Vaxpress via ``conda`` package
+======================================
+Installation:
 ::
     conda install -c changlabsnu -c bioconda -c conda-forge vaxpress
 
-To install using Singularity, you will first need to install `Singularity CE <https://sylabs.io/singularity/>`_.
-Once Singularity is installed, you can download the VaxPress image from this GitHub repository and run using the following command:
+====================================
+Install Vaxpress via ``singularity``
+====================================
+.. prerequisite::
+    To install via , you will need to install `Singularity CE <https://sylabs.io/singularity/>`_ first.
+    Once Singularity is installed, you can download the VaxPress image from this GitHub repository and run using the following command:
+
+Installation:
 ::
     singularity vaxpress.sif ...
 
-It is recommended that VaxPress be installed in a control compute environment.
+It is recommended that VaxPress be installed in a virtual environment to control properly.
 See `the python documentation for preparing virtual environments <https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/>`_
 
+=========================
+Install ``LinearDesign``
+=========================
+
+To use ``--lineardesign`` options, `LinearDesign <https://github.com/LinearDesignSoftware/LinearDesign>`_ installation is required apart from VaxPress installation.
+
+
 -----------
-Quick Start
+Basic Usage
 -----------
 
 There are 2 required arguments to run VaxPress: ``-i``, ``-o``.
 ``-i`` specifies the input file path, and ``-o`` specifies the output directory path.
-Basic command-line usage of vaxpress looks like below:
+Command-line below is example of basic vaxpress usage. You might follow it.:
 ::
     # To see a full list of available options, use vaxpress --help 
     vaxpress -h
@@ -71,7 +77,7 @@ Basic command-line usage of vaxpress looks like below:
 ============
 Input Files
 ============
-VaxPress requires an input file in FASTA format containing the CDS sequence to be optimized.
+VaxPress requires an input file in FASTA format containing the CDS(CoDing Sequence) sequence to be optimized.
 Protein sequence in FASTA format is also available as an input, using ``--protein`` option.
 
 
@@ -97,7 +103,7 @@ VaxPress optimizes synonymous codon selections to potentially enhance the fitnes
 This fitness is derived from a cumulative score of various metrics, including the codon adaptation index, GC ratio, among others.
 To emphasize or de-emphasize a specific feature, simply adjust its weight.
 
-- To fine-tune the optimization, adjust the weights of individual scoring functions using the ``--{func}-weight`` option. Setting a function's weight to ``0`` effectively disables it.
+To fine-tune the optimization, adjust the weights of individual scoring functions using the ``--{func}-weight`` option. Setting a function's weight to ``0`` effectively disables it.
 
 .. code-block:: bash
 
@@ -107,7 +113,7 @@ To emphasize or de-emphasize a specific feature, simply adjust its weight.
     # Turn off the consideration of repeated sequences
     vaxpress -i spike.fa -o result-spike --repeats-weight 0
 
-- VaxPress allows users to add their custom scoring functions. See :doc:`adding custom scoring functions </adding_scorefunc>` section.
+VaxPress allows users to add their custom scoring functions. See :doc:`adding custom scoring functions </adding_scorefunc>` section.
 
 A deeper understanding of the scoring functions' principles is available on the :doc:`Algorithmic Details </algorithmic_details>` section.
 
