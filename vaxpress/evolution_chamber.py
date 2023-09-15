@@ -230,8 +230,7 @@ class CDSEvolutionChamber:
         self.flatten_seqs = [''.join(p) for p in self.population]
 
     def run(self) -> dict:
-        if not self.quiet:
-            self.show_configuration()
+        self.show_configuration()
 
         timelogs = [time.time()]
         n_survivors = self.iteropts.n_survivors
@@ -327,9 +326,6 @@ class CDSEvolutionChamber:
         return bestindices
 
     def print_eval_results(self, total_scores, metrics, ind_sorted, n_parents) -> None:
-        if self.quiet:
-            return
-
         print_top = min(self.print_top_mutants, len(self.population))
         rowstoshow = ind_sorted[:print_top]
         if len(rowstoshow) < 1:
