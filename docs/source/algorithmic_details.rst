@@ -24,8 +24,7 @@ This iterative process is repeated for a certain number of iterations specified 
 Composition of Scoring Function
 -------------------------------
 
-Each scoring functions of VaxPress calculate scores in the direction they want to maximize, adjust weights, and maximize weighted sum as objective function represented below.
-VaxPress' scoring function consists of three main areas, each considering factors that can influence the optimization result:
+Each scoring functions of VaxPress calculate scores in the direction they want to maximize, adjust weights, and maximize weighted sum as objective function.
 
 ====================
 Objective Function
@@ -34,6 +33,8 @@ Objective Function
 The scoring function is a linear combination of the factors below, with associated weights. It is represented as follows:
 
 .. math:: Scoring \, Function =  \Sigma_{f \in factors} f*weight
+
+VaxPress' scoring function consists of three main areas, each considering factors that can influence the optimization result:
 
 ====================
 1. Codon Usage
@@ -155,13 +156,14 @@ This area includes various factors that influence RNA sequence stability and imm
   In VaxPress, tandem repeats are quantified by measuring their length. 
   By using ``pytrf.GTRFinder``, Vaxpress finds all generic tandem repeats from given sequences. And add all of their lengths. 
 
----------------------------------------
-Scoring Function (Objective Function)
----------------------------------------
-
-The scoring function is a linear combination of the factors mentioned above, with associated weights. It is represented as follows:
-
-.. math:: Scoring \, Function =  \Sigma_{f \in factors} f*weight
+.. _label_WinddownTR:
+--------------------------
+Winddown Trigger and Rate
+--------------------------
+To improve optimization performance, it is crucial to create new populations that can compete effectively with previous generations.
+As the optimization process progresses, highly mutated new populations are less likely to be selected because the earlier sequences are already well-optimized.
+Therefore, if the current fitness score remains at a certain level even as optimization continues, it is necessary to *winddown* the mutation rate.
+In VaxPress, the Winddown Trigger represents the number of iterations with the same fitness score required to decrease the mutation rate, and the Winddown Rate is the factor by which the mutation rate is multiplied when the winddown is triggered.
 
 -----------
 References
