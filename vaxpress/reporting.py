@@ -151,7 +151,7 @@ class ReportPlotsMixin:
         height = min(len(self.default_panel_height), len(plotdata_initial))
         fig.update_layout(
             title='Final sequence evaluation metrics',
-            height=self.default_panel_height[height - 1])
+            height=self.default_panel_height[height])
 
         return pyo.plot(fig, output_type='div', include_plotlyjs=False)
 
