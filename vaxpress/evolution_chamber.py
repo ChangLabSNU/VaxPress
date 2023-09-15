@@ -27,7 +27,6 @@ import numpy as np
 import time
 import sys
 import os
-import shutil
 from textwrap import wrap
 from tabulate import tabulate
 from collections import namedtuple
@@ -36,7 +35,7 @@ from itertools import cycle
 from .mutant_generator import MutantGenerator, STOP
 from .sequence_evaluator import SequenceEvaluator
 from .presets import dump_to_preset
-from .console import hbar, hbar_double
+from .log import hbar, hbar_double, log
 from . import __version__
 
 PROTEIN_ALPHABETS = 'ACDEFGHIKLMNPQRSTVWY' + STOP
@@ -82,29 +81,7 @@ class CDSEvolutionChamber:
 
         self.initialize()
 
-    def printmsg(self, *args, **kwargs) -> None:
-        if not self.quiet or kwargs.get('force') is not None:
-            if 'force' in kwargs:
-                del kwargs['force']
-            kwargs['file'] = sys.stderr
-            print(*args, **kwargs)
-
-        if 'force' in kwargs:
-            del kwargs['force']
-        kwargs['file'] = self.log_file
-        print(*args, **kwargs)
-
     def initialize(self) -> None:
-        if os.path.exists(self.outputdir):
-            if self.execopts.overwrite:
-                if os.path.isdir(self.outputdir):
-                    shutil.rmtree(self.outputdir)
-                else:
-                    os.unlink(self.outputdir)
-            else:
-                raise FileExistsError('Output directory already exists.')
-
-        os.makedirs(self.outputdir)
         self.checkpoint_path = os.path.join(self.outputdir, 'checkpoints.tsv')
         self.log_file = open(os.path.join(self.outputdir, 'log.txt'), 'w')
 
@@ -130,7 +107,7 @@ class CDSEvolutionChamber:
                                          self.execopts.protein,
                                          self.execopts.boost_loop_mutations)
         if self.execopts.lineardesign_lambda is not None:
-            self.printmsg('==> Initializing sequence with LinearDesign...')
+            log.info('==> Initializing sequence with LinearDesign...')
 
             self.mutantgen.lineardesign_initial_codons(
                 self.execopts.lineardesign_lambda,
@@ -164,7 +141,7 @@ class CDSEvolutionChamber:
 
         self.seqeval = SequenceEvaluator(self.scoringfuncs, self.scoreopts,
                                     self.execopts, self.mutantgen, self.species,
-                                    self.length_cds, self.quiet, self.printmsg)
+                                    self.length_cds, self.quiet)
         self.penalty_metric_flags = self.seqeval.penalty_metric_flags # XXX
 
         self.initial_sequence_evaluation = (
@@ -178,14 +155,14 @@ class CDSEvolutionChamber:
     def show_configuration(self) -> None:
         spec = self.mutantgen.compute_mutational_space()
 
-        self.printmsg(f'VaxPress Codon Optimizer for mRNA Vaccines {__version__}')
-        self.printmsg(hbar_double)
-        self.printmsg(f' * Name: {self.seq_description}')
-        self.printmsg(f' * CDS length: {self.length_cds} nt')
-        self.printmsg(f' * Possible single mutations: {spec["singles"]}')
-        self.printmsg(f' * Possible sequences: {spec["total"]}')
-        self.printmsg(f' * Command line: {" ".join(sys.argv)}')
-        self.printmsg()
+        log.info(f'VaxPress Codon Optimizer for mRNA Vaccines {__version__}')
+        log.info(hbar_double)
+        log.info(f' * Name: {self.seq_description}')
+        log.info(f' * CDS length: {self.length_cds} nt')
+        log.info(f' * Possible single mutations: {spec["singles"]}')
+        log.info(f' * Possible sequences: {spec["total"]}')
+        log.info(f' * Command line: {" ".join(sys.argv)}')
+        log.info('')
 
     def mutate_population(self, iter_no0: int) -> None:
         if self.full_scan_interval > 0 and (
@@ -196,19 +173,19 @@ class CDSEvolutionChamber:
             self.mutantgen.compute_expected_mutations(self.mutation_rate))
         if self.expected_total_mutations < self.stop_threshold:
             if not self.in_final_full_scan:
-                self.printmsg(hbar)
-                self.printmsg('==> Trying final full scan')
+                log.info(hbar)
+                log.info('==> Trying final full scan')
                 self.in_final_full_scan = True
                 return self.prepare_full_scan(iter_no0)
 
-            self.printmsg('==> Stopping: expected mutation reaches the minimum')
+            log.warning('==> Stopping: expected mutation reaches the minimum')
             raise StopIteration
 
         self.in_final_full_scan = False
-        self.printmsg(hbar)
-        self.printmsg(f'Iteration {iter_no0+1}/{self.iteropts.n_iterations}  --',
-                        f'  mut_rate: {self.mutation_rate:.5f} --',
-                        f'E(muts): {self.expected_total_mutations:.1f}')
+        log.info(hbar)
+        log.info(f'Iteration {iter_no0+1}/{self.iteropts.n_iterations}  -- '
+                 f'  mut_rate: {self.mutation_rate:.5f} -- '
+                 f'E(muts): {self.expected_total_mutations:.1f}')
 
         nextgeneration = self.population[:]
         sources = list(range(len(nextgeneration)))
@@ -235,9 +212,9 @@ class CDSEvolutionChamber:
         self.flatten_seqs = [''.join(p) for p in self.population]
 
     def prepare_full_scan(self, iter_no0: int) -> None:
-        self.printmsg(hbar)
-        self.printmsg(f'Iteration {iter_no0+1}/{self.iteropts.n_iterations}  --',
-                        'FULL SCAN')
+        log.info(hbar)
+        log.info(f'Iteration {iter_no0+1}/{self.iteropts.n_iterations}  -- '
+                 'FULL SCAN')
 
         nextgeneration = self.population[:]
         nextgen_sources = list(range(len(nextgeneration)))
@@ -314,22 +291,22 @@ class CDSEvolutionChamber:
                 self.population[:] = survivors
                 self.population_foldings[:] = survivor_foldings
 
-                self.printmsg(' # Last best scores:',
-                              ' '.join(f'{s:.3f}' for s in self.best_scores[-5:]))
+                log.info(' # Last best scores: ' +
+                         ' '.join(f'{s:.3f}' for s in self.best_scores[-5:]))
                 if (len(self.best_scores) >= self.iteropts.winddown_trigger and
                         iter_no - last_winddown > self.iteropts.winddown_trigger):
                     if (self.best_scores[-1] <=
                             self.best_scores[-self.iteropts.winddown_trigger]):
                         self.mutation_rate *= self.iteropts.winddown_rate
-                        self.printmsg('==> Winddown triggered: mutation rate '
-                                      f'= {self.mutation_rate:.5f}')
+                        log.info('==> Winddown triggered: mutation rate '
+                                 f'= {self.mutation_rate:.5f}')
                         last_winddown = iter_no
 
                 timelogs.append(time.time())
 
                 self.print_time_estimation(timelogs[-2], timelogs[-1], iter_no)
 
-                self.printmsg()
+                log.info('')
 
                 yield {'iter_no': iter_no, 'error': error_code, 'time': timelogs}
 
@@ -376,8 +353,8 @@ class CDSEvolutionChamber:
             tabdata.append([''.join(flags), f_total] +f_metrics)
 
         header_short = [h[:self.table_header_length] for h in header]
-        self.printmsg(tabulate(tabdata, header_short, tablefmt='simple',
-                               floatfmt='.2f'), end='\n\n')
+        log.info(tabulate(tabdata, header_short, tablefmt='simple',
+                          floatfmt='.2f') + '\n')
 
     def print_time_estimation(self, iteration_start: float, iteration_end: float,
                               iter_no: int) -> None:
@@ -392,7 +369,7 @@ class CDSEvolutionChamber:
         if elapsed_str.startswith('00:'):
             elapsed_str = elapsed_str[3:]
 
-        self.printmsg(f' # {elapsed_str}s/it  --  Expected finish: {expected_end}')
+        log.info(f' # {elapsed_str}s/it  --  Expected finish: {expected_end}')
 
     def write_checkpoint(self, iter_no, survivors, total_scores, scores,
                          metrics, foldings) -> None:

@@ -29,7 +29,7 @@ import pylru
 from tqdm import tqdm
 from concurrent import futures
 from collections import Counter
-from .console import hbar_stars
+from .log import hbar_stars, log
 
 
 class FoldEvaluator:
@@ -112,7 +112,7 @@ class SequenceEvaluator:
     folding_cache_size = 8192
 
     def __init__(self, scoring_funcs, scoreopts, execopts, mutantgen, species,
-                 length_cds, quiet, printmsg):
+                 length_cds, quiet):
         self.scoring_funcs = scoring_funcs
         self.scoreopts = scoreopts
         self.execopts = execopts
@@ -122,7 +122,6 @@ class SequenceEvaluator:
         self.species = species
 
         self.quiet = quiet
-        self.printmsg = printmsg
 
         self.initialize()
 
@@ -214,14 +213,13 @@ class SequenceEvaluationSession:
             len(seqs))
 
         self.pbar = None
-        self.printmsg = evaluator.printmsg
         self.quiet = evaluator.quiet
 
         self.scorefuncs_folding = evaluator.scorefuncs_folding
         self.scorefuncs_nofolding = evaluator.scorefuncs_nofolding
     
     def __enter__(self):
-        self.printmsg('')
+        log.info('')
         self.pbar = tqdm(total=self.num_tasks, disable=self.quiet,
                          file=sys.stderr, unit='task', desc='Scoring fitness')
         return self
@@ -229,7 +227,7 @@ class SequenceEvaluationSession:
     def __exit__(self, exc_type, exc_value, traceback):
         if self.pbar is not None:
             self.pbar.close()
-        self.printmsg('')
+        log.info('')
 
     def evaluate(self) -> None:
         jobs = set()
@@ -336,17 +334,20 @@ class SequenceEvaluationSession:
             self.pbar.update()
 
     def handle_exception(self, exc):
-        self.printmsg(hbar_stars, force=True)
-        self.printmsg('Error occurred in a scoring function:', force=True)
-
         import traceback
         import io
+
         errormsg = io.StringIO()
         traceback.print_exc(file=errormsg)
-        self.printmsg(errormsg.getvalue(), force=True)
 
-        self.printmsg(hbar_stars, force=True)
-        self.printmsg(force=True)
-        self.printmsg('Termination in progress. Waiting for running tasks '
-                        'to finish before closing the program.', force=True)
+        msg = [
+            hbar_stars,
+            'Error occurred in a scoring function:',
+            errormsg.getvalue(),
+            hbar_stars,
+            '',
+            'Termination in progress. Waiting for running tasks '
+            'to finish before closing the program.']
+
+        log.error('\n'.join(msg))
         self.errors.append(exc.args)

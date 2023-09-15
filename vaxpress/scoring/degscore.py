@@ -25,6 +25,7 @@
 
 from . import ScoringFunction
 from ..datacache import get_cachepath
+from ..log import log
 import importlib.util as imputil
 import sys
 
@@ -77,7 +78,7 @@ class LazyLoadingDegScoreProxy:
 
         for filename, url in self.download_addresses.items():
             cachepath = get_cachepath(filename)
-            print("=> Downloading a DegScore file from", url, 'to', cachepath)
+            log.info(f'==> Downloading a DegScore file from {url} to {cachepath}')
             urllib.request.urlretrieve(url, cachepath)
 
 call_degscore = LazyLoadingDegScoreProxy()

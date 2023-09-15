@@ -28,8 +28,10 @@ from .evolution_chamber import (
     CDSEvolutionChamber, IterationOptions, ExecutionOptions)
 from .presets import load_preset
 from .reporting import ReportGenerator
+from .log import log, initialize_logging
 from Bio import SeqIO
 import argparse
+import shutil
 import shlex
 import time
 import sys
@@ -290,11 +292,26 @@ def parse_options(scoring_funcs, preset, default_off):
 
     return args, scoring_opts
 
+def initialize_outputdir(outputdir, overwrite=False):
+    if os.path.exists(outputdir):
+        if overwrite:
+            if os.path.isdir(outputdir):
+                shutil.rmtree(outputdir)
+            else:
+                os.unlink(outputdir)
+        else:
+            raise FileExistsError('Output directory already exists.')
+
+    os.makedirs(outputdir)
+
 def run_vaxpress():
     preset, addon_paths, default_off = preparse_config_preset_addons()
     scoring_funcs = scoring.discover_scoring_functions(addon_paths)
 
     args, scoring_options = parse_options(scoring_funcs, preset, default_off)
+
+    initialize_outputdir(args.output, args.overwrite)
+    initialize_logging(os.path.join(args.output, 'log.txt'), args.quiet)
 
     inputseq = next(SeqIO.parse(args.input, 'fasta'))
     seqdescr = inputseq.description
@@ -350,7 +367,7 @@ def run_vaxpress():
             if do_report:
                 next_report = status['time'][-1] + args.report_interval * 60
                 if status['iter_no'] >= 0:
-                    evochamber.printmsg('==> Generating intermediate report...')
+                    log.info('==> Generating intermediate report...')
 
                 evaldata = evochamber.save_results()
                 status.update({'evaluations': evaldata, 'version': __version__})
@@ -361,7 +378,7 @@ def run_vaxpress():
         finished = (status is not None and status['iter_no'] < 0
                     and status['error'] == 0)
         if finished:
-            evochamber.printmsg(
+            log.info(
                 'Finished successfully. You can view the results '
                 f'in {evochamber.outputdir.rstrip("/")}/report.html.')
 
@@ -369,8 +386,8 @@ def run_vaxpress():
     except KeyboardInterrupt:
         return 1
     except FileExistsError:
-        print('Output directory already exists. Use --overwrite '
-              'option to overwrite it.')
+        log.error('Output directory already exists. Use --overwrite '
+                  'option to overwrite it.')
         return 1
 
 def generate_report(status, args, scoring_options, iteration_options,
