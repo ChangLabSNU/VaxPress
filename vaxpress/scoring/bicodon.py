@@ -30,8 +30,6 @@ from itertools import product
 
 class BicodonAdaptationIndexFitness(ScoringFunction):
 
-    single_submission = False
-
     name = 'bicodon'
     description = 'Codon Adaptation Index of Codon-Pairs'
     priority = 21

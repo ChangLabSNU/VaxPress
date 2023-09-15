@@ -27,8 +27,6 @@ from . import ScoringFunction
 
 class UridineCountFitness(ScoringFunction):
 
-    single_submission = False
-
     name = 'ucount'
     description = 'Uridines'
     priority = 30

@@ -48,7 +48,6 @@ def check_iCodon_availability(kls):
 class iCodonStabilityFitness(ScoringFunction):
 
     iCodon_initialized = False
-    single_submission = False
     predfunc = None
 
     name = 'iCodon'

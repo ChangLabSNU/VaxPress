@@ -40,8 +40,6 @@ def compute_gc_penalty(seq, winsize, stride):
 
 class GCRatioFitness(ScoringFunction):
 
-    single_submission = False
-
     name = 'gc'
     description = 'GC Ratio'
     priority = 50

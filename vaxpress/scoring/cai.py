@@ -29,8 +29,6 @@ import numpy as np
 
 class CodonAdaptationIndexFitness(ScoringFunction):
 
-    single_submission = False
-
     name = 'cai'
     description = 'Codon Adaptation Index'
     priority = 20
