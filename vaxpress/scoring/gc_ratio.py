@@ -44,6 +44,8 @@ class GCRatioFitness(ScoringFunction):
     description = 'GC Ratio'
     priority = 50
 
+    use_annotation_on_zero_weight = True
+
     arguments = [
         ('weight', dict(
             type=float, default=3.0, metavar='WEIGHT',
