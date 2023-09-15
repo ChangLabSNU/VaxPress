@@ -131,6 +131,7 @@ class SequenceEvaluator:
 
         self.scorefuncs_nofolding = []
         self.scorefuncs_folding = []
+        self.annotationfuncs = []
         self.penalty_metric_flags = {}
 
         additional_opts = {
@@ -138,10 +139,14 @@ class SequenceEvaluator:
         }
 
         for funcname, cls in self.scoring_funcs.items():
+            funcoff = False
             opts = self.scoreopts[funcname]
             if (('weight' in opts and opts['weight'] == 0) or
-                ('off' in opts and opts['off'])):
-                continue
+                    ('off' in opts and opts['off'])):
+                if not cls.use_annotation_on_zero_weight:
+                    continue
+                funcoff = True
+
             opts.update(additional_opts)
             for reqattr in cls.requires:
                 opts['_' + reqattr] = getattr(self, reqattr)
@@ -149,6 +154,10 @@ class SequenceEvaluator:
             try:
                 scorefunc_inst = cls(**opts)
             except EOFError:
+                continue
+
+            self.annotationfuncs.append(scorefunc_inst)
+            if funcoff:
                 continue
 
             if cls.uses_folding:
@@ -178,7 +187,7 @@ class SequenceEvaluator:
 
         seqevals = {}
         seqevals['local-metrics'] = localmet = {}
-        for fun in self.scorefuncs_nofolding + self.scorefuncs_folding:
+        for fun in self.annotationfuncs:
             if hasattr(fun, 'evaluate_local'):
                 localmet.update(fun.evaluate_local(seq))
 
@@ -217,6 +226,7 @@ class SequenceEvaluationSession:
 
         self.scorefuncs_folding = evaluator.scorefuncs_folding
         self.scorefuncs_nofolding = evaluator.scorefuncs_nofolding
+        self.annotationfuncs = evaluator.annotationfuncs
     
     def __enter__(self):
         log.info('')

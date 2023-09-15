@@ -33,6 +33,8 @@ class CodonAdaptationIndexFitness(ScoringFunction):
     description = 'Codon Adaptation Index'
     priority = 20
 
+    use_annotation_on_zero_weight = True
+
     requires = ['mutantgen', 'species']
     arguments = [
         ('weight', dict(
