@@ -1,8 +1,19 @@
-Usage
-*********
+Use cases
+***********
 
 This page demonstrates some additional ways of how VaxPress can be used.
 Basic usage of VaxPress is described in :doc:`Quick Start </index>` section.
+
+
+==========================
+Using LinearDesign for Optimization Initialization
+==========================
+
+
+
+
+
+
 
 ==========================================
 Running LinearDesign ONLY through VaxPress

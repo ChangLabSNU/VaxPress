@@ -139,24 +139,28 @@ Once you've run VaxPress, the specified output directory will contain the follow
 - ``parameters.json``: Contains the parameters employed for the optimization. This file can be feeded to VaxPress with the ``--preset`` option to duplicate the set-up for other sequence.
 
 
+---------------
+Tutorial (여기로?)
+---------------
+
 
 
 --------
-Contents
+제목 
 --------
 .. toctree::
    :maxdepth: 2
 
+   usage
+   troubleshooting
    tutorial
    algorithmic_details
    adding_scorefunc
    running_with_lineardesign
-   execution_input_output_options
-   optimization_parameters
-   fitness_function_parameters
+   options
    guide_to_set_parameters
-   usage
-   troubleshooting
+ 
+   
 
 ------------------
 Indices and tables
