@@ -36,8 +36,8 @@ class CodonAdaptationIndexFitness(ScoringFunction):
     requires = ['mutantgen', 'species']
     arguments = [
         ('weight', dict(
-            type=float, default=3.0, metavar='WEIGHT',
-            help='scoring weight for codon adaptation index (default: 3.0)'
+            type=float, default=0, metavar='WEIGHT',
+            help='scoring weight for codon adaptation index (default: 0)'
         )),
     ]
 
