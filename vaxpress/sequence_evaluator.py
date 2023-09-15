@@ -189,7 +189,10 @@ class SequenceEvaluator:
         seqevals['local-metrics'] = localmet = {}
         for fun in self.annotationfuncs:
             if hasattr(fun, 'evaluate_local'):
-                localmet.update(fun.evaluate_local(seq))
+                if fun.uses_folding:
+                    localmet.update(fun.evaluate_local(seq, folding))
+                else:
+                    localmet.update(fun.evaluate_local(seq))
 
             if hasattr(fun, 'annotate_sequence'):
                 if fun.uses_folding:

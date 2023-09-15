@@ -48,6 +48,13 @@ class LazyLoadingDegScoreProxy:
         mdl = self.module.DegScore(seq, structure=fold)
         return mdl.degscore / len(seq)
 
+    def score_by_position(self, seq, fold):
+        if self.module is None:
+            self.load_module()
+
+        mdl = self.module.DegScore(seq, structure=fold)
+        return mdl.degscore_by_position
+
     def load_module(self):
         try:
             for fn in self.download_addresses:
@@ -109,3 +116,8 @@ class DegScoreFitness(ScoringFunction):
     def annotate_sequence(self, seq, folding):
         degscore = call_degscore(seq, folding['folding'])
         return {'degscore': degscore}
+
+    def evaluate_local(self, seq, folding):
+        degscore = call_degscore.score_by_position(seq, folding['folding'])
+        baseindex = list(range(len(seq)))
+        return {'degscore': (baseindex, degscore)}
