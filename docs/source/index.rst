@@ -7,18 +7,20 @@ There are several ways to install Vaxpress, and each ways have properties.
 Firstly, pip is simple and easy to use since it can be operated in single command line. But you have to manage all the other dependencies separately.
 Secondly, using conda package is composed with single command line, and also it satisfies all the dependencies. But it'll be quite slow comparing to other ways.
 Lastly, singularity is fast, and automatically manage all dependencies. But it's hard to install singularity first. 
-Based on your on circumstance, select proper way to insatll Vaxrpess!
+Based on your on circumstance, select proper way to install Vaxrpess!
 
 ============================
 install VaxPress via ``pip``
 ============================
 
-.. prerequisite::
+.. note::
+    **prerequisite**
+
     If you install VaxPress via pip, ``R``, ``rpy2`` (version >= 3.0) and ``iCodon`` aren't included as dependencies.
     If you want to utilize iCodon's predicted stability in the fitness function, you'll need to install these separately.
     For iCodon installation, see `iCodon's GitHub page <https://github.com/santiago1234/iCodon/>`_.
 
-Installation:
+**Installation**
 ::
     # To install using pip
     pip install vaxpress
@@ -34,18 +36,20 @@ Installation:
 ======================================
 Install Vaxpress via ``conda`` package
 ======================================
-Installation:
+**Installation**
 ::
     conda install -c changlabsnu -c bioconda -c conda-forge vaxpress
 
 ====================================
 Install Vaxpress via ``singularity``
 ====================================
-.. prerequisite::
+.. note::
+    **prerequisite**
+
     To install via , you will need to install `Singularity CE <https://sylabs.io/singularity/>`_ first.
     Once Singularity is installed, you can download the VaxPress image from this GitHub repository and run using the following command:
 
-Installation:
+**Installation**
 ::
     singularity vaxpress.sif ...
 
@@ -62,9 +66,9 @@ To use ``--lineardesign`` options, `LinearDesign <https://github.com/LinearDesig
 -----------
 Basic Usage
 -----------
-
 There are 2 required arguments to run VaxPress: ``-i``, ``-o``.
 ``-i`` specifies the input file path, and ``-o`` specifies the output directory path.
+
 Command-line below is example of basic vaxpress usage. You might follow it.:
 ::
     # To see a full list of available options, use vaxpress --help 
