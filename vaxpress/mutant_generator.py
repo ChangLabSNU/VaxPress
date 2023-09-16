@@ -173,7 +173,8 @@ class MutantGenerator:
                 continue
 
             child = parent[:]
-            child[choice.pos] = self.synonymous_codons[child[choice.pos]][choice.altcodon]
+            child[choice.pos] = self.synonymous_codons[child[choice.pos]][
+                                    choice.altcodon]
             yield child
 
     def compute_expected_mutations(self, mutation_rate: float) -> float:

@@ -41,16 +41,12 @@ from . import __version__
 PROTEIN_ALPHABETS = 'ACDEFGHIKLMNPQRSTVWY' + STOP
 RNA_ALPHABETS = 'ACGU'
 
-IterationOptions = namedtuple('IterationOptions', [
-    'n_iterations', 'n_population', 'n_survivors', 'initial_mutation_rate',
-    'winddown_trigger', 'winddown_rate'
-])
-
 ExecutionOptions = namedtuple('ExecutionOptions', [
-    'output', 'command_line', 'overwrite', 'seed', 'processes',
-    'random_initialization', 'conservative_start', 'boost_loop_mutations',
-    'full_scan_interval', 'species', 'codon_table', 'protein', 'quiet',
-    'seq_description', 'print_top_mutants', 'addons',
+    'n_iterations', 'n_population', 'n_survivors', 'initial_mutation_rate',
+    'winddown_trigger', 'winddown_rate', 'output', 'command_line', 'overwrite',
+    'seed', 'processes', 'random_initialization', 'conservative_start',
+    'boost_loop_mutations', 'full_scan_interval', 'species', 'codon_table',
+    'protein', 'quiet', 'seq_description', 'print_top_mutants', 'addons',
     'lineardesign_dir', 'lineardesign_lambda', 'lineardesign_omit_start',
     'folding_engine',
 ])
@@ -65,15 +61,13 @@ class CDSEvolutionChamber:
     fasta_line_width = 72
 
     def __init__(self, cdsseq: str, scoring_funcs: dict,
-                 scoring_options: dict, iteration_options: IterationOptions,
-                 exec_options: ExecutionOptions):
+                 scoring_options: dict, exec_options: ExecutionOptions):
         self.cdsseq = cdsseq.upper()
 
         self.seq_description = exec_options.seq_description
         self.outputdir = exec_options.output
         self.scoringfuncs = scoring_funcs
         self.scoreopts = scoring_options
-        self.iteropts = iteration_options
         self.execopts = exec_options
         self.n_processes = exec_options.processes
         self.quiet = exec_options.quiet
@@ -119,12 +113,12 @@ class CDSEvolutionChamber:
         self.population = [self.mutantgen.initial_codons]
         self.population_foldings = [None]
         self.population_sources = [None]
-        parent_no_length = int(np.log10(self.iteropts.n_survivors)) + 1
+        parent_no_length = int(np.log10(self.execopts.n_survivors)) + 1
         self.format_parent_no = lambda n, length=parent_no_length: (
             format(n, f'{length}d').replace(' ', '-')
             if n is not None else '-' * length)
 
-        self.mutation_rate = self.iteropts.initial_mutation_rate
+        self.mutation_rate = self.execopts.initial_mutation_rate
         self.full_scan_interval = self.execopts.full_scan_interval
         self.in_final_full_scan = False
 
@@ -187,7 +181,7 @@ class CDSEvolutionChamber:
 
         self.in_final_full_scan = False
         log.info(hbar)
-        log.info(f'Iteration {iter_no0+1}/{self.iteropts.n_iterations}  -- '
+        log.info(f'Iteration {iter_no0+1}/{self.execopts.n_iterations}  -- '
                  f'  mut_rate: {self.mutation_rate:.5f} -- '
                  f'E(muts): {self.expected_total_mutations:.1f}')
 
@@ -202,7 +196,7 @@ class CDSEvolutionChamber:
 
         assert len(self.population) == len(self.population_foldings)
 
-        n_new_mutants = max(0, self.iteropts.n_population - len(self.population))
+        n_new_mutants = max(0, self.execopts.n_population - len(self.population))
         for parent, parent_folding, parent_no, _ in zip(
                     cycle(self.population), cycle(self.population_foldings),
                     cycle(range(len(self.population))), range(n_new_mutants)):
@@ -217,7 +211,7 @@ class CDSEvolutionChamber:
 
     def prepare_full_scan(self, iter_no0: int) -> None:
         log.info(hbar)
-        log.info(f'Iteration {iter_no0+1}/{self.iteropts.n_iterations}  -- '
+        log.info(f'Iteration {iter_no0+1}/{self.execopts.n_iterations}  -- '
                  'FULL SCAN')
 
         nextgeneration = self.population[:]
@@ -238,13 +232,13 @@ class CDSEvolutionChamber:
         self.show_configuration()
 
         timelogs = [time.time()]
-        n_survivors = self.iteropts.n_survivors
+        n_survivors = self.execopts.n_survivors
         last_winddown = 0
         error_code = 0
 
         with futures.ProcessPoolExecutor(max_workers=self.n_processes) as executor:
 
-            if self.iteropts.n_iterations == 0:
+            if self.execopts.n_iterations == 0:
                 # Only the initial sequence is evaluated
                 self.flatten_seqs = [''.join(self.population[0])]
                 total_scores, scores, metrics, foldings = self.seqeval.evaluate(
@@ -256,7 +250,7 @@ class CDSEvolutionChamber:
                                           foldings)
                     timelogs.append(time.time())
 
-            for i in range(self.iteropts.n_iterations):
+            for i in range(self.execopts.n_iterations):
                 iter_no = i + 1
                 n_parents = len(self.population)
 
@@ -272,7 +266,7 @@ class CDSEvolutionChamber:
                     error_code = 1
                     break
 
-                if len(self.population) > self.iteropts.n_population:
+                if len(self.population) > self.execopts.n_population:
                     # Pick the best mutants in each parent to keep diversity
                     ind_sorted = self.prioritized_sort_by_parents(total_scores)
                 else:
@@ -297,11 +291,11 @@ class CDSEvolutionChamber:
 
                 log.info(' # Last best scores: ' +
                          ' '.join(f'{s:.3f}' for s in self.best_scores[-5:]))
-                if (len(self.best_scores) >= self.iteropts.winddown_trigger and
-                        iter_no - last_winddown > self.iteropts.winddown_trigger):
+                if (len(self.best_scores) >= self.execopts.winddown_trigger and
+                        iter_no - last_winddown > self.execopts.winddown_trigger):
                     if (self.best_scores[-1] <=
-                            self.best_scores[-self.iteropts.winddown_trigger]):
-                        self.mutation_rate *= self.iteropts.winddown_rate
+                            self.best_scores[-self.execopts.winddown_trigger]):
+                        self.mutation_rate *= self.execopts.winddown_rate
                         log.info('==> Winddown triggered: mutation rate '
                                  f'= {self.mutation_rate:.5f}')
                         last_winddown = iter_no
@@ -345,7 +339,7 @@ class CDSEvolutionChamber:
                 self.format_parent_no(None)
                 if i < n_parents or self.population_sources[i] is None
                 else self.format_parent_no(self.population_sources[i] + 1), # parent
-                'S ' if rank < self.iteropts.n_survivors else '- '] # is survivor
+                'S ' if rank < self.execopts.n_survivors else '- '] # is survivor
             for name, flag in self.penalty_metric_flags.items():
                 flags.append(flag if metrics[i][name] != 0 in metrics[i] else '-')
 
@@ -363,7 +357,7 @@ class CDSEvolutionChamber:
         self.elapsed_times.append(elapsed)
 
         mean_elapsed = np.mean(self.elapsed_times[-5:])
-        remaining = (self.iteropts.n_iterations - iter_no) * mean_elapsed
+        remaining = (self.execopts.n_iterations - iter_no) * mean_elapsed
 
         expected_end = time.asctime(time.localtime(time.time() + remaining))
         elapsed_str = time.strftime('%H:%M:%S', time.gmtime(elapsed))
@@ -414,5 +408,5 @@ class CDSEvolutionChamber:
         }
 
     def save_optimization_parameters(self, path: str) -> None:
-        optdata = dump_to_preset(self.scoreopts, self.iteropts, self.execopts)
+        optdata = dump_to_preset(self.scoreopts, self.execopts)
         open(path, 'w').write(optdata)

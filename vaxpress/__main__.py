@@ -24,8 +24,7 @@
 #
 
 from . import scoring, config, __version__
-from .evolution_chamber import (
-    CDSEvolutionChamber, IterationOptions, ExecutionOptions)
+from .evolution_chamber import CDSEvolutionChamber, ExecutionOptions
 from .presets import load_preset
 from .reporting import ReportGenerator
 from .log import log, initialize_logging
@@ -319,16 +318,13 @@ def run_vaxpress():
 
     command_line = ' '.join(shlex.quote(arg) for arg in sys.argv)
 
-    iteration_options = IterationOptions(
+    execution_options = ExecutionOptions(
         n_iterations=args.iterations,
         n_population=args.population,
         n_survivors=args.survivors,
         initial_mutation_rate=args.initial_mutation_rate,
         winddown_trigger=args.winddown_trigger,
         winddown_rate=args.winddown_rate,
-    )
-
-    execution_options = ExecutionOptions(
         output=args.output,
         command_line=command_line,
         overwrite=args.overwrite,
@@ -356,8 +352,7 @@ def run_vaxpress():
 
     try:
         evochamber = CDSEvolutionChamber(
-            cdsseq, scoring_funcs, scoring_options,
-            iteration_options, execution_options)
+            cdsseq, scoring_funcs, scoring_options, execution_options)
 
         status = None
         for status in evochamber.run():
@@ -373,8 +368,7 @@ def run_vaxpress():
                 status.update({'evaluations': evaldata, 'version': __version__})
 
                 generate_report(status, args, evochamber.metainfo, scoring_options,
-                                iteration_options, execution_options, inputseq,
-                                scoring_funcs)
+                                execution_options, inputseq, scoring_funcs)
 
         finished = (status is not None and status['iter_no'] < 0
                     and status['error'] == 0)
@@ -391,12 +385,12 @@ def run_vaxpress():
                   'option to overwrite it.')
         return 1
 
-def generate_report(status, args, metainfo, scoring_options, iteration_options,
-                    execution_options, inputseq, scoring_funcs):
+def generate_report(status, args, metainfo, scoring_options, execution_options,
+                    inputseq, scoring_funcs):
     if status['iter_no'] > 0: # Intermediate report
         total_elapsed = status['time'][-1] - status['time'][0]
         time_per_iteration = total_elapsed / status['iter_no']
-        remaining = (iteration_options.n_iterations -
+        remaining = (execution_options.n_iterations -
                      status['iter_no']) * time_per_iteration
 
         expected_end = time.time() + remaining
@@ -404,11 +398,11 @@ def generate_report(status, args, metainfo, scoring_options, iteration_options,
         status['speed'] = time_per_iteration
         status['expected_end'] = expected_end
         status['progress_percentage'] = int(100 * status['iter_no'] /
-                                            iteration_options.n_iterations)
+                                            execution_options.n_iterations)
         status['refresh'] = args.report_interval * 60 + 5 # 5 seconds for safety
 
-    ReportGenerator(status, args, metainfo, scoring_options, iteration_options,
-                    execution_options, inputseq, scoring_funcs).generate()
+    ReportGenerator(status, args, metainfo, scoring_options, execution_options,
+                    inputseq, scoring_funcs).generate()
 
 if __name__ == '__main__':
     ret = run_vaxpress()

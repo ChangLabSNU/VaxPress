@@ -25,22 +25,21 @@
 
 import json
 
-execopts_to_remove = [
+opts_to_remove = [
     'output', 'overwrite', 'quiet', 'seq_description', 'print_top_mutants',
     'protein']
-iteroptions_aliases = {
+opt_aliases = {
     'n_iterations': 'iterations',
     'n_population': 'population',
     'n_survivors': 'survivors',
     'lineardesign_lambda': 'lineardesign',
 }
 
-def dump_to_preset(scoreopts, iteropts, execopts):
+def dump_to_preset(scoreopts, execopts):
     data = {}
 
-    data.update(iteropts._asdict())
     data.update({k: v for k, v in execopts._asdict().items()
-                 if k not in execopts_to_remove})
+                 if k not in opts_to_remove})
 
     data['fitness'] = {}
     for modname, args in scoreopts.items():
@@ -53,6 +52,6 @@ def dump_to_preset(scoreopts, iteropts, execopts):
 
 def load_preset(data):
     return {
-        iteroptions_aliases.get(k, k): v
+        opt_aliases.get(k, k): v
         for k, v in json.loads(data).items()
     }

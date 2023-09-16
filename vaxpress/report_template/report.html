@@ -31,7 +31,7 @@
   </p>
 
   <p>
-    <label for="file">Iteration {{ status['iter_no'] }} / {{ iter.n_iterations }}:</label>
+    <label for="file">Iteration {{ status['iter_no'] }} / {{ exec.n_iterations }}:</label>
     <progress id="progress" value="{{ status['progress_percentage'] }}" max="100">
       {{ status['progress_percentage'] }}%</progress>
   </p>
@@ -102,7 +102,7 @@
  align="center" height="650px" width="100%" seamless='seamless' frameBorder="0" AllowFullScreen></iframe>
 
 
-{% if iter['n_iterations'] > 0 %}
+{% if exec['n_iterations'] > 0 %}
 <h1>Optimization Process</h1>
 {{ plotters.fitness_curve() }}
 {{ plotters.metric_curves() }}
@@ -146,19 +146,19 @@
 <table>
   <tr>
     <th>Iterations</th>
-    <td>{{ iter.n_iterations }}</td>
+    <td>{{ exec.n_iterations }}</td>
     <th>Population size</th>
-    <td>{{ iter.n_population }}</td>
+    <td>{{ exec.n_population }}</td>
     <th>Survivors</th>
-    <td>{{ iter.n_survivors}}</td>
+    <td>{{ exec.n_survivors}}</td>
   </tr>
   <tr>
     <th>Initial mutation rate</th>
-    <td>{{ iter.initial_mutation_rate }}</td>
+    <td>{{ exec.initial_mutation_rate }}</td>
     <th>Wind-down trigger</th>
-    <td>{{ iter.winddown_trigger }}</td>
+    <td>{{ exec.winddown_trigger }}</td>
     <th>Wind-down rate</th>
-    <td>{{ iter.winddown_rate }}</td>
+    <td>{{ exec.winddown_rate }}</td>
   </tr>
 </table>
 

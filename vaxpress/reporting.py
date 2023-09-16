@@ -68,7 +68,7 @@ class TemplateFiltersMixin:
 
 class ReportPlotsMixin:
 
-    seq = args = status = scoreopts = iteropts = execopts = None
+    seq = args = status = scoreopts = execopts = None
     checkpoints = None
 
     default_panel_height = [0, 400, 600, 700, 800] # by number of panels
@@ -163,14 +163,13 @@ class ReportPlotsMixin:
 
 class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
 
-    def __init__(self, status, args, metainfo, scoreopts, iteropts, execopts, seq,
+    def __init__(self, status, args, metainfo, scoreopts, execopts, seq,
                  scorefuncs):
         self.seq = seq
         self.args = args
         self.metainfo = metainfo
         self.status = status
         self.scoreopts = scoreopts
-        self.iteropts = iteropts
         self.execopts = execopts
         self.scorefuncs = scorefuncs
 
@@ -198,7 +197,6 @@ class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
             'seq': self.seq,
             'metainfo': self.metainfo,
             'scoring': scoreopts_filtered,
-            'iter': self.iteropts,
             'exec': self.execopts,
             'params': self.parameters,
             'status': self.status,
