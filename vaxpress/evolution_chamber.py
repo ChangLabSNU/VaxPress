@@ -152,8 +152,12 @@ class CDSEvolutionChamber:
         self.checkpoint_file = open(self.checkpoint_path, 'w')
         self.checkpoint_header_written = False
 
+        self.metainfo = {
+            'mutation_space': self.mutantgen.compute_mutational_space(),
+        }
+
     def show_configuration(self) -> None:
-        spec = self.mutantgen.compute_mutational_space()
+        spec = self.metainfo['mutation_space']
 
         log.info(f'VaxPress Codon Optimizer for mRNA Vaccines {__version__}')
         log.info(hbar_double)
@@ -219,9 +223,10 @@ class CDSEvolutionChamber:
         nextgeneration = self.population[:]
         nextgen_sources = list(range(len(nextgeneration)))
 
+        traverse = self.mutantgen.traverse_all_single_mutations
         for i, (seedseq, seedfold) in enumerate(
                     zip(self.population, self.population_foldings)):
-            for child in self.mutantgen.traverse_all_single_mutations(seedseq, seedfold):
+            for child in traverse(seedseq, seedfold):
                 nextgeneration.append(child)
                 nextgen_sources.append(i)
 

@@ -29,6 +29,7 @@ from plotly.subplots import make_subplots
 import pandas as pd
 import jinja2
 import os
+import re
 import json
 import time
 
@@ -53,6 +54,10 @@ class TemplateFiltersMixin:
     @staticmethod
     def filter_pluralize(value, singular, plural):
         return [singular, plural][int(value != 1)]
+
+    @staticmethod
+    def filter_format_power_html(value):
+        return re.sub(r'\^(\d+)', r'<sup>\1</sup>', str(value)).replace('x', '&times;')
 
     @classmethod
     def set_filters(kls, env):
@@ -158,10 +163,11 @@ class ReportPlotsMixin:
 
 class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
 
-    def __init__(self, status, args, scoreopts, iteropts, execopts, seq,
+    def __init__(self, status, args, metainfo, scoreopts, iteropts, execopts, seq,
                  scorefuncs):
         self.seq = seq
         self.args = args
+        self.metainfo = metainfo
         self.status = status
         self.scoreopts = scoreopts
         self.iteropts = iteropts
@@ -190,6 +196,7 @@ class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
         return {
             'args': self.args,
             'seq': self.seq,
+            'metainfo': self.metainfo,
             'scoring': scoreopts_filtered,
             'iter': self.iteropts,
             'exec': self.execopts,
