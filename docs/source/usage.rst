@@ -5,20 +5,20 @@ This page demonstrates some additional ways of how VaxPress can be used.
 Basic usage of VaxPress is described in :doc:`Quick Start </index>` section.
 
 
-==========================
+====================================================
 Using LinearDesign for Optimization Initialization
-==========================
+====================================================
+: running_with_lineardesign.rst 내용을 이 문서 안으로.
 
 
 
 
 
 
-
-==========================================
+============================================
 Running LinearDesign ONLY through VaxPress
-==========================================
-This step runs LinearDesign optimization through VaxPress. If you're going to run VaxPress optimization as well, you can go directly to tutorial page, Step 3.
+============================================
+This step runs LinearDesign optimization through VaxPress. If you're going to run VaxPress optimization as well, you can go directly to :doc:`tutorial page </tutorial>`, Step 3.
 
 Assigning the same parameter for ``--conservative-start`` and ``--iterations`` options has the same effect as running LinearDesign optimization alone.
 Keep in mind that LinearDesign is not installed automatically with VaxPress, so you need to install it separately. 
@@ -29,7 +29,7 @@ Give the path to the installed LinearDesign directory with ``--lineardesign-dir`
              --lineardesign 1.0 --lineardesign-dir ../LinearDesign \
              --conservative-start 10 --iterations 10
 
-Check the ``report.html``.
+Results are displayed in ``report.html``.
 In this case, differences between "Initial" and "Optimized" sequence should be minimal, since the mutations were only allowed at the start codon region.
 
 LAMBDA in ``--lineardesign LAMBDA`` option is a parameter to balance between MFE and CAI. Larger LAMBDA means more weights on CAI.

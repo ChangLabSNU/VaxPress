@@ -30,7 +30,7 @@ Optional Arguments
   Input is a protein sequence.
 - ``--overwrite``
   
-  Overwrite output directory if it already exists.
+  ==Overwrite output directory if it already exists.
 - ``-q``, ``--quiet``
   
   Do not print progress messages to stdout.
@@ -49,7 +49,9 @@ Execution Options
 ---------------------
 - ``--preset`` FILE
   
-  Use preset values in ``parameters.json``, which is one of the output files from the VaxPress run. If some of the options are specified along with ``--preset``, the specified arguments including addons will override the preset values.
+  In VaxPress, the configuration of the current run including all the parameters is stored in ``parameters.json`` output file.
+  This configuration file then can be feeded to VaxPress with the ``--preset`` option to duplicate the set-up for other sequence.
+  If some of the options are specified along with ``--preset``, the specified arguments including *addons* will override the preset values.
 
   Example command to use preset values::
 
@@ -94,6 +96,15 @@ For detailed information on how to use a third-party fitness function, please re
   
   Conserve sequence for the first ITER iterations, except the first WIDTH amino acids. (default WIDTH: 7)
   It's a recommended option to use when running VaxPress with LinearDesign initialization. See :doc:`Running VaxPress with Lineardesign </running_with_lineardesign>` for more information.
+  ::
+    # Example command to conserve sequence for the first 10 iterations except the first 5 amino acids
+
+    vaxpress -i ./testseq/vegfa.fa\
+             -o ../test_run\
+             --iterations 500\
+             --lineardesign 1\
+             --lineardesign-dir ../LinearDesign\
+             --conservative-start 10:5\
 
 - ``--folding-engine`` NAME
 

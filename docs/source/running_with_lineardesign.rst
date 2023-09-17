@@ -26,7 +26,7 @@ Note that sequences straight from LinearDesign often have suboptimal structures 
 Under the high mutation rate at the beginning, this causes the main sequence body to lose its optimal MFE structure. 
 The ``-—conservative-start`` :ref:`option <label_constart>` tackles this by focusing on the start codon region before optimizing the rest. 
 
-Also, given that *LinearDesign*'s outputs are already quite optimal, the ``--initial-mutation-rate`` can be reduced to 0.01. 
+Also, given that *LinearDesign*'s outputs are already quite optimal, the ``--initial-mutation-rate`` can be reduced to ``0.01``. 
 This ensures efficient optimization as there's a minimal likelihood that a better mutation would emerge with a higher mutation rate.
 ::
     # Running VaxPress with LinearDesign
@@ -43,21 +43,21 @@ This ensures efficient optimization as there's a minimal likelihood that a bette
         :height: 350px
         :alt: initial mutation rate 0.1
         :align: center
-    When initial mutation rate is set as a default value (0.1), survivor sequence largely remains unchanged for initial several hundred iterations, until the mutation rate is sufficiently decreased by winddown.
+    When initial mutation rate is set as a default value (``0.1``), survivor sequence largely remains unchanged for initial several hundred iterations, until the mutation rate is sufficiently decreased by *winddown*.
     
     .. image:: _images/mutrate0.01.png
         :width: 500px
         :height: 350px
         :alt: initial mutation rate 0.01
         :align: center
-    When initial mutation rate is adjusted to 0.01, the sequence can escape from initial MFE-optimized sequence earlier to be further optimized based on the given VaxPress evaluation metrics.
+    When initial mutation rate is adjusted to ``0.01``, the sequence can escape from initial MFE-optimized sequence earlier to be further optimized based on the given *VaxPress* evaluation metrics.
 
 ---------------------------------
 List of all LinearDesign options
 ---------------------------------
 - ``--lineardesign`` LAMBDA
 
-  Call LinearDesign to initialize the optimization. LAMBDA (λ) is a parameter specifying the ratio that MFE and CAI are reflected in the optimization. λ is in (–∞, 0] while λ = 0 means only MFE is considered, and the weight on CAI increases as λ increases. 
+  Call LinearDesign to initialize the optimization. ``LAMBDA`` (λ) is a parameter specifying the ratio that MFE and CAI are reflected in the optimization. λ is in (–∞, 0] while λ = 0 means only MFE is considered, and the weight on CAI increases as λ increases. 
 
 - ``--lineardesign-dir`` DIR
 

@@ -27,9 +27,9 @@ The corresponding protein sequence for the above HA sequence can be found `in he
     ID="C3W5X2"
     wget -O Influenza_HA_protein.fa "https://www.uniprot.org/uniprotkb/${ID}.fasta"
 
-----------------------------------------
+------------------------------------------
 Step 2. Evaluating the initial sequence
-----------------------------------------
+------------------------------------------
 Let's evaluate the sequence before any optimization.
 By setting ``--iterations`` option to 0, VaxPress will only evaluate the given sequence and generate a report.
 ::
@@ -37,13 +37,15 @@ By setting ``--iterations`` option to 0, VaxPress will only evaluate the given s
     vaxpress -i Influenza_HA.fa -o eval_results --iterations 0
 
 This command will generate a report file named ``report.html`` inside the output directory.
-Check the *Sequence Optimality Metrics and Predicted Secondary Structure sections*.
+Check the *Sequence Optimality Metrics* and *Predicted Secondary Structure* sections.
 In this case, metrics of the Initial and Optimized in Sequence Optimality Metrics will be the same since there was no optimization.
 
---------------------------------------
+----------------------------------------
 Step 3. Running VaxPress optimization
---------------------------------------
+----------------------------------------
 Finally, all processes that are needed to run Vaxpress is ready. So, let's run VaxPress optimization, starting from the sequence optimized by LinearDesign.
+LinearDesign(Zhang et al., 2023) is a (README) : 왜 굳이 LinearDeisgn을 쓰는지 이유 소개. 
+
 But before running, we are going to point out WHY we start from LinearDesign result.
 Since LinearDesign suggests sequence which is highly optimized in MFE(Minimum Free Energy) and CAI(Codon Adaptation Index) in linear time, it is efficient to optimize more rather than starting from naive seqeucne.
 (Zhang, He, et al. "Algorithm for optimized mRNA design improves stability and immunogenicity." Nature (2023): 1-3.)

@@ -16,8 +16,8 @@ If there are multiple scoring functions to add, ``-—addon`` can be specified m
              -o ../test_run\
              --iterations 500\
              --lineardesign 1\
-             --lineardiesign-dir ../LinearDesign\
-             --conservative-start 10[:7]\
+             --lineardesign-dir ../LinearDesign\
+             --conservative-start 10:7\
 			 --addon ./VaxPress/examples/count_homotrimers.py
 
 

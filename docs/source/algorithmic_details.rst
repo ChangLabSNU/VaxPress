@@ -3,7 +3,7 @@ Algorithmic Details of VaxPress
 -----------------
 Overall algorithm
 -----------------
-Vaxpress uses genetic algorithm to produce optimized mRNA cds sequence, while fitness evaluation metrics are defined as scoring functions.Current scoring functions consider both the features involved in the production and distribution process, as well as features affecting the efficacy *in vivo* such as immunogenecity and translational efficiency.
+Vaxpress uses genetic algorithm to produce optimized mRNA cds sequence, while fitness evaluation metrics are defined as scoring functions. Current scoring functions consider both the features involved in the production and distribution process, as well as features affecting the efficacy *in vivo* such as immunogenecity and translational efficiency.
 
 If the input sequence is a protein, it will first be backtranslated into an RNA sequence.
 The initial population of RNA sequences generates randomly mutated "offspring" sequences, 
@@ -13,6 +13,7 @@ Based on the evaluation results, a selection process is carried out to choose su
 From the chosen survivor sequences, new offspring sequences are produced once again. 
 This iterative process is repeated for a certain number of iterations specified as ``--iterations``.
 
+*잘 보이게 block diagram으로 개정 (논문 겸용)
 .. image:: _images/overall.png
     :width: 500px
     :height: 350px
@@ -24,13 +25,15 @@ This iterative process is repeated for a certain number of iterations specified 
 Composition of Scoring Function
 -------------------------------
 
-Each scoring functions of VaxPress calculate scores in the direction they want to maximize, adjust weights, and maximize weighted sum as objective function.
+Each scoring functions of VaxPress outputs scores in the direction they want to maximize. 
+Balance among the scoring functions is adjusted by their relative weights. 
+The ultimate goal of the optimization process is to maximize the objective function, which is defined by the weighted sum of all the scoring functions.
 
 ====================
 Objective Function
 ====================
 
-The scoring function is a linear combination of the factors below, with associated weights. It is represented as follows:
+The objective function is a linear combination of the factors below, with associated weights. It is represented as follows:
 
 .. math:: Scoring \, Function =  \Sigma_{f \in factors} f*weight
 
@@ -98,9 +101,16 @@ So VaxPress has considered this as an objective and incorporated scoring factors
   In this section, the length of the stem formed near the start codon of RNA is measured and reflected as a score.
 
 - **Loop Length (total unpaired bases):** 
-  Loop length is one of the key factors influencing the stability of RNA secondary structures. 
-  Shorter loops generally contribute to more stable secondary structures due to reduced entropic costs and decreased structural variability. 
-  Thus, loop is usually considered to predict nucleic secondary structure stabilities. [8],[9] In VaxPress, the lengths of all segments considered to have unfolded loop structures are summed for consideration.
+  Shorter loops in RNA generally contribute to more stable secondary structures due to reduced entropic costs and decreased structural variability. 
+  Thus, loop is usually considered to predict nucleic secondary structure stabilities. [8],[9] 
+  Moreover, highly folded secondary structures with more base pairing inhibits mRNA hydrolysis, while unpaired bases are more susceptible for degradation. [b]
+  Thus, minimizing the total number of unpaired bases (which corresponds to minimizing loop length) will improve *in vitro* stability of the mRNA. 
+  
+  In VaxPress, we added *Loop Length* function as an alternative quantification method for mRNA stability besides MFE.
+  In this function, the length of all segments considered to have unfolded loop structures are summed to calculate score.
+
+  [b] Hannah K Wayment-Steele et al. “Theoretical basis for stabilizing messenger RNA through secondary structure design.” Nucleic Acids Research 49. 18 (2021): 10604–10617
+
 
 - **Stem Length:** 
   One of the points to be careful about in the development of mRNA vaccines is that vaccine materials could be recognized as foreign substances, potentially triggering an immune response in our bodies. 
