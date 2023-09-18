@@ -10,6 +10,15 @@ iCodon
 - ``--iCodon-weight WEIGHT``
   Scoring weight for iCodon predicted stability (default: 1.0).
 
+---------
+DegScore 
+---------
+
+- ``--degscore-weight WEIGHT``
+  Set DegScore scoring weight (default: 0.0).
+  Setting this weight as certain positive value, VaxPress optimizes seqeunce toward the direction that minimize DegScore value. 
+  Moreover, if you want to make DegScore value influential, it’s recommended to set the weight at least 5.0.
+
 ------------------------
 Codon Adaptation Index
 ------------------------

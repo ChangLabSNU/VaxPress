@@ -19,16 +19,14 @@ release = '0.4'
 extensions = [
     'sphinx.ext.duration',
     'sphinx_rtd_theme',
-    'sphinx.ext.mathjax',
+    'sphinx.ext.mathjax'
 ]
-
+bibtex_bibfiles = ['refs.bib']
 templates_path = ['_templates']
 exclude_patterns = ['build', 'Thumbs.db', '.DS_Store']
 source_suffix = '.rst'
 master_doc = 'index'
 # mathjax_path = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
-
-
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

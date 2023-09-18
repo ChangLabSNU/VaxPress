@@ -55,7 +55,7 @@ To adjust it, run VaxPress with random population numbers, and find proper value
 * Fitness changes over the iterations from ``report.html``
     1. 10 populations
     
-    .. image:: _images/offspring10.png
+    .. image:: _images/population10.png
         :width: 500px
         :height: 350px
         :alt: offspring 10
@@ -63,7 +63,7 @@ To adjust it, run VaxPress with random population numbers, and find proper value
 
     2. 100 populations
     
-    .. image:: _images/offspring100.png
+    .. image:: _images/population100.png
         :width: 500px
         :height: 350px
         :alt: offspring 100
@@ -71,7 +71,7 @@ To adjust it, run VaxPress with random population numbers, and find proper value
 
     3. 1000 populations
     
-    .. image:: _images/offspring1000.png
+    .. image:: _images/population500.png
         :width: 500px
         :height: 350px
         :alt: offspring 1000
