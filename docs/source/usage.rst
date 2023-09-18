@@ -5,20 +5,12 @@ This page demonstrates some additional ways of how VaxPress can be used.
 Basic usage of VaxPress is described in :doc:`Quick Start </index>` section.
 
 
-====================================================
-Using LinearDesign for Optimization Initialization
-====================================================
-: running_with_lineardesign.rst 내용을 이 문서 안으로.
-
-
-
-
-
 
 ============================================
 Running LinearDesign ONLY through VaxPress
 ============================================
-This step runs LinearDesign optimization through VaxPress. If you're going to run VaxPress optimization as well, you can go directly to :doc:`tutorial page </tutorial>`, Step 3.
+This step runs only LinearDesign optimization through VaxPress. If you're going to run VaxPress optimization as well, you can go directly to :doc:`tutorial page </tutorial>`, Step 3.
+Information about using LinearDesign for VaxPress optimization initialization is also available in :ref:`lineardesign` section.
 
 Assigning the same parameter for ``--conservative-start`` and ``--iterations`` options has the same effect as running LinearDesign optimization alone.
 Keep in mind that LinearDesign is not installed automatically with VaxPress, so you need to install it separately. 

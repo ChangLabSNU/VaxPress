@@ -1,32 +1,32 @@
 Options related to Fitness Functions
-*************************************
+***************************************
 
 List of all arguments related to fitness functions inside VaxPress.
 
-------
+--------
 iCodon
-------
+--------
 
 - ``--iCodon-weight WEIGHT``
   Scoring weight for iCodon predicted stability (default: 1.0).
 
-----------------------
+------------------------
 Codon Adaptation Index
-----------------------
+------------------------
 
 - ``--cai-weight WEIGHT``
   Scoring weight for codon adaptation index (default: 3.0).
 
---------------------------------------
+----------------------------------------
 Codon Adaptation Index of Codon-Pairs
---------------------------------------
+----------------------------------------
 
 - ``--bicodon-weight WEIGHT``
   Scoring weight for codon adaptation index of codon-pairs (default: 1.0).
 
---------
+----------
 Uridines
---------
+----------
 
 - ``--ucount-weight WEIGHT``
   Scoring weight for U count minimizer (default: 3.0).

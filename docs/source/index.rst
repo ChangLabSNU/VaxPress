@@ -131,16 +131,35 @@ VaxPress allows users to add their custom scoring functions. See :doc:`adding cu
 
 A deeper understanding of the scoring functions' principles is available on the :doc:`Algorithmic Details </algorithmic_details>` section.
 
+.. _lineardesign:
 
-=====================================================
+-------------------------------------------------------
 Using LinearDesign for Optimization Initialization
-=====================================================
-`LinearDesign <https://github.com/LinearDesignSoftware/LinearDesign>`_(Zhang et al., 2023) offers ultra-fast optimization, focusing on near-optimal MFE and CAI values. 
+-------------------------------------------------------
+
+LinearDesign[c](Zhang et al., 2023) offers ultra-fast optimization, focusing on near-optimal MFE and CAI values. 
 By using the ``--lineardesign`` option, VaxPress invokes LinearDesign internally then begins its optimization with a sequence already refined by LinearDesign.
 Subsequent VaxPress optimizations further improves the sequences for features like secondary structures near the start codon, uridine count, in-cell stability, tandem repeats, and local GC content.
 
-To start *VaxPress* optimization from LinearDesign output sequence, you can use ``--lineardesign`` option inside VaxPress. 
+To start *VaxPress* optimization from LinearDesign output sequence, you can use ``--lineardesign`` option inside VaxPress.  
 Path to the installed directory of LinearDesign should be provided using the ``--lineardesign-dir`` option. This option can be omitted in subsequent uses.
+
+[c] Zhang, He, et al. "Algorithm for optimized mRNA design improves stability and immunogenicity." Nature (2023): 1-3.
+
+===========================
+Recommended Parameters
+===========================
+
+The ``--lineardesign`` option needs a LAMBDA(λ) parameter, which influences the balance between MFE and CAI. 
+Values between 0.5 and 4 are usually suitable starting points.
+For insights into the λ value's implications, consult Zhang et al. (2023).
+
+Note that sequences straight from LinearDesign often have suboptimal structures around the start codon. 
+Under the high mutation rate at the beginning, this causes the main sequence body to lose its optimal MFE structure. 
+The ``-—conservative-start`` :ref:`option <label-constart>` tackles this by focusing on the start codon region before optimizing the rest. 
+
+Also, given that *LinearDesign*'s outputs are already quite optimal, the ``--initial-mutation-rate`` can be reduced to ``0.01``. 
+This ensures efficient optimization as there's a minimal likelihood that a better mutation would emerge with a higher mutation rate.
 ::
     # Running VaxPress with LinearDesign
     vaxpress -i spike.fa -o results-spike --processes 36 \
@@ -148,7 +167,25 @@ Path to the installed directory of LinearDesign should be provided using the ``-
          --lineardesign-dir /path/to/LinearDesign \
          --conservative-start 10 --initial-mutation-rate 0.01
 
-For detailed explanation of the recommended parameters when using ``--lineardesign`` option, see :doc:`Using LinearDesign for Optimization Initialization </running_with_lineardesign>` section.
+.. Note::
+    Figures below demonstrates the effect of initial mutation rate on optimization process when the starting sequence is optimized with LinearDesign (λ = 0).
+    
+    .. image:: _images/mutrate0.1.png
+        :width: 500px
+        :height: 350px
+        :alt: initial mutation rate 0.1
+        :align: center
+    When initial mutation rate is set as a default value (``0.1``), survivor sequence largely remains unchanged for initial several hundred iterations, until the mutation rate is sufficiently decreased by *winddown*.
+    
+    .. image:: _images/mutrate0.01.png
+        :width: 500px
+        :height: 350px
+        :alt: initial mutation rate 0.01
+        :align: center
+    When initial mutation rate is adjusted to ``0.01``, the sequence can escape from initial MFE-optimized sequence earlier to be further optimized based on the given *VaxPress* evaluation metrics.
+
+To see the list of all options related to LinearDesign, see :ref:`LinearDesign <label_lin.options>`
+
 
 
 ==============
@@ -158,16 +195,16 @@ Once you've run VaxPress, the specified output directory will contain the follow
 
 - ``report.html``: A summary report detailing the result and optimization process. The report contains the following informations:
   1. Basic information on the task including sequence name and command line.
-  
-  ..image:: _images/task_information.png
+
+  .. image:: _images/task_information.png
         :width: 500px
-        :height: 400px
+        :height: 420px
         :alt: checkpoints.tsv
         :align: center
 
   2. Information about the optimized sequence: metric comparison between initial & optimized score
   
-  ..image:: _images/optimized_sequence.png
+  .. image:: _images/optimized_sequence.png
         :width: 500px
         :height: 400px
         :alt: checkpoints.tsv
@@ -176,7 +213,7 @@ Once you've run VaxPress, the specified output directory will contain the follow
 
   3. Interactive plot showing the predicted secondary structure of the output sequence
    
-  ..image:: _images/predicted_secondary_structure.png
+  .. image:: _images/predicted_secondary_structure.png
         :width: 500px
         :height: 400px
         :alt: checkpoints.tsv
@@ -185,24 +222,25 @@ Once you've run VaxPress, the specified output directory will contain the follow
 
   4. Plots showing the changes of each metrics and parameters over the iterations.
    
-  ..image:: _images/optimization_process.png
+  .. image:: _images/optimization_process.png
         :width: 500px
-        :height: 400px
+        :height: 500px
         :alt: checkpoints.tsv
         :align: center
 
 
   5. Parameters used in the corresponding VaxPress run. This information is also stored in ``parameters.json``.
    
-  ..image:: _images/parameters.png
+  .. image:: _images/parameters.png
         :width: 500px
-        :height: 400px
+        :height: 500px
         :alt: checkpoints.tsv
         :align: center
 
 - ``best-sequence.fasta``:  The refined coding sequence.
 
 - ``checkpoints.tsv``: The best sequences and its evaluation results at each iteration.
+  
   .. image:: _images/checkpoints.tsv_example.png
         :width: 500px
         :height: 400px
@@ -211,9 +249,7 @@ Once you've run VaxPress, the specified output directory will contain the follow
 
 - ``log.txt``: Contains the logs that were displayed in the console.
 
-- ``parameters.json``: Contains the parameters employed for the optimization. This file can be feeded to VaxPress with the ``--preset`` :ref:`option <label_name>` to duplicate the set-up for other sequence.
-  (뒤에 preset 사용 방법 상세히 쓴 페이지 링크)
-
+- ``parameters.json``: Contains the parameters employed for the optimization. This file can be feeded to VaxPress with the ``--preset`` option to duplicate the set-up for other sequence. To check the detailed information on how to use ``--preset``, see :ref:`execution options`.
 
 ---------------
 Tutorial
