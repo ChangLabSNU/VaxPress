@@ -10,36 +10,17 @@ For a comprehensize optimization, high enough iteration number is needed. But un
 To have an output sequence sufficiently converged, at least 500 iterations are recommended.
 It is recommended to increase the number of iterations if the optimization process ends before sufficient convergence.
 
-Below is an example process with 500, 1000 and 1500 iterations on CDS sequence with the length of 1701 bp.
+Below is an example process with 1500 iterations on CDS sequence with the length of 1701 bp.
      
 * Fitness changes over the iterations from ``report.html``
-    1. 500 iterations
-    
-    .. image:: _images/iteration500.png
-        :width: 500px
-        :height: 350px
-        :alt: iteration 500
-        :align: center
-    In this case, fitness score didn't reach plateau after 500 iterations, so it is recommended to increase the number of iterations.
-
-    2. 1000 iterations
-    
-    .. image:: _images/iteration1000.png
-        :width: 500px
-        :height: 350px
-        :alt: iteration 1000
-        :align: center
-    In this case, fitness score didn't reach plateau after 1000 iterations, so it is recommended to increase the number of iterations.
-
-    3. 1500 iterations
     
     .. image:: _images/iteration1500.png
         :width: 500px
         :height: 350px
-        :alt: iteration 1500
+        :alt: iteration1500
         :align: center
-    Now we can opserve plateau at the end of the fitness score. So, you might select iteration number near 1500.
-    Or if it's unsatisfactory for you to optimize, than use larger value for iteration number and check whether there are plateau or not.
+
+Two dotted lines on the plot are the points which the number of iterations are 500 and 1000 each. 500 and 1000 iterations points are showing possibility of further improvement since fitness score is not plateau and mutation rate can decrease more. But near 1500 iterations, fitness and mutation rate are less likely to imrpove more. Thus, in this case, it is proper to say that near 1500 iterations is okay to get optimal result. 
 
 Also, keep in mind that optimization process can halt before the specified number of iterations if the fitness score doesn't improve for several consecutive cycles.
 In detail, if E(number of mutation) is equals to 0.2 because of decrease in mutation rate.
@@ -55,29 +36,29 @@ To adjust it, run VaxPress with random population numbers, and find proper value
 * Fitness changes over the iterations from ``report.html``
     1. 10 populations
     
-    .. image:: _images/offspring10.png
-        :width: 500px
-        :height: 350px
-        :alt: offspring 10
+    .. image:: _images/population10.png
+        :width: 700px
+        :height: 250px
+        :alt: population 10
         :align: center
 
     2. 100 populations
     
-    .. image:: _images/offspring100.png
-        :width: 500px
-        :height: 350px
-        :alt: offspring 100
+    .. image:: _images/population100.png
+        :width: 700px
+        :height: 250px
+        :alt: population 100
         :align: center
 
-    3. 1000 populations
+    3. 500 populations
     
-    .. image:: _images/offspring1000.png
-        :width: 500px
-        :height: 350px
-        :alt: offspring 1000
+    .. image:: _images/population500.png
+        :width: 700px
+        :height: 250px
+        :alt: population 1000
         :align: center
 
-Near 100 is proper since there are no differences after 100.
+Near 100 is proper since there are no differences for the value that fitness curve converges after 100.
 
 .. note::
     **CAUTION**
@@ -107,32 +88,32 @@ Case 1: LinearDesign is NOT applied
     1. initial mutation rate = 0.005
         
     .. image:: _images/nonLD_mutRate0.005.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate 0.005
         :align: center
 
     2. initial mutation rate = 0.01
         
     .. image:: _images/nonLD_mutRate0.01.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate 0.01
         :align: center
 
     3. initial mutation rate = 0.1
         
     .. image:: _images/nonLD_mutRate0.1.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate 0.1
         :align: center
 
     4. initial mutation rate = 0.3
         
     .. image:: _images/nonLD_mutRate0.3.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate 0.3
         :align: center
 
@@ -147,38 +128,37 @@ Case 2: LinearDesign is applied
     1. initial mutation rate = 0.005
     
     .. image:: _images/LD1_mutRate0.005.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate = 0.005
         :align: center
 
     2. initial mutation rate = 0.01
         
     .. image:: _images/LD1_mutRate0.01.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate = 0.01
         :align: center
 
     3. initial mutation rate = 0.1
         
     .. image:: _images/LD1_mutRate0.1.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate = 0.1
         :align: center
 
     4. initial mutation rate = 0.3
         
     .. image:: _images/LD1_mutRate0.3.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate = 0.3
         :align: center
     
-For the high initial mutation rate (0.1,0.3), the fitness score varies a lot with no trend. 
-Also, for the low initial mutation rate (0.01,0.005), the lower the initial mutation rate, the higher the fitness score is.
-Moreover, lower initial mutation rate (0.005) make faster improvement. 
+For the high initial mutation rate (0.1,0.3), the fitness score started to increase at late iteration. 
+Also, for the low initial mutation rate (0.01,0.005), the lower the initial mutation rate, the faster improvement is. 
 
 Thus, low initial mutation rate is recommended when the initial sequence is already optimized with LinearDesign.
 After setting iteration number, you might try initial mutation rate under 0.01 and observe the fitness score to set proper rate.
