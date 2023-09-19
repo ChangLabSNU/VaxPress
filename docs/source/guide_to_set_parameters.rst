@@ -37,24 +37,24 @@ To adjust it, run VaxPress with random population numbers, and find proper value
     1. 10 populations
     
     .. image:: _images/population10.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: population 10
         :align: center
 
     2. 100 populations
     
     .. image:: _images/population100.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: population 100
         :align: center
 
     3. 500 populations
     
     .. image:: _images/population500.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: population 1000
         :align: center
 
@@ -88,32 +88,32 @@ Case 1: LinearDesign is NOT applied
     1. initial mutation rate = 0.005
         
     .. image:: _images/nonLD_mutRate0.005.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate 0.005
         :align: center
 
     2. initial mutation rate = 0.01
         
     .. image:: _images/nonLD_mutRate0.01.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate 0.01
         :align: center
 
     3. initial mutation rate = 0.1
         
     .. image:: _images/nonLD_mutRate0.1.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate 0.1
         :align: center
 
     4. initial mutation rate = 0.3
         
     .. image:: _images/nonLD_mutRate0.3.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate 0.3
         :align: center
 
@@ -128,38 +128,37 @@ Case 2: LinearDesign is applied
     1. initial mutation rate = 0.005
     
     .. image:: _images/LD1_mutRate0.005.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate = 0.005
         :align: center
 
     2. initial mutation rate = 0.01
         
     .. image:: _images/LD1_mutRate0.01.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate = 0.01
         :align: center
 
     3. initial mutation rate = 0.1
         
     .. image:: _images/LD1_mutRate0.1.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate = 0.1
         :align: center
 
     4. initial mutation rate = 0.3
         
     .. image:: _images/LD1_mutRate0.3.png
-        :width: 500px
-        :height: 350px
+        :width: 700px
+        :height: 250px
         :alt: initial mutation rate = 0.3
         :align: center
     
-For the high initial mutation rate (0.1,0.3), the fitness score varies a lot with no trend. 
-Also, for the low initial mutation rate (0.01,0.005), the lower the initial mutation rate, the higher the fitness score is.
-Moreover, lower initial mutation rate (0.005) make faster improvement. 
+For the high initial mutation rate (0.1,0.3), the fitness score started to increase at late iteration. 
+Also, for the low initial mutation rate (0.01,0.005), the lower the initial mutation rate, the faster improvement is. 
 
 Thus, low initial mutation rate is recommended when the initial sequence is already optimized with LinearDesign.
 After setting iteration number, you might try initial mutation rate under 0.01 and observe the fitness score to set proper rate.
