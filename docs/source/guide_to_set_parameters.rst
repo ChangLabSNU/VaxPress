@@ -23,7 +23,7 @@ Below is an example process with 1500 iterations on CDS sequence with the length
 Two dotted lines on the plot are the points which the number of iterations are 500 and 1000 each. 500 and 1000 iterations points are showing possibility of further improvement since fitness score is not plateau and mutation rate can decrease more. But near 1500 iterations, fitness and mutation rate are less likely to imrpove more. Thus, in this case, it is proper to say that near 1500 iterations is okay to get optimal result. 
 
 Also, keep in mind that optimization process can halt before the specified number of iterations if the fitness score doesn't improve for several consecutive cycles.
-In detail, if E(number of mutation) is equals to 0.2 because of decrease in mutation rate.
+In detail, if E(number of mutation) is equal to 0.2 because of decrease in mutation rate.
 
 ---------------------
 Number of Population
@@ -72,11 +72,11 @@ Initial Mutation Rate
 ----------------------
 To accomplish optimization successfully, certain amount of mutation rate is necessory.
 
-When running *Vaxpress* without LinearDesign initialization, using default value for initial mutation rate (0.1) won't be a problem since the evolution starts from the highly unoptimized sequence.
+When running *Vaxpress* without *LinearDesign* initialization, using default value for initial mutation rate (``0.1``) won't be a problem since the evolution starts from the highly unoptimized sequence.
 When initial mutation rate is high, the program will search through the sequence space more widely, but more iterations might be needed for convergence.
-If you set the initial mutation rate too low, VaxPress might lose the opportunity to find a better-scoring sequence by chance.
+If you set the initial mutation rate too low, *VaxPress* might lose the opportunity to find a better-scoring sequence by chance.
 
-But if you initialize sequence with LinearDesign before VaxPress optimization, it is recommended to lower the initial mutation rate.
+But if you initialize sequence with *LinearDesign* before *VaxPress* optimization, it is recommended to lower the initial mutation rate.
 Since the output sequence from LinearDesign is already highly optimized, there is a minimal likelihood of more competitive populations to emerge under higher mutation rate.
 
 Below is the example for adjusting initial mutation rate for the 2 cases.
@@ -117,7 +117,7 @@ Case 1: LinearDesign is NOT applied
         :alt: initial mutation rate 0.3
         :align: center
 
-This is VaxPress optimization result starting from the wild-type CDS sequence of Influenza virus.
+This is *VaxPress* optimization result starting from the wild-type CDS sequence of Influenza virus.
 In this case, the final fitness score at convergence is not affected by initial mutation rate.
 However, keep in mind that lower initial mutation rate might result in the optimization outcome to be stuck in the local optimum, although it generally allows the faster convergence.
 
@@ -157,11 +157,11 @@ Case 2: LinearDesign is applied
         :alt: initial mutation rate = 0.3
         :align: center
     
-For the high initial mutation rate (0.1,0.3), the fitness score started to increase at late iteration. 
-Also, for the low initial mutation rate (0.01,0.005), the lower the initial mutation rate, the faster improvement is. 
+When the initial mutation rate is set high (``0.1``, ``0.3``), the fitness score starts to increase at later iteration cycles. 
+Also, when the initial mutation rate is low (``0.01``, ``0.005``), the lower the initial mutation rate, the faster improvement is. 
 
-Thus, low initial mutation rate is recommended when the initial sequence is already optimized with LinearDesign.
-After setting iteration number, you might try initial mutation rate under 0.01 and observe the fitness score to set proper rate.
+Thus, low initial mutation rate is recommended when the initial sequence is already optimized with *LinearDesign*.
+After setting iteration number, you might try initial mutation rate under ``0.01`` and observe the fitness score to set proper rate.
 
 ----------------------------------
 Weights of the Fitness Functions
@@ -180,6 +180,7 @@ To adjust the weights properly, you might refer to 4 steps in the example below.
 1. Check the naive optimization process
     Firstly, just run VaxPress with deafult weights.
     ::
+
         # command line
         vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 -p 64
     
@@ -196,6 +197,7 @@ To adjust the weights properly, you might refer to 4 steps in the example below.
 2. Adjusting MFE weight (``--mfe-weight``)
     Raise weight of MFE from defalut to 7.0
     ::
+
         # command line
         vaxpress -i ... -o ... --iterations 50 --mfe-weight 7 -p 64
     
@@ -212,6 +214,7 @@ To adjust the weights properly, you might refer to 4 steps in the example below.
 3. Adjusting loop weight (``--loop-weight``)
     Raise weight of loop from defalut to 7.0
     ::
+
         # command line
         vaxpress -i ... -o ... --iterations 50 --mfe-weight 7 --loop-weight 7 -p 64
     
@@ -228,10 +231,12 @@ To adjust the weights properly, you might refer to 4 steps in the example below.
 4. Compromising between ``loops`` and ``ucount``
     Raise weight of Ucount weight to 5 and lower loop weight to 5
     ::
+
         # command line
         vaxpress -i ... -o ... --iterations 50 --mfe-weight 7 --loop-weight 5 --ucount-weight 5 -p 64
     
     * Metrics' Trend from ``report.html``
+
     .. image:: _images/weightTuning4.png
         :width: 500px
         :height: 350px

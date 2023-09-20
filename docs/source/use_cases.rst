@@ -1,46 +1,26 @@
 Use cases
-***********
+*************
 
 This page demonstrates some additional ways of how VaxPress can be used.
-Basic usage of VaxPress is described in :doc:`Quick Start </index>` section.
+Basic usage of VaxPress is described in :ref:`basic-usage` section.
 
-
-
-============================================
-Running LinearDesign ONLY through VaxPress
-============================================
-This step runs only LinearDesign optimization through VaxPress. If you're going to run VaxPress optimization as well, you can go directly to :doc:`tutorial page </tutorial>`, Step 3.
-Information about using LinearDesign for VaxPress optimization initialization is also available in :ref:`lineardesign` section.
-
-Assigning the same parameter for ``--conservative-start`` and ``--iterations`` options has the same effect as running LinearDesign optimization alone.
-Keep in mind that LinearDesign is not installed automatically with VaxPress, so you need to install it separately. 
-Give the path to the installed LinearDesign directory with ``--lineardesign-dir`` option.
-::
-    # Run LinearDesign optimization
-    vaxpress -i Influenza_HA.fa -o lineardesign_results \
-             --lineardesign 1.0 --lineardesign-dir ../LinearDesign \
-             --conservative-start 10 --iterations 10
-
-Results are displayed in ``report.html``.
-In this case, differences between "Initial" and "Optimized" sequence should be minimal, since the mutations were only allowed at the start codon region.
-
-LAMBDA in ``--lineardesign LAMBDA`` option is a parameter to balance between MFE and CAI. Larger LAMBDA means more weights on CAI.
 
 
 ==================================================
 Removing Tandem Repeats from LindearDesign Output
 ==================================================
 Overall, VaxPress can consist a workflow starting from LinearDesign.
-(See :doc:`Using LinearDesign for Optimization Initialization </running_with_lineardesign>` section for detailed information about the related options and parameters.)
+(See :ref:`Using LinearDesign for Optimization Initialization <using-lineardesign>` section for detailed information about the related options and parameters.)
 In this usage, VaxPress refines the MFE- or CAI-optimized sequence from LinearDesign on the other factors not considered in LinearDesign.
 
-For example, VaxPress can remove tandem repeats from the LinearDesign output.
+For example, *VaxPress* can remove tandem repeats from the LinearDesign output.
 
 mRNA manufacturing is a significant process of mRNA vaccine development.
 However, the presence of repeated sequences cause severe difficulties in the manufacturing process.
-As LinearDesign algorithm doesn't consider repeats, the output sequence from LinearDesign may contain repeated sequences.
+As *LinearDesign* algorithm doesn't consider repeats, the output sequence from LinearDesign may contain repeated sequences.
 Especially, when the ``lambda`` parameter is set high(which means high weight on CAI), the occurence of tandem repeat is highly probable since the codon with high CAI score is always favored.
 ::
+
     # Example command to get LinearDesign-VaxPress optimized sequence 
     # with tandem repeats removed
     # MFE weight is set high to preserve the LinearDesign-optimized secondary structure
@@ -62,11 +42,19 @@ leaving the rest of the sequence as it is.
 Therefore, by assigning the same parameter for ``--conservative-start`` and ``--iterations`` options,
 VaxPress can be used as a convenient front-end interface for LinearDesign optimization.
 
+.. note::
+    **CAUTION**
+
+    This use case explains running LinearDesign optimization ALONE through VaxPress. 
+    If you're going to run VaxPress optimization as well, you can go directly to :doc:`tutorial page </tutorial>`, Step 3.
+    Information about using LinearDesign for VaxPress optimization initialization is also available in :ref:`lineardesign` section.
+
+
 Using LinearDesign through VaxPress interface offers several advantages:
 
 - LinearDesign can be run without Python Version 2 dependency in VaxPress.
-- In addition to the optimized sequence output by *LinearDesign*, *VaxPress* produces output report that contains detailed information about the sequence including the visualization of secondary structure and evaluation results of various metrics.
-- When using LinearDesign alone, several N-terminal amino acids should be manually removed before running the optimization to prevent folded structures in the start codon region. This process is run automatically in VaxPress with `--lineardesign-omit-start`(default = 5) option.
+- In addition to the optimized sequence output by *LinearDesign*, *VaxPress* offers a comprehensive output report that is helpful to understand the optimized sequence. Detailed information is provided, such as the visualization of secondary structure and the scores of various evaluation metrics.
+- When using LinearDesign alone, several N-terminal amino acids should be manually removed before running the optimization to prevent folded structures in the start codon region. This process is run automatically in VaxPress with ``--lineardesign-omit-start`` (default = 5) option.
 - While LinearDesign only accepts protein sequence, mRNA sequence can be directly used as an input in VaxPress.
 
 .. code-block:: bash
@@ -76,6 +64,10 @@ Using LinearDesign through VaxPress interface offers several advantages:
             --iterations 10 --lineardesign 1.0 \
             --conservative-start 10 --initial-mutation-rate 0.01 \
             --lineardesign-dir /path/to/LinearDesign \
+
+
+Results will be displayed in ``report.html``.
+In this case, differences between "Initial" and "Optimized" sequence should be minimal, since the mutations were only allowed at the start codon region.
 
 =============================
 Evaluating the given sequence

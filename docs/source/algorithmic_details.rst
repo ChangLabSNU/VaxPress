@@ -1,8 +1,8 @@
 Algorithmic Details of VaxPress
 ********************************
------------------
+--------------------
 Overall algorithm
------------------
+--------------------
 Vaxpress uses genetic algorithm to produce optimized mRNA cds sequence, while fitness evaluation metrics are defined as scoring functions. Current scoring functions consider both the features involved in the production and distribution process, as well as features affecting the efficacy *in vivo* such as immunogenecity and translational efficiency.
 
 If the input sequence is a protein, it will first be backtranslated into an RNA sequence.
@@ -13,7 +13,6 @@ Based on the evaluation results, a selection process is carried out to choose su
 From the chosen survivor sequences, new offspring sequences are produced once again. 
 This iterative process is repeated for a certain number of iterations specified as ``--iterations``.
 
-*잘 보이게 block diagram으로 개정 (논문 겸용)
 .. image:: _images/overall.png
     :width: 500px
     :height: 350px
@@ -21,9 +20,9 @@ This iterative process is repeated for a certain number of iterations specified 
     :alt: Overview of the genetic algorithm used in vaxpress.
 
 
--------------------------------
+----------------------------------
 Composition of Scoring Function
--------------------------------
+----------------------------------
 
 Each scoring functions of VaxPress outputs scores in the direction they want to maximize. 
 Balance among the scoring functions is adjusted by their relative weights. 
@@ -141,12 +140,12 @@ This area includes various factors that influence RNA sequence stability and imm
   Building upon this fact, VaxPress choses second strategy. It counts the number of uridines as it seeks sequences that minimize the uridine count.
 
 - **DegScore:**
-  DegScore is the deep learning model devolped by Eterna. It predicts possibility for degradation of RNA from seqeunce.
+  DegScore is the deep learning model devolped by Eterna. It predicts possibility for degradation of RNA from the sequence information.
   Unlike the usage of DegScore in Eterna’s original projects, VaxPress utilizes DegScore function by  dividing its value by length of CDS. [17]_
 
-=============================================
+==============================================
 4. Features related to effective production
-=============================================
+==============================================
 - **Local GC Ratio:** 
   The production of mRNA vaccines is carried out through in vitro transcription. 
   For this purpose, it's necessary to synthesize template DNA corresponding to the desired sequence. 
@@ -168,9 +167,10 @@ This area includes various factors that influence RNA sequence stability and imm
   By using ``pytrf.GTRFinder``, Vaxpress finds all generic tandem repeats from given sequences. And add all of their lengths. 
 
 .. _label_WinddownTR:
---------------------------
+
+----------------------------
 Winddown Trigger and Rate
---------------------------
+----------------------------
 To improve optimization performance, it is crucial to create new populations that can compete effectively with previous generations.
 As the optimization process progresses, highly mutated new populations are less likely to be selected because the earlier sequences are already well-optimized.
 Therefore, if the current fitness score remains at a certain level even as optimization continues, it is necessary to *winddown* the mutation rate.

@@ -14,6 +14,8 @@ Using conda package also allows the installation with single command line, and a
 Lastly, Singularity is fast, and automatically manages all dependencies. But Singularity should be installed first.
 Based on your own circumstance, select proper way to install Vaxrpess!
 
+.. _label-installing:
+
 =====================================
 1. Installing VaxPress via ``pip``
 =====================================
@@ -27,6 +29,7 @@ Based on your own circumstance, select proper way to install Vaxrpess!
 
 **Installation**
 ::
+    
     # To install using pip
     pip install vaxpress
 
@@ -43,6 +46,7 @@ Based on your own circumstance, select proper way to install Vaxrpess!
 ==============================================
 **Installation**
 ::
+
     conda install -c changlabsnu -c bioconda -c conda-forge vaxpress
 
 ===========================================
@@ -56,18 +60,20 @@ Based on your own circumstance, select proper way to install Vaxrpess!
 **Installation**
 Once Singularity is installed, you can download the VaxPress image from this GitHub repository and run using the following command:
 ::
+
     singularity vaxpress.sif ...
 
 It is recommended that VaxPress be installed in a virtual environment to be controlled properly.
 See `the python documentation for preparing virtual environments <https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/>`_
 
-============================
+==============================
 Installing ``LinearDesign``
-============================
+==============================
 
 To use ``--lineardesign`` options, ``LinearDesign`` installation is required apart from VaxPress installation.
 You can follow the instructions on the LinearDesign's `LinearDesign GitHub Page <https://github.com/LinearDesignSoftware/LinearDesign>`_.
 
+.. _basic-usage:
 
 --------------
 Basic Usage
@@ -77,6 +83,7 @@ There are 2 required arguments to run VaxPress: ``-i``, ``-o``.
 
 Command-line below is an example of basic VaxPress usage. You might follow it:
 ::
+    
     # To see a full list of available options, use vaxpress --help 
     vaxpress -h
    
@@ -127,65 +134,31 @@ To fine-tune the optimization, adjust the weights of individual scoring function
     # Turn off the consideration of repeated sequences
     vaxpress -i spike.fa -o result-spike --repeats-weight 0
 
-VaxPress allows users to add their custom scoring functions. See :doc:`adding custom scoring functions </adding_scorefunc>` section.
+VaxPress allows users to add their custom scoring functions. See :ref:`label-addon` section.
 
 A deeper understanding of the scoring functions' principles is available on the :doc:`Algorithmic Details </algorithmic_details>` section.
 
 .. _lineardesign:
 
--------------------------------------------------------
+=======================================================
 Using LinearDesign for Optimization Initialization
--------------------------------------------------------
+=======================================================
 
-LinearDesign[c](Zhang et al., 2023) offers ultra-fast optimization, focusing on near-optimal MFE and CAI values. 
+LinearDesign(Zhang et al., 2023) offers ultra-fast optimization, focusing on near-optimal MFE and CAI values. 
 By using the ``--lineardesign`` option, VaxPress invokes LinearDesign internally then begins its optimization with a sequence already refined by LinearDesign.
 Subsequent VaxPress optimizations further improves the sequences for features like secondary structures near the start codon, uridine count, in-cell stability, tandem repeats, and local GC content.
+Below is the command line example for using ``--lineardesign`` option:
 
-To start *VaxPress* optimization from LinearDesign output sequence, you can use ``--lineardesign`` option inside VaxPress.  
-Path to the installed directory of LinearDesign should be provided using the ``--lineardesign-dir`` option. This option can be omitted in subsequent uses.
+.. code-block:: bash
 
-[c] Zhang, He, et al. "Algorithm for optimized mRNA design improves stability and immunogenicity." Nature (2023): 1-3.
-
-===========================
-Recommended Parameters
-===========================
-
-The ``--lineardesign`` option needs a LAMBDA(λ) parameter, which influences the balance between MFE and CAI. 
-Values between 0.5 and 4 are usually suitable starting points.
-For insights into the λ value's implications, consult Zhang et al. (2023).
-
-Note that sequences straight from LinearDesign often have suboptimal structures around the start codon. 
-Under the high mutation rate at the beginning, this causes the main sequence body to lose its optimal MFE structure. 
-The ``-—conservative-start`` :ref:`option <label-constart>` tackles this by focusing on the start codon region before optimizing the rest. 
-
-Also, given that *LinearDesign*'s outputs are already quite optimal, the ``--initial-mutation-rate`` can be reduced to ``0.01``. 
-This ensures efficient optimization as there's a minimal likelihood that a better mutation would emerge with a higher mutation rate.
-::
     # Running VaxPress with LinearDesign
     vaxpress -i spike.fa -o results-spike --processes 36 \
          --iterations 500 --lineardesign 1.0 \
          --lineardesign-dir /path/to/LinearDesign \
          --conservative-start 10 --initial-mutation-rate 0.01
 
-.. Note::
-    Figures below demonstrates the effect of initial mutation rate on optimization process when the starting sequence is optimized with LinearDesign (λ = 0).
-    
-    .. image:: _images/mutrate0.1.png
-        :width: 500px
-        :height: 350px
-        :alt: initial mutation rate 0.1
-        :align: center
-    When initial mutation rate is set as a default value (``0.1``), survivor sequence largely remains unchanged for initial several hundred iterations, until the mutation rate is sufficiently decreased by *winddown*.
-    
-    .. image:: _images/mutrate0.01.png
-        :width: 500px
-        :height: 350px
-        :alt: initial mutation rate 0.01
-        :align: center
-    When initial mutation rate is adjusted to ``0.01``, the sequence can escape from initial MFE-optimized sequence earlier to be further optimized based on the given *VaxPress* evaluation metrics.
-
-To see the list of all options related to LinearDesign, see :ref:`LinearDesign <label_lin.options>`
-
+Detailed information including the meaning of each parameter and its recommended values is available on :ref:`using-lineardesign` section.
+To see the list of all options related to LinearDesign, see :ref:`LinearDesign options <label-linopts>`
 
 
 ==============
@@ -198,7 +171,7 @@ Once you've run VaxPress, the specified output directory will contain the follow
 
   .. image:: _images/task_information.png
         :width: 500px
-        :height: 420px
+        :height: 400px
         :alt: checkpoints.tsv
         :align: center
 
@@ -251,72 +224,6 @@ Once you've run VaxPress, the specified output directory will contain the follow
 
 - ``parameters.json``: Contains the parameters employed for the optimization. This file can be feeded to VaxPress with the ``--preset`` option to duplicate the set-up for other sequence. To check the detailed information on how to use ``--preset``, see :ref:`execution options`.
 
----------------
-Tutorial
----------------
-
-This tutorial will walk you through the process of optimizing a wild-type mRNA sequence with VaxPress.
-We will use Hemagglutinin(HA) protein of Influenza A virus as an example antigen.
-
-=======================================
-Step 1. Downloading a sequence
-=======================================
-
-Wild-type complete cds sequence can be downloaded from `GenBank <https://www.ncbi.nlm.nih.gov/genbank/>`_:
-Particular GenBank page for the Influenza A virus HA protein is `here <https://www.ncbi.nlm.nih.gov/nuccore/FJ981613.1>`_. 
-FASTA file can be downloaded from the above page, or using the command like below:
-::
-    # Download a sequence from GenBank
-    ID="FJ981613.1"
-    wget -O Influenza_HA.fa "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=${ID}&rettype=fasta"
-
-If you want to download other sequences, run the above command after changing the ``ID`` variable to the GenBank Accession Number of that sequence.
-
-`UniProt <https://www.uniprot.org/>`_ is a database for protein sequences. 
-FASTA file can be downloaded from UniProt website by clicking the "Download" button in the query result page, 
-or using wget command with primary accession number (See `UniProt - Programmatic access <https://www.uniprot.org/help/api_retrieve_entries>`_ for more details).
-The corresponding protein sequence for the above HA sequence can be found `in here <https://www.uniprot.org/uniprotkb/C3W5X2/entry>`_.
-::
-    # Download a protein sequence from UniProt
-    ID="C3W5X2"
-    wget -O Influenza_HA_protein.fa "https://www.uniprot.org/uniprotkb/${ID}.fasta"
-
-=========================================
-Step 2. Evaluating the initial sequence
-=========================================
-Let's evaluate the sequence before any optimization.
-By setting ``--iterations`` option to 0, VaxPress will only evaluate the given sequence and generate a report.
-::
-    # Evaluate the initial sequence
-    vaxpress -i Influenza_HA.fa -o eval_results --iterations 0
-
-This command will generate a report file named ``report.html`` inside the output directory.
-Check the *Sequence Optimality Metrics* and *Predicted Secondary Structure* sections.
-In this case, metrics of the Initial and Optimized in Sequence Optimality Metrics will be the same since there was no optimization.
-
-=======================================
-Step 3. Running VaxPress optimization
-=======================================
-Finally, all processes that are needed to run Vaxpress is ready. Now let's run VaxPress optimization, starting from the sequence optimized by LinearDesign.
-But before running, we are going to point out why we start from LinearDesign result.
-LinearDesign(Zhang et al., 2023) is an ultra-fast tool for mRNA CDS optimization in terms of MFE(Minimum Free Energy) and CAI(Codon Adaptation Index).
-Instead of searching through the vast space of randomized sequences, starting genetic algorithm from the LinearDesign output sequence which is highly optimized in MFE and CAI offers more efficient optimization.
-
-(Zhang, He, et al. "Algorithm for optimized mRNA design improves stability and immunogenicity." Nature (2023): 1-3.)
-::
-    # Run VaxPress optimization
-    $vaxpress -i Influenza_HA.fa -o vaxpress_results --processes 36 \
-              --lineardesign 1.0 --lineardesign-dir ../LinearDesign \
-              --conservative-start 10 --initial-mutation-rate 0.01 \
-              --iterations 2000
-
-
-It is recommended to use ``-p`` or ``--processes`` option to make the runtime shorter. If you're using a protein sequence, the only thing you have to do is adding ``--protein`` option.
-
-Now you can see the optimized sequence in the ``report.html``.
-In addition to the Sequence Optimality Metrics and Predicted Secondary Structure sections, plots in Optimization Process also contains useful information.
-If needed, additional optimization parameters can be adjusted according to these plots and :doc:`the guide </guide_to_set_parameters>`.
-
 
 
 -------------------------------------------------------
@@ -325,16 +232,13 @@ Usages, options, and algorithmic features of VaxPress
 .. toctree::
    :maxdepth: 2
 
-   usage
-   troubleshooting
    tutorial
    algorithmic_details
-   adding_scorefunc
-   running_with_lineardesign
-   options
+   supported_features
+   command_line_options
    guide_to_set_parameters
- 
-   
+   use_cases
+   troubleshooting
 
 ------------------
 Indices and tables
