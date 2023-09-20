@@ -9,8 +9,7 @@ Basic usage of VaxPress is described in :ref:`basic-usage` section.
 ==================================================
 Removing Tandem Repeats from LindearDesign Output
 ==================================================
-Overall, VaxPress can consist a workflow starting from LinearDesign.
-(See :ref:`Using LinearDesign for Optimization Initialization <using-lineardesign>` section for detailed information about the related options and parameters.)
+Overall, VaxPress can consist a workflow starting from LinearDesign (See :ref:`Using LinearDesign for Optimization Initialization <using-lineardesign>` section for detailed information about the related options and parameters).
 In this usage, VaxPress refines the MFE- or CAI-optimized sequence from LinearDesign on the other factors not considered in LinearDesign.
 
 For example, *VaxPress* can remove tandem repeats from the LinearDesign output.

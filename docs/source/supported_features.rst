@@ -59,7 +59,7 @@ This ensures efficient optimization as there's a minimal likelihood that a bette
 
     When initial mutation rate is adjusted to ``0.01``, the sequence can escape from initial MFE-optimized sequence earlier to be further optimized based on the given *VaxPress* evaluation metrics.
 
-To see the list of all options related to LinearDesign, see :ref:`label-linopts`
+To see the list of all options related to LinearDesign, see :ref:`label-linopts`.
 
 
 .. _label-addon:
