@@ -5,6 +5,7 @@ This page demonstrates some additional ways of how VaxPress can be used.
 Basic usage of VaxPress is described in :ref:`basic-usage` section.
 
 
+.. index:: LinearDesign; Use Case
 
 ==================================================
 Removing Tandem Repeats from LindearDesign Output
@@ -31,7 +32,6 @@ Especially, when the ``lambda`` parameter is set high(which means high weight on
          --default-off \
          --mfe-weight 10 --repeats-weight 10 --cai-weight 1 --gc-weight 3 \
          --start-str-weight 1
-
 
 =============================================================
 Using VaxPress as a User-friendly Interface to LinearDesign

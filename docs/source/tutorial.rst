@@ -4,6 +4,8 @@ Tutorial
 This tutorial will walk you through the process of optimizing a wild-type mRNA sequence with VaxPress.
 We will use Hemagglutinin(HA) protein of Influenza A virus as an example antigen.
 
+.. index:: Influenza A virus, Hemagglutinin, HA, GenBank, UniProt
+
 -------------------------------------------
 Step 1. Downloading a sequence
 -------------------------------------------

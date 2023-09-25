@@ -3,6 +3,7 @@ Command Line Options
 *************************
 
 
+.. index:: Input/Output Options
 
 Input/Output and Execution Options
 *************************************
@@ -50,6 +51,7 @@ Optional Arguments
 
   show program's version number and exit.
 
+.. index:: Execution Options
 .. _execution options:
 
 ---------------------
@@ -99,11 +101,7 @@ For detailed information on how to use a third-party fitness function, please re
 
 
 
-
-
-
-  
-
+.. index:: Optimization Options
 
 Optimization Options
 *************************************
@@ -167,6 +165,7 @@ Examples showing the effect of each parameters on the optimization process can b
   Codon table that VaxPress refers to. (default: standard)
   Codon tables are imported from `Bio.Data.CodonTable module <https://biopython.org/docs/1.75/api/Bio.Data.CodonTable.html>`_. To check for the full list of supported codon tables, please refer to `biopython source code <https://github.com/biopython/biopython/blob/master/Bio/Data/CodonTable.py>`_.
 
+.. index:: LinearDesign; Options
 .. _label-linopts:
 
 LinearDesign Options 
@@ -190,6 +189,7 @@ LinearDesign Options
   By using this option, generation of folded structures in start codon region while optimizing MFE by LinearDesign can be avioded.
 
 
+.. index:: Fitness Function Options
 
 Options Related to Fitness Functions
 ***************************************

@@ -1,6 +1,8 @@
 Guide to set parameters
 **************************
 
+.. index:: Setting Parameters; Iterations
+
 ---------------------
 Number of Iterations
 ---------------------
@@ -24,6 +26,8 @@ Two dotted lines on the plot are the points which the number of iterations are 5
 
 Also, keep in mind that optimization process can halt before the specified number of iterations if the fitness score doesn't improve for several consecutive cycles.
 In detail, if E(number of mutation) is equal to 0.2 because of decrease in mutation rate.
+
+.. index:: Setting Parameters; Population
 
 ---------------------
 Number of Population
@@ -66,6 +70,8 @@ Near 100 is proper since there are no differences for the value that fitness cur
     These processes are influenced by other options i.e. iteration number, survivor number…
     All of the parameters above except the population number is set to the default which is REALLY small.
     Other parameters can be adjusted as well based on your own purpose.
+
+.. index:: Setting Parameters; Initial Mutation Rate
 
 ----------------------
 Initial Mutation Rate
@@ -162,6 +168,8 @@ Also, when the initial mutation rate is low (``0.01``, ``0.005``), the lower the
 
 Thus, low initial mutation rate is recommended when the initial sequence is already optimized with *LinearDesign*.
 After setting iteration number, you might try initial mutation rate under ``0.01`` and observe the fitness score to set proper rate.
+
+.. index:: Setting Parameters; Fitness Function Weights
 
 ----------------------------------
 Weights of the Fitness Functions

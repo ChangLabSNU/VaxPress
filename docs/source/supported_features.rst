@@ -6,7 +6,7 @@ This page introduces the supported features available on VaxPress.
 .. contents:: :local:
 
 
-
+.. index:: LinearDesign; Usage
 .. _using-lineardesign:
 
 --------------------------------------------------------
@@ -62,6 +62,7 @@ This ensures efficient optimization as there's a minimal likelihood that a bette
 To see the list of all options related to LinearDesign, see :ref:`label-linopts`.
 
 
+.. index:: Addons
 .. _label-addon:
 
 --------------------------------------------------------
@@ -107,6 +108,7 @@ To do this, first you will need to find where the ``vaxpress`` scoring modules a
 In this way, you can add your own scoring function to VaxPress optimization without specifying the command line option every time. 
 
 
+.. index:: Preset
 
 --------------------------------------------------------
 Using preset values
@@ -136,6 +138,7 @@ In this case, you can load preset values with ``--preset`` option and override o
              --seed {NUMBER}
 
 
+.. index:: Configuration
 .. _label-configuration:
 
 --------------------------------------------------------

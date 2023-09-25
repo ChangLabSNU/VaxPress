@@ -240,10 +240,10 @@ Usages, options, and algorithmic features of VaxPress
    use_cases
    troubleshooting
 
-------------------
+--------------------
 Indices and tables
-------------------
+--------------------
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+:ref:`VaxPress Documentation Index <genindex>`
+
+:ref:`search`

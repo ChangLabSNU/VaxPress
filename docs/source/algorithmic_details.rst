@@ -1,5 +1,8 @@
 Algorithmic Details of VaxPress
 ********************************
+
+.. index:: Genetic Algorithm
+
 --------------------
 Overall algorithm
 --------------------
@@ -13,9 +16,9 @@ Based on the evaluation results, a selection process is carried out to choose su
 From the chosen survivor sequences, new offspring sequences are produced once again. 
 This iterative process is repeated for a certain number of iterations specified as ``--iterations``.
 
-.. image:: _images/overall.png
-    :width: 500px
-    :height: 350px
+.. image:: _images/figure1.png
+    :width: 400px
+    :height: 450px
     :align: center
     :alt: Overview of the genetic algorithm used in vaxpress.
 
@@ -28,6 +31,9 @@ Each scoring functions of VaxPress outputs scores in the direction they want to 
 Balance among the scoring functions is adjusted by their relative weights. 
 The ultimate goal of the optimization process is to maximize the objective function, which is defined by the weighted sum of all the scoring functions.
 
+.. index:: Objective Function
+.. index:: Scoring Function
+
 ====================
 Objective Function
 ====================
@@ -37,6 +43,10 @@ The objective function is a linear combination of the factors below, with associ
 .. math:: Scoring \, Function =  \Sigma_{f \in factors} f*weight
 
 VaxPress' scoring function consists of three main areas, each considering factors that can influence the optimization result:
+
+.. index:: Codon Usage
+.. index:: Bicodon Usage
+.. index:: CAI(Codon Adaptation Index)
 
 ====================
 1. Codon Usage
@@ -48,7 +58,7 @@ Since VaxPress’ main goal is to recommend best sequence for mRNA vaccine devel
 
 - **CAI (Codon Adaptation Index):** 
   Codon Adaptation Index is measure of codon usage bias. It calculates similarity between synonymous codon usage of test seqeunce and synonymous codon freqency of reference sequence. 
-  Especially, relative synonymous codon usag (RSCU) is needed to calculate CAI. RSCU is the ratio of the observations of a given codon calculated with respect to the sum of all observations of codons in highly expressed gene. 
+  Especially, relative synonymous codon usage (RSCU) is needed to calculate CAI. RSCU is the ratio of the observations of a given codon calculated with respect to the sum of all observations of codons in highly expressed gene. 
   Vaxpress uses relative adaptiveness of codon(:math:`w_{ij}`) as score of each codon, which is calculated as below.
 
   .. math:: w_{ij} = RSCU_{ij}/RSCU_{i\;max}
@@ -72,6 +82,12 @@ Since VaxPress’ main goal is to recommend best sequence for mRNA vaccine devel
     :height: 350px
     :align: center
     :alt: bicodon usage.
+
+.. index:: RNA Folding
+.. index:: MFE(Minimum Free Energy)
+.. index:: Start Codon Structure
+.. index:: Loop Length
+.. index:: Stem Length
 
 ====================
 2. RNA Folding
@@ -122,6 +138,8 @@ So VaxPress has considered this as an objective and incorporated scoring factors
     :align: center
     :alt: stem-loop structure
 
+.. index:: iCodon-Predicted Stability, U Count, DegScore
+
 ===========================
 3. Sequential Features
 ===========================
@@ -142,6 +160,8 @@ This area includes various factors that influence RNA sequence stability and imm
 - **DegScore:**
   DegScore is the deep learning model devolped by Eterna. It predicts possibility for degradation of RNA from the sequence information.
   Unlike the usage of DegScore in Eterna’s original projects, VaxPress utilizes DegScore function by  dividing its value by length of CDS. [17]_
+
+.. index:: Local GC Ratio, Repeat Length
 
 ==============================================
 4. Features related to effective production
@@ -166,6 +186,7 @@ This area includes various factors that influence RNA sequence stability and imm
   In VaxPress, tandem repeats are quantified by measuring their length. 
   By using ``pytrf.GTRFinder``, Vaxpress finds all generic tandem repeats from given sequences. And add all of their lengths. 
 
+.. index:: Winddown Trigger, Winddown Rate
 .. _label_WinddownTR:
 
 ----------------------------
