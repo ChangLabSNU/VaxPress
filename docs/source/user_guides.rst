@@ -56,7 +56,6 @@ a better mutation would emerge with a higher mutation rate.
     
     .. image:: _images/mutrate0.1.png
         :width: 500px
-        :height: 350px
         :alt: initial mutation rate 0.1
         :align: center
 
@@ -67,7 +66,6 @@ a better mutation would emerge with a higher mutation rate.
 
     .. image:: _images/mutrate0.01.png
         :width: 500px
-        :height: 350px
         :alt: initial mutation rate 0.01
         :align: center
 
@@ -108,7 +106,6 @@ with the length of 1701 bp.
     
     .. image:: _images/iteration1500.png
         :width: 500px
-        :height: 350px
         :alt: iteration1500
         :align: center
 
@@ -143,7 +140,6 @@ difference.
     
     .. image:: _images/population10.png
         :width: 700px
-        :height: 250px
         :alt: population 10
         :align: center
 
@@ -151,7 +147,6 @@ difference.
     
     .. image:: _images/population100.png
         :width: 700px
-        :height: 250px
         :alt: population 100
         :align: center
 
@@ -159,7 +154,6 @@ difference.
     
     .. image:: _images/population500.png
         :width: 700px
-        :height: 250px
         :alt: population 1000
         :align: center
 
@@ -211,7 +205,6 @@ Case 1: LinearDesign is NOT applied
         
     .. image:: _images/nonLD_mutRate0.005.png
         :width: 700px
-        :height: 250px
         :alt: initial mutation rate 0.005
         :align: center
 
@@ -219,7 +212,6 @@ Case 1: LinearDesign is NOT applied
         
     .. image:: _images/nonLD_mutRate0.01.png
         :width: 700px
-        :height: 250px
         :alt: initial mutation rate 0.01
         :align: center
 
@@ -227,7 +219,6 @@ Case 1: LinearDesign is NOT applied
         
     .. image:: _images/nonLD_mutRate0.1.png
         :width: 700px
-        :height: 250px
         :alt: initial mutation rate 0.1
         :align: center
 
@@ -235,7 +226,6 @@ Case 1: LinearDesign is NOT applied
         
     .. image:: _images/nonLD_mutRate0.3.png
         :width: 700px
-        :height: 250px
         :alt: initial mutation rate 0.3
         :align: center
 
@@ -254,7 +244,6 @@ Case 2: LinearDesign is applied
     
     .. image:: _images/LD1_mutRate0.005.png
         :width: 700px
-        :height: 250px
         :alt: initial mutation rate = 0.005
         :align: center
 
@@ -262,7 +251,6 @@ Case 2: LinearDesign is applied
         
     .. image:: _images/LD1_mutRate0.01.png
         :width: 700px
-        :height: 250px
         :alt: initial mutation rate = 0.01
         :align: center
 
@@ -270,7 +258,6 @@ Case 2: LinearDesign is applied
         
     .. image:: _images/LD1_mutRate0.1.png
         :width: 700px
-        :height: 250px
         :alt: initial mutation rate = 0.1
         :align: center
 
@@ -278,7 +265,6 @@ Case 2: LinearDesign is applied
 
     .. image:: _images/LD1_mutRate0.3.png
         :width: 700px
-        :height: 250px
         :alt: initial mutation rate = 0.3
         :align: center
     
@@ -322,7 +308,6 @@ to 4 steps in the example below.
     
     .. image:: _images/weightTuning1.png
         :width: 500px
-        :height: 350px
         :alt: weight tuning 1st step
         :align: center
 
@@ -340,7 +325,6 @@ to 4 steps in the example below.
     
     .. image:: _images/weightTuning2.png
         :width: 500px
-        :height: 350px
         :alt: weight tuning 2nd step
         :align: center
     
@@ -357,7 +341,6 @@ to 4 steps in the example below.
     
     .. image:: _images/weightTuning3.png
         :width: 500px
-        :height: 350px
         :alt: weight tuning 3rd step
         :align: center
     
@@ -375,7 +358,6 @@ to 4 steps in the example below.
 
     .. image:: _images/weightTuning4.png
         :width: 500px
-        :height: 350px
         :alt: weight tuning 4th step
         :align: center
     

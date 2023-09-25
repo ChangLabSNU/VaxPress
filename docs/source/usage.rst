@@ -126,7 +126,6 @@ the following five files:
 
   .. image:: _images/task_information.png
         :width: 500px
-        :height: 400px
         :alt: checkpoints.tsv
         :align: center
 
@@ -135,7 +134,6 @@ the following five files:
   
   .. image:: _images/optimized_sequence.png
         :width: 500px
-        :height: 400px
         :alt: checkpoints.tsv
         :align: center
 
@@ -144,7 +142,6 @@ the following five files:
    
   .. image:: _images/predicted_secondary_structure.png
         :width: 500px
-        :height: 400px
         :alt: checkpoints.tsv
         :align: center
 
@@ -153,7 +150,6 @@ the following five files:
    
   .. image:: _images/optimization_process.png
         :width: 500px
-        :height: 500px
         :alt: checkpoints.tsv
         :align: center
 
@@ -162,7 +158,6 @@ the following five files:
    
   .. image:: _images/parameters.png
         :width: 500px
-        :height: 500px
         :alt: checkpoints.tsv
         :align: center
 
@@ -173,7 +168,6 @@ the following five files:
   
   .. image:: _images/checkpoints.tsv_example.png
         :width: 500px
-        :height: 400px
         :alt: checkpoints.tsv
         :align: center
 
