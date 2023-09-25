@@ -1,12 +1,12 @@
-*************************
+********************
 Command Line Options
-*************************
+********************
 
 
 .. index:: Input/Output Options
 
 Input/Output and Execution Options
-*************************************
+**********************************
 
 List of all arguments related to input/output and general execution of the program.
 
@@ -19,9 +19,9 @@ List of all arguments related to input/output and general execution of the progr
 Input/Output Options
 ---------------------
 
-====================
+==================
 Required Arguments
-====================
+==================
 - ``-i``, ``--input`` FILE
 
   Path to the input fasta file containing the CDS sequence.
@@ -29,9 +29,9 @@ Required Arguments
 
   Path to the output directory.
 
-===================
+==================
 Optional Arguments
-===================
+==================
 - ``--protein``
 
   Input is a protein sequence.
@@ -54,9 +54,9 @@ Optional Arguments
 .. index:: Execution Options
 .. _execution options:
 
----------------------
+-----------------
 Execution Options
----------------------
+-----------------
 - ``--preset`` FILE
   
   Use preset values in ``parameters.json``, which is one of the output files from the VaxPress run. 
@@ -104,7 +104,7 @@ For detailed information on how to use a third-party fitness function, please re
 .. index:: Optimization Options
 
 Optimization Options
-*************************************
+********************
 
 Below is the list of all arguments related to optimization parameters of the program.
 Examples showing the effect of each parameters on the optimization process can be found in the :doc:`Guide to set parameters </guide_to_set_parameters>` section.
@@ -169,7 +169,7 @@ Examples showing the effect of each parameters on the optimization process can b
 .. _label-linopts:
 
 LinearDesign Options 
-****************************
+********************
 
 - ``--lineardesign`` LAMBDA
 
@@ -192,22 +192,22 @@ LinearDesign Options
 .. index:: Fitness Function Options
 
 Options Related to Fitness Functions
-***************************************
+************************************
 
 List of all arguments related to fitness functions inside VaxPress.
 For detailed information on how each scoring function works, see :doc:`Agorithmic Details </algorithmic_details>`.
 
---------
+------
 iCodon
---------
+------
 
 - ``--iCodon-weight WEIGHT``
   
   Scoring weight for iCodon predicted stability (default: 1.0).
 
----------
+--------
 DegScore 
----------
+--------
 
 - ``--degscore-weight WEIGHT``
   
@@ -215,46 +215,46 @@ DegScore
   Setting this weight as certain positive value, VaxPress optimizes sequence toward the direction that minimize DegScore value. 
   If you want to make DegScore value influential, it’s recommended to set the weight at least 5.0.
 
-------------------------
+----------------------
 Codon Adaptation Index
-------------------------
+----------------------
 
 - ``--cai-weight WEIGHT``
   
   Scoring weight for codon adaptation index (default: 3.0).
 
-----------------------------------------
+-------------------------------------
 Codon Adaptation Index of Codon-Pairs
-----------------------------------------
+-------------------------------------
 
 - ``--bicodon-weight WEIGHT``
   
   Scoring weight for codon adaptation index of codon-pairs (default: 1.0).
 
-----------
+--------
 Uridines
-----------
+--------
 
 - ``--ucount-weight WEIGHT``
   
   Scoring weight for U count minimizer (default: 3.0).
 
------------------
+-----------
 RNA Folding
------------------
+-----------
 
-============
+===
 MFE
-============
+===
 
 - ``--mfe-weight WEIGHT``
   
   Scoring weight for Minimum Free Energy (MFE) (default: 3.0).
 
 
-============
+=====
 Loops
-============
+=====
 
 - ``--loop-weight WEIGHT``
   
@@ -276,9 +276,9 @@ Structure near Start Codon
   
   Width in nt of unfolded region near the start codon (default: 15).
 
-==========================
+==========
 Long Stems
-==========================
+==========
 
 - ``--longstem-weight WEIGHT``
   
@@ -288,9 +288,9 @@ Long Stems
   
   Minimum length of stems to avoid (default: 27).
 
------------------
+--------------
 Local GC Ratio
------------------
+--------------
 
 - ``--gc-weight WEIGHT``
   
@@ -304,9 +304,9 @@ Local GC Ratio
   
   Size of stride for GC content calculation (default: 5).
 
------------------
+--------------
 Tandem Repeats
------------------
+--------------
 
 - ``--repeats-weight WEIGHT``
   
