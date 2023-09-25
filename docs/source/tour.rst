@@ -64,7 +64,7 @@ be the same since there was no optimization.
 Step 3. Running VaxPress optimization
 -------------------------------------------
 
-Finally, all processes that are needed to run Vaxpress is ready.
+Finally, all processes that are needed to run VaxPress is ready.
 Now let's run VaxPress optimization, starting from the sequence
 optimized by LinearDesign. But before running, we are going to
 point out why we start from LinearDesign result. LinearDesign [#LinearDesign]_

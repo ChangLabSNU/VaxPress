@@ -11,10 +11,9 @@ Input/Output and Execution Options
 List of all arguments related to input/output and general execution
 of the program.
 
-
 - ``-h``, ``--help``
 
-  Show help messages for Vaxpress and exit.
+  Show help messages for VaxPress and exit.
 
 ---------------------
 Input/Output Options
@@ -24,11 +23,11 @@ Input/Output Options
 Required Arguments
 ==================
 
-- ``-i``, ``--input`` FILE
+- ``-i FILE``, ``--input FILE``
 
-  Path to the input fasta file containing the CDS sequence.
+  Path to the input FASTA file containing the CDS or protein sequence.
 
-- ``-o``, ``--output`` DIR
+- ``-o DIR``, ``--output DIR``
 
   Path to the output directory.
 
@@ -48,17 +47,18 @@ Optional Arguments
 
   Do not print progress messages to stdout.
 
-- ``--print-top`` N
+- ``--print-top N``
 
-  Print top and bottom N sequences. (default: 10)
+  Print top and bottom ``N`` sequences (default: 10).
 
-- ``--report-interval`` MIN
+- ``--report-interval MIN``
 
-  Report interval in minutes. In other words, report.html will be updated by this time interval. (default: 5)
+  Report interval in minutes. In other words, ``report.html`` will be
+  updated by this time interval (default: 5).
 
 - ``--version``
 
-  show program's version number and exit.
+  Show program's version number and exit.
 
 .. index:: Execution Options
 .. _execution options:
@@ -67,7 +67,7 @@ Optional Arguments
 Execution Options
 -----------------
 
-- ``--preset`` FILE
+- ``--preset FILE``
   
   Use preset values in ``parameters.json``, which is one of the
   output files from the VaxPress run. If some of the options are
@@ -80,11 +80,13 @@ Execution Options
              -o {path_to_output_directory} \
              --preset {path_to_parameters.json}
 
-- ``--addon`` FILE
+  Refer to :ref:`label-preset` for more information.
 
-  Load a third-party fitness function.
+- ``--addon FILE``
 
-  Example command to use a third-party fitness function::
+  Load a custom fitness function.
+
+  Example command to use a custom fitness function::
 
     vaxpress -i {path_to_input.fa} \
              -o {path_to_output_directory} \
@@ -92,23 +94,23 @@ Execution Options
              -p {n_processes} \
              --addon {path_to_addon.py}
 
-For detailed information on how to use a third-party fitness function,
-please refer to the :ref:`label-addon` of this documentation.
+  For detailed information on how to use a custom fitness function,
+  please refer to the :ref:`label-addon` of this documentation.
 
-- ``-p``, ``--processes`` N
+- ``-p N``, ``--processes N``
 
-  Number of processes to use (default: 4)
+  Number of processes to use (default: 4).
 
-- ``--seed`` NUMBER
+- ``--seed NUMBER``
 
-  Random seed (default: 922)
+  Random seed (default: 922).
 
-- ``--folding-engine`` NAME
+- ``--folding-engine NAME``
 
-  RNA folding engine: vienna or linearfold (default: vienna)
+  RNA folding engine: ``vienna`` or ``linearfold`` (default: ``vienna``).
 
 - ``--default-off``
-  Turn all fitness functions off by default
+  Turn all fitness functions off by default.
 
 
 .. index:: Optimization Options
@@ -123,14 +125,14 @@ section.
 
 - ``--random-initialization``
 
-  Randomize all codons at the beginning (default: False)
+  Randomize all codons at the beginning (default: False).
 
 .. _label-constart:
 
-- ``--conservative-start`` ITER[:WIDTH]
+- ``--conservative-start ITER[:WIDTH]``
   
-  Conserve sequence for the first ITER iterations, except the first
-  WIDTH amino acids (default WIDTH: 7). It's a recommended option
+  Conserve sequence for the first ``ITER`` iterations, except the first
+  ``WIDTH`` amino acids (default width: 7). It's a recommended option
   to use when running VaxPress with LinearDesign initialization.
   See :ref:`using-lineardesign` for more information.
 
@@ -144,50 +146,51 @@ section.
              --lineardesign-dir ../LinearDesign \
              --conservative-start 10:7 \
 
-- ``--iterations`` N
+- ``--iterations N``
 
-  Number of iterations (default: 10)
+  Number of iterations (default: 10).
 
-- ``--population`` N
+- ``--population N``
 
-  Population size to keep (default: 20)
+  Population size to generate every iteration (default: 20).
 
-- ``--survivors`` N
+- ``--survivors N``
 
-  Number of survivors per iteration (default: 2)
+  Number of survivors to pass to the next iteration (default: 2).
 
-- ``--initial-mutation-rate`` RATE
+- ``--initial-mutation-rate RATE``
 
-  Initial mutation rate (default: 0.1)
+  Initial mutation rate (default: 0.1).
 
-- ``--full-scan-interval`` N
+- ``--full-scan-interval N``
   
   Number of iterations between full scans of single mutations of
-  unpaired bases (default: 300)
+  unpaired bases (default: 300).
 
-- ``--winddown-trigger`` N
+- ``--winddown-trigger N``
 
   Number of iterations with the same best score to trigger mutation
-  stabilization (default: 15) Please refer to
-  :ref:`algorithmic_details <label_WinddownTR>` for detailed explanation.
+  stabilization (default: 15). Please refer to
+  :ref:`label_WinddownTR` for detailed explanation.
 
-- ``--winddown-rate`` RATE
+- ``--winddown-rate RATE``
 
   Mutation rate multiplier when mutation stabilization is triggered
-  (default: 0.9) Please refer to
-  :ref:`algorithmic_details <label_WinddownTR>` for detailed explanation.
+  (default: 0.9). Please refer to
+  :ref:`label_WinddownTR` for detailed explanation.
 
-- ``--boost-loop-mutations`` WEIGHT[:START]
+- ``--boost-loop-mutations WEIGHT[:START]``
 
-  boost mutations in loops after position START by WEIGHT (default: 1.5:15)
+  Boost mutations in loops after position ``START`` by ``WEIGHT``
+  (default: 1.5:15).
 
-- ``--species`` NAME
+- ``--species NAME``
 
-  target species (default: human)
+  Target species (default: human).
 
-- ``--codon-table`` NAME
+- ``--codon-table NAME``
 
-  Codon table that VaxPress refers to. (default: standard) Codon
+  Codon table that VaxPress refers to (default: standard). Codon
   tables are imported from `Bio.Data.CodonTable module
   <https://biopython.org/docs/1.75/api/Bio.Data.CodonTable.html>`_. To
   check for the full list of supported codon tables, please refer
@@ -200,14 +203,14 @@ section.
 LinearDesign Options 
 ********************
 
-- ``--lineardesign`` LAMBDA
+- ``--lineardesign LAMBDA``
 
   Call LinearDesign to initialize the optimization. ``LAMBDA`` (λ)
   is a parameter specifying the ratio that MFE and CAI are reflected
   in the optimization. λ is in (–∞, 0] while λ = 0 means only MFE
   is considered, and the weight on CAI increases as λ increases.
 
-- ``--lineardesign-dir`` DIR
+- ``--lineardesign-dir DIR``
 
   Path to the top directory containing LinearDesign. When this
   argument is specified, its information will be stored in
@@ -215,12 +218,12 @@ LinearDesign Options
   program. As a result, you don't need to write this option again
   from the next time if you're using the same LinearDesign directory.
 
-- ``--lineardesign-omit-start`` AA
+- ``--lineardesign-omit-start AA``
 
   The number of amino acids to omit from the N-terminus when calling
   LinearDesign (default: 5). By using this option, generation of
   folded structures in start codon region while optimizing MFE by
-  LinearDesign can be avioded.
+  LinearDesign can be avoided.
 
 .. index:: Fitness Function Options
 

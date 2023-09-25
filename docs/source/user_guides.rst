@@ -178,7 +178,7 @@ Initial Mutation Rate
 To accomplish optimization successfully, certain amount of mutation
 rate is necessory.
 
-When running *Vaxpress* without *LinearDesign* initialization, using
+When running *VaxPress* without *LinearDesign* initialization, using
 default value for initial mutation rate (``0.1``) won't be a problem
 since the evolution starts from the highly unoptimized sequence.
 When initial mutation rate is high, the program will search through
@@ -371,13 +371,13 @@ to 4 steps in the example below.
     By doing the second choice, there might be several deteriorations
     of some other metrics.  You can keep adjusting them just like
     the above process. How to balance the weights among the various
-    fitness functions depends on your own purpose for using Vaxpress.
+    fitness functions depends on your own purpose for using VaxPress.
 
 .. index:: LinearDesign; Use Case
 
-==================================================
+=================================================
 Removing Tandem Repeats from LindearDesign Output
-==================================================
+=================================================
 
 Overall, VaxPress can consist a workflow starting from LinearDesign
 (See :ref:`Using LinearDesign for Optimization Initialization
@@ -475,6 +475,7 @@ structure.
 
 
 .. index:: Preset
+.. _label-preset:
 
 --------------------------------------------------------
 Using preset values

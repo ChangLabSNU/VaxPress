@@ -113,7 +113,7 @@ programming methods. It considers different types of base pairs
 and loop structures to estimate the MFE structure efficiently.
 
 Since *ViennaRNA* and *LinearFold* use different algorithm to
-estimate MFE, Vaxpress offers both as a options for folding engine.
+estimate MFE, VaxPress offers both as a options for folding engine.
 
 =====================
 Start Codon Structure
@@ -257,7 +257,7 @@ process. Therefore, it is important to proceed in a way that
 minimizes this issue.
 
 In VaxPress, tandem repeats are quantified by measuring their length.
-By using ``pytrf.GTRFinder``, Vaxpress finds all generic tandem
+By using ``pytrf.GTRFinder``, VaxPress finds all generic tandem
 repeats from given sequences. And add all of their lengths.
 
 ----------

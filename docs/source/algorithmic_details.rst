@@ -8,7 +8,7 @@ Optimization
 
 .. index:: Genetic Algorithm
 
-VaxPress uses genetic algorithm to produce optimized mRNA cds
+VaxPress uses genetic algorithm to produce optimized mRNA CDS
 sequence, while fitness evaluation metrics are defined as scoring
 functions. Current scoring functions consider both the features
 involved in the production and distribution process, as well as
@@ -47,9 +47,9 @@ each factor.
 .. index:: Winddown Trigger, Winddown Rate
 .. _label_WinddownTR:
 
-----------------------------
-Winddown Trigger and Rate
-----------------------------
+-----------------------------------
+Adaptive Decrement of Mutation Rate
+-----------------------------------
 
 To improve optimization performance, it is crucial to create new
 populations that can compete effectively with previous generations.
@@ -57,8 +57,8 @@ As the optimization process progresses, highly mutated new populations
 are less likely to be selected because the earlier sequences are
 already well-optimized. Therefore, if the current fitness score
 remains at a certain level even as optimization continues, it is
-necessary to *winddown* the mutation rate. In VaxPress, the Winddown
-Trigger represents the number of iterations with the same fitness
-score required to decrease the mutation rate, and the Winddown Rate
+necessary to *winddown* the mutation rate. In VaxPress, the *winddown
+trigger* represents the number of iterations with the same fitness
+score required to decrease the mutation rate, and the *winddown rate*
 is the factor by which the mutation rate is multiplied when the
 winddown is triggered.
