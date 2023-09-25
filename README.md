@@ -9,6 +9,9 @@ pluggable interface. For the detailed information about VaxPress,
 including its options and algorithmic features, please refer to the
 [VaxPress documentation page](https://link.to/page).
 
+Also, you can check [VaxPress tutorial page](https://link.to/page)
+for a complete tutorial.
+
 # Installation
 
 ### pip
@@ -83,6 +86,9 @@ the optimization process might halt before completing all specified
 iterations if no improvement is detected over several consecutive
 cycles.
 
+By setting the number of `--iterations` to 0, VaxPress provides a convenient
+method to just evaluate a given sequence with its various scoring functions.
+
 ### Multi-Core Support
 
 You can use multiple CPU cores for optimization with the `-p` or
@@ -154,6 +160,28 @@ vaxpress -i spike.fa -o results-spike --processes 36 \
          --iterations 500 --lineardesign 1.0 \
          --lineardesign-dir /path/to/LinearDesign \
          --conservative-start 10 --initial-mutation-rate 0.01
+```
+### Using VaxPress as a User-friendly Interface to LinearDesign
+Using `--conservative-start N` option only generates mutations in
+the start codon region during the initial N number of iterations,
+leaving the rest of the sequence as it is. Therefore, by assigning
+the same parameter for `--conservative-start` and `--iterations` options,
+VaxPress can be used as a convenient front-end interface for
+LinearDesign optimization.
+
+Using LinearDesign through VaxPress interface offers several advantages:
+
+- LinearDesign can be run without python2 dependency in VaxPress.
+- In addition to the optimized sequence output by LinearDesign, VaxPress produces output report that contains detailed information about the sequence including the visualization of secondary structure and evaluation results of various metrics.
+- When using LinearDesign alone, several N-terminal amino acids should be manually removed before running the optimization to prevent folded structures in the start codon region. This process is run automatically in VaxPress with `--lineardesign-omit-start`(default = 5) option.
+- While LinearDesign only accepts protein sequence, mRNA sequence can be directly used as an input in VaxPress.
+
+```bash
+# Example usage of VaxPress as an interface to LinearDesign
+vaxpress -i spike.fa -o results-spike --processes 36 \
+         --iterations 10 --lineardesign 1.0 \
+         --conservative-start 10 --initial-mutation-rate 0.01 \
+         --lineardesign-dir /path/to/LinearDesign \
 ```
 
 ## Output
