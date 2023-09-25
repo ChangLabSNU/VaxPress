@@ -1,7 +1,7 @@
 #
 # VaxPress
 #
-# Copyright 2023 Hyeshik Chang
+# Copyright 2023 Seoul National University
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -29,6 +29,7 @@ from plotly.subplots import make_subplots
 import pandas as pd
 import jinja2
 import os
+import re
 import json
 import time
 
@@ -54,6 +55,10 @@ class TemplateFiltersMixin:
     def filter_pluralize(value, singular, plural):
         return [singular, plural][int(value != 1)]
 
+    @staticmethod
+    def filter_format_power_html(value):
+        return re.sub(r'\^(\d+)', r'<sup>\1</sup>', str(value)).replace('x', '&times;')
+
     @classmethod
     def set_filters(kls, env):
         for name in dir(kls):
@@ -63,7 +68,7 @@ class TemplateFiltersMixin:
 
 class ReportPlotsMixin:
 
-    seq = args = status = scoreopts = iteropts = execopts = None
+    seq = args = status = scoreopts = execopts = None
     checkpoints = None
 
     default_panel_height = [0, 400, 600, 700, 800] # by number of panels
@@ -151,20 +156,20 @@ class ReportPlotsMixin:
         height = min(len(self.default_panel_height), len(plotdata_initial))
         fig.update_layout(
             title='Final sequence evaluation metrics',
-            height=self.default_panel_height[height - 1])
+            height=self.default_panel_height[height])
 
         return pyo.plot(fig, output_type='div', include_plotlyjs=False)
 
 
 class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
 
-    def __init__(self, status, args, scoreopts, iteropts, execopts, seq,
+    def __init__(self, status, args, metainfo, scoreopts, execopts, seq,
                  scorefuncs):
         self.seq = seq
         self.args = args
+        self.metainfo = metainfo
         self.status = status
         self.scoreopts = scoreopts
-        self.iteropts = iteropts
         self.execopts = execopts
         self.scorefuncs = scorefuncs
 
@@ -190,8 +195,8 @@ class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
         return {
             'args': self.args,
             'seq': self.seq,
+            'metainfo': self.metainfo,
             'scoring': scoreopts_filtered,
-            'iter': self.iteropts,
             'exec': self.execopts,
             'params': self.parameters,
             'status': self.status,

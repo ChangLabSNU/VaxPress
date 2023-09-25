@@ -1,7 +1,7 @@
 #
 # VaxPress
 #
-# Copyright 2023 Hyeshik Chang
+# Copyright 2023 Seoul National University
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -40,11 +40,11 @@ def compute_gc_penalty(seq, winsize, stride):
 
 class GCRatioFitness(ScoringFunction):
 
-    single_submission = False
-
     name = 'gc'
     description = 'GC Ratio'
     priority = 50
+
+    use_annotation_on_zero_weight = True
 
     arguments = [
         ('weight', dict(

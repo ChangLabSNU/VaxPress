@@ -23,4 +23,9 @@
 # THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-__version__ = '0.4'
+import os
+
+default_cachedir = os.path.join(os.path.expanduser('~'), '.cache', 'vaxpress')
+
+def get_cachepath(filename):
+    return os.path.join(default_cachedir, filename)

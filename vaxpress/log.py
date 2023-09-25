@@ -1,7 +1,7 @@
 #
 # VaxPress
 #
-# Copyright 2023 Hyeshik Chang
+# Copyright 2023 Seoul National University
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -23,6 +23,24 @@
 # THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+import logging
+
 hbar = '-' * 80
 hbar_stars = '-*' * 40
 hbar_double = '=' * 80
+
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+
+log = logging.getLogger('vaxpress')
+log.setLevel(logging.DEBUG)
+log.addHandler(console)
+
+def initialize_logging(logfile=None, quiet=False):
+    if logfile is not None:
+        logf_handler = logging.FileHandler(logfile, mode='w')
+        logf_handler.setLevel(logging.DEBUG)
+        log.addHandler(logf_handler)
+
+    if quiet:
+        console.setLevel(logging.WARNING)

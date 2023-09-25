@@ -1,7 +1,7 @@
 #
 # VaxPress
 #
-# Copyright 2023 Hyeshik Chang
+# Copyright 2023 Seoul National University
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -29,17 +29,17 @@ import numpy as np
 
 class CodonAdaptationIndexFitness(ScoringFunction):
 
-    single_submission = False
-
     name = 'cai'
     description = 'Codon Adaptation Index'
     priority = 20
 
+    use_annotation_on_zero_weight = True
+
     requires = ['mutantgen', 'species']
     arguments = [
         ('weight', dict(
-            type=float, default=3.0, metavar='WEIGHT',
-            help='scoring weight for codon adaptation index (default: 3.0)'
+            type=float, default=0, metavar='WEIGHT',
+            help='scoring weight for codon adaptation index (default: 0)'
         )),
     ]
 

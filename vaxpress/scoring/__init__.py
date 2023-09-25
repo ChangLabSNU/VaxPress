@@ -1,7 +1,7 @@
 #
 # VaxPress
 #
-# Copyright 2023 Hyeshik Chang
+# Copyright 2023 Seoul National University
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -35,6 +35,10 @@ class ScoringFunction(abc.ABC):
 
     # If True, score() method is called with a list of folding predictions.
     uses_folding = False
+
+    # If True, annotate_sequence() or evaluate_local() is called even when
+    # the weight is zero.
+    use_annotation_on_zero_weight = False
 
     # Specifies the additional required arguments for the constructor
     requires = []

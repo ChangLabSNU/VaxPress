@@ -1,7 +1,7 @@
 #
 # VaxPress
 #
-# Copyright 2023 Hyeshik Chang
+# Copyright 2023 Seoul National University
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -173,7 +173,8 @@ class MutantGenerator:
                 continue
 
             child = parent[:]
-            child[choice.pos] = self.synonymous_codons[child[choice.pos]][choice.altcodon]
+            child[choice.pos] = self.synonymous_codons[child[choice.pos]][
+                                    choice.altcodon]
             yield child
 
     def compute_expected_mutations(self, mutation_rate: float) -> float:
