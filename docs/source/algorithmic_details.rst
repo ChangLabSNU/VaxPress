@@ -132,9 +132,9 @@ So VaxPress has considered this as an objective and incorporated scoring factors
 
   In the secondary structure of mRNA vaccines, the stem region corresponds to this case. To prevent its breakdown, limitations on stem length have been established.
 
-.. image:: _images/stemloop.png
-    :width: 500px
-    :height: 350px
+.. image:: _images/stem_loop.png
+    :width: 700px
+    :height: 300px
     :align: center
     :alt: stem-loop structure
 
