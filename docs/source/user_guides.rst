@@ -9,7 +9,7 @@ User Guides
 Using LinearDesign for Optimization Initialization
 --------------------------------------------------------
 
-LinearDesign [#LinearDesign]_ optimizes mRNA CDS in terms of MFE and CAI values.
+LinearDesign\ [#LinearDesign]_ optimizes mRNA CDS in terms of MFE and CAI values.
 You can use ``--lineardesign`` option to start *VaxPress* optimization
 from LinearDesign output sequence.  When using this option,
 LinearDesign is invoked inside VaxPress to initialize the input
@@ -136,23 +136,23 @@ population numbers, and find proper value that makes no further
 difference.
 
 * Fitness changes over the iterations from ``report.html``
-    1. 10 populations
+    #. 10 populations
     
-    .. image:: _images/population10.png
+       .. image:: _images/population10.png
         :width: 700px
         :alt: population 10
         :align: center
 
-    2. 100 populations
+    #. 100 populations
     
-    .. image:: _images/population100.png
+       .. image:: _images/population100.png
         :width: 700px
         :alt: population 100
         :align: center
 
-    3. 500 populations
+    #. 500 populations
     
-    .. image:: _images/population500.png
+       .. image:: _images/population500.png
         :width: 700px
         :alt: population 1000
         :align: center
@@ -201,30 +201,30 @@ Case 1: LinearDesign is NOT applied
 ++++++++++++++++++++++++++++++++++++
 
 * Fitness changes over the iterations from ``report.html``
-    1. initial mutation rate = 0.005
+    #. initial mutation rate = 0.005
         
-    .. image:: _images/nonLD_mutRate0.005.png
+       .. image:: _images/nonLD_mutRate0.005.png
         :width: 700px
         :alt: initial mutation rate 0.005
         :align: center
 
-    2. initial mutation rate = 0.01
+    #. initial mutation rate = 0.01
         
-    .. image:: _images/nonLD_mutRate0.01.png
+       .. image:: _images/nonLD_mutRate0.01.png
         :width: 700px
         :alt: initial mutation rate 0.01
         :align: center
 
-    3. initial mutation rate = 0.1
+    #. initial mutation rate = 0.1
         
-    .. image:: _images/nonLD_mutRate0.1.png
+       .. image:: _images/nonLD_mutRate0.1.png
         :width: 700px
         :alt: initial mutation rate 0.1
         :align: center
 
-    4. initial mutation rate = 0.3
+    #. initial mutation rate = 0.3
         
-    .. image:: _images/nonLD_mutRate0.3.png
+       .. image:: _images/nonLD_mutRate0.3.png
         :width: 700px
         :alt: initial mutation rate 0.3
         :align: center
@@ -240,30 +240,30 @@ although it generally allows the faster convergence.
 Case 2: LinearDesign is applied
 ++++++++++++++++++++++++++++++++++
 * Fitness changes over the iterations from ``report.html``
-    1. initial mutation rate = 0.005
+    #. initial mutation rate = 0.005
     
-    .. image:: _images/LD1_mutRate0.005.png
+       .. image:: _images/LD1_mutRate0.005.png
         :width: 700px
         :alt: initial mutation rate = 0.005
         :align: center
 
-    2. initial mutation rate = 0.01
+    #. initial mutation rate = 0.01
         
-    .. image:: _images/LD1_mutRate0.01.png
+       .. image:: _images/LD1_mutRate0.01.png
         :width: 700px
         :alt: initial mutation rate = 0.01
         :align: center
 
-    3. initial mutation rate = 0.1
+    #. initial mutation rate = 0.1
         
-    .. image:: _images/LD1_mutRate0.1.png
+       .. image:: _images/LD1_mutRate0.1.png
         :width: 700px
         :alt: initial mutation rate = 0.1
         :align: center
 
-    4. initial mutation rate = 0.3
+    #. initial mutation rate = 0.3
 
-    .. image:: _images/LD1_mutRate0.3.png
+       .. image:: _images/LD1_mutRate0.3.png
         :width: 700px
         :alt: initial mutation rate = 0.3
         :align: center
@@ -285,7 +285,7 @@ Weights of the Fitness Functions
 ================================
 
 The way of adjusting weights of fitness functions depends on the
-user’s own purpose.  To adjust the weights properly, you might refer
+user's own purpose.  To adjust the weights properly, you might refer
 to 4 steps in the example below.
 
 .. note::
@@ -296,8 +296,7 @@ to 4 steps in the example below.
     - U count: 3.0
     - loop weight: 1.5
   
-
-1. Check the naive optimization process
+#. Check the naive optimization process
     Firstly, just run VaxPress with deafult weights.
     ::
 
@@ -306,7 +305,7 @@ to 4 steps in the example below.
     
     * Metrics' trend from ``report.html``
     
-    .. image:: _images/weightTuning1.png
+      .. image:: _images/weightTuning1.png
         :width: 500px
         :alt: weight tuning 1st step
         :align: center
@@ -314,7 +313,7 @@ to 4 steps in the example below.
     Elevation of *MFE* value is observed. Since *MFE* value represents
     overall stability of structure, you might want to make it lower.
 
-2. Adjusting MFE weight (``--mfe-weight``)
+#. Adjusting MFE weight (``--mfe-weight``)
     Raise weight of MFE from defalut to 7.0
     ::
 
@@ -323,14 +322,14 @@ to 4 steps in the example below.
     
     * Metrics' trend from ``report.html``
     
-    .. image:: _images/weightTuning2.png
+      .. image:: _images/weightTuning2.png
         :width: 500px
         :alt: weight tuning 2nd step
         :align: center
     
     Now loops has increased, and you might want to keep the loops from increasing.
 
-3. Adjusting loop weight (``--loop-weight``)
+#. Adjusting loop weight (``--loop-weight``)
     Raise weight of loop from defalut to 7.0
     ::
 
@@ -339,15 +338,15 @@ to 4 steps in the example below.
     
     * Metrics' Trend from ``report.html``
     
-    .. image:: _images/weightTuning3.png
+      .. image:: _images/weightTuning3.png
         :width: 500px
         :alt: weight tuning 3rd step
         :align: center
     
-    Now we have problem with the Uridine Count. Let’s compromise
+    Now we have problem with the Uridine Count. Let's compromise
     between ``loops`` and ``ucount``.
 
-4. Compromising between ``loops`` and ``ucount``
+#. Compromising between ``loops`` and ``ucount``
     Raise weight of Ucount weight to 5 and lower loop weight to 5
     ::
 
@@ -356,7 +355,7 @@ to 4 steps in the example below.
     
     * Metrics' Trend from ``report.html``
 
-    .. image:: _images/weightTuning4.png
+      .. image:: _images/weightTuning4.png
         :width: 500px
         :alt: weight tuning 4th step
         :align: center
@@ -365,8 +364,8 @@ to 4 steps in the example below.
     elevation of ``MFE``. So now there might be some possible
     choices.
 
-    1. Take charge of slight elevation of `MFE`.
-    2. Raise weight of `MFE` more.
+    #. Take charge of slight elevation of `MFE`.
+    #. Raise weight of `MFE` more.
 
     By doing the second choice, there might be several deteriorations
     of some other metrics.  You can keep adjusting them just like

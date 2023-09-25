@@ -2,7 +2,7 @@
 Usage
 *****
 
-There are 2 required arguments to run VaxPress: ``-i``, ``-o``.
+There are two required arguments to run VaxPress: ``-i``, ``-o``.
 ``-i`` specifies the input file path, and ``-o`` specifies the
 output directory path.
 
@@ -22,7 +22,7 @@ Input Files
 ===========
 
 VaxPress requires an input file in FASTA format containing the
-CDS(CoDing Sequence) sequence to be optimized. Protein sequence
+CDS (CoDing Sequence) sequence to be optimized. Protein sequence
 in FASTA format is also available as an input, using ``--protein``
 option.
 
@@ -30,8 +30,8 @@ option.
 Number of Iterations
 ====================
 
-By default, the ``--iterations`` option is set to 10. For a
-comprehensive optimization, it's suggested to use a minimum of 500
+By default, the ``--iterations`` option is set to ``10``. For a
+comprehensive optimization, it's suggested to use a minimum of ``500``
 iterations. However, the ideal number of iterations can vary based
 on the input's length, composition, and chosen optimization settings.
 Note that the optimization process might halt before completing all
@@ -122,41 +122,41 @@ the following five files:
 - ``report.html``: A summary report detailing the result and
   optimization process. The report contains the following informations:
 
-  1. Basic information on the task including sequence name and command line.
+  #. Basic information on the task including sequence name and command line.
 
-  .. image:: _images/task_information.png
+     .. image:: _images/task_information.png
         :width: 500px
         :alt: checkpoints.tsv
         :align: center
 
-  2. Information about the optimized sequence: metric comparison
+  #. Information about the optimized sequence: metric comparison
      between initial & optimized score
   
-  .. image:: _images/optimized_sequence.png
+     .. image:: _images/optimized_sequence.png
         :width: 500px
         :alt: checkpoints.tsv
         :align: center
 
-  3. Interactive plot showing the predicted secondary structure of
+  #. Interactive plot showing the predicted secondary structure of
      the output sequence
    
-  .. image:: _images/predicted_secondary_structure.png
+     .. image:: _images/predicted_secondary_structure.png
         :width: 500px
         :alt: checkpoints.tsv
         :align: center
 
-  4. Plots showing the changes of each metrics and parameters over
+  #. Plots showing the changes of each metrics and parameters over
      the iterations.
    
-  .. image:: _images/optimization_process.png
+     .. image:: _images/optimization_process.png
         :width: 500px
         :alt: checkpoints.tsv
         :align: center
 
-  5. Parameters used in the corresponding VaxPress run. This
+  #. Parameters used in the corresponding VaxPress run. This
      information is also stored in ``parameters.json``.
    
-  .. image:: _images/parameters.png
+     .. image:: _images/parameters.png
         :width: 500px
         :alt: checkpoints.tsv
         :align: center
