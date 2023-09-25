@@ -107,7 +107,7 @@ Optimization Options
 ********************
 
 Below is the list of all arguments related to optimization parameters of the program.
-Examples showing the effect of each parameters on the optimization process can be found in the :doc:`Guide to set parameters </guide_to_set_parameters>` section.
+Examples showing the effect of each parameters on the optimization process can be found in the :ref:`tuning-parameters` section.
 
 - ``--random-initialization``
 

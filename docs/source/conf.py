@@ -36,3 +36,6 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_static_path = []
 
 highlight_language = 'bash'
+
+# -- Options for PDF output --------------------------------------------------
+latex_engine = 'xelatex'

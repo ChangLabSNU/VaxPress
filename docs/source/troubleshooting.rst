@@ -1,5 +1,5 @@
-Troubleshooting (FAQ)
-***********************
+Troubleshooting
+***************
 
 -------------------------------
 iCodon scoring does not work.

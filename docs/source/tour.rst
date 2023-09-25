@@ -1,7 +1,8 @@
-Tutorial
-*******************
+***********************
+A Tour Through VaxPress
+***********************
 
-This tutorial will walk you through the process of optimizing a wild-type mRNA sequence with VaxPress.
+This guide will walk you through the process of optimizing a wild-type mRNA sequence with VaxPress.
 We will use Hemagglutinin(HA) protein of Influenza A virus as an example antigen.
 
 .. index:: Influenza A virus, Hemagglutinin, HA, GenBank, UniProt
@@ -65,7 +66,7 @@ It is recommended to use ``-p`` or ``--processes`` option to make the runtime sh
 
 Now you can see the optimized sequence in the ``report.html``.
 In addition to the Sequence Optimality Metrics and Predicted Secondary Structure sections, plots in Optimization Process also contains useful information.
-If needed, additional optimization parameters can be adjusted according to these plots and :doc:`the guide </guide_to_set_parameters>`.
+If needed, additional optimization parameters can be adjusted according to these plots and :ref:`the guide <tuning-parameters>`.
 
 
 
