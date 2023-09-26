@@ -9,36 +9,36 @@ User Guides
 Using LinearDesign for Optimization Initialization
 --------------------------------------------------------
 
-LinearDesign\ [#LinearDesign]_ optimizes mRNA CDS in terms of MFE and CAI values.
-You can use ``--lineardesign`` option to start *VaxPress* optimization
-from LinearDesign output sequence.  When using this option,
-LinearDesign is invoked inside VaxPress to initialize the input
-sequence.  Subsequent VaxPress optimizations further improves the
+*LinearDesign*\ [#LinearDesign]_ optimizes mRNA CDS in terms of MFE and CAI values.
+You can use ``--lineardesign`` option to start VaxPress optimization
+from *LinearDesign* output sequence. When using this option,
+*LinearDesign* is invoked inside VaxPress to initialize the input
+sequence. Subsequent VaxPress optimizations further improves the
 sequence for the additional features like secondary structures near
 the start codon, uridine count, in-cell stability, tandem repeats,
 and local GC content.
 
 The ``--lineardesign`` option needs a LAMBDA(λ) parameter, which
-influences the balance between MFE and CAI.  Values between 0.5 and
-4 are usually suitable starting points.  For insights into the λ
+influences the balance between MFE and CAI. Values between 0.5 and
+4 are usually suitable starting points. For insights into the λ
 value's implications, consult Zhang et al. (2023) [#LinearDesign]_.
 
-Keep in mind that LinearDesign should be installed separately
+Keep in mind that *LinearDesign* should be installed separately
 following instructions in the `LinearDesign GitHub page
-<https://github.com/LinearDesignSoftware/LinearDesign>`_.  Path to
-the installed directory of LinearDesign should be provided using
+<https://github.com/LinearDesignSoftware/LinearDesign>`_. Path to
+the installed directory of *LinearDesign* should be provided using
 the ``--lineardesign-dir`` option. This option can be omitted in
 subsequent uses.
 
-Note that sequences straight from LinearDesign often have suboptimal
-structures around the start codon.  Under the high mutation rate
+Note that sequences straight from *LinearDesign* often have suboptimal
+structures around the start codon. Under the high mutation rate
 at the beginning, this causes the main sequence body to lose its
-optimal MFE structure.  The ``-—conservative-start`` :ref:`option
+optimal MFE structure. The ``-—conservative-start`` :ref:`option
 <label-constart>` tackles this by focusing on the start codon region
 before optimizing the rest.
 
 Also, given that *LinearDesign*'s outputs are already quite optimal,
-the ``--initial-mutation-rate`` can be reduced to ``0.01``.  This
+the ``--initial-mutation-rate`` can be reduced to ``0.01``. This
 ensures efficient optimization as there's a minimal likelihood that
 a better mutation would emerge with a higher mutation rate.
 ::
@@ -52,7 +52,7 @@ a better mutation would emerge with a higher mutation rate.
 .. Note::
     Figures below demonstrates the effect of initial mutation rate
     on optimization process when the starting sequence is optimized
-    with LinearDesign (λ = 0).
+    with *LinearDesign* (λ = 0).
     
     .. image:: _images/mutrate0.1.png
         :width: 500px
@@ -71,10 +71,10 @@ a better mutation would emerge with a higher mutation rate.
 
     When initial mutation rate is adjusted to ``0.01``, the sequence
     can escape from initial MFE-optimized sequence earlier to be
-    further optimized based on the given *VaxPress* evaluation
+    further optimized based on the given VaxPress evaluation
     metrics.
 
-To see the list of all options related to LinearDesign, see
+To see the list of all options related to *LinearDesign,* see
 :ref:`label-linopts`.
 
 .. _tuning-parameters:
@@ -89,13 +89,13 @@ Tuning Optimization Parameters
 Number of Iterations
 ====================
 
-Number of iterations is a key parameter for genetic algorithm.  For
+Number of iterations is a key parameter for genetic algorithm. For
 a comprehensize optimization, high enough iteration number is needed.
 But unnecessarily high number of iteration higher than certain
 threshold occurs automatic shut down.
 
 To have an output sequence sufficiently converged, at least 500
-iterations are recommended.  It is recommended to increase the
+iterations are recommended. It is recommended to increase the
 number of iterations if the optimization process ends before
 sufficient convergence.
 
@@ -119,7 +119,7 @@ iterations is okay to get optimal result.
 
 Also, keep in mind that optimization process can halt before the
 specified number of iterations if the fitness score doesn't improve
-for several consecutive cycles.  In detail, if E(number of mutation)
+for several consecutive cycles. In detail, if E(number of mutation)
 is equal to 0.2 because of decrease in mutation rate.
 
 .. index:: Setting Parameters; Population
@@ -129,9 +129,9 @@ Number of Population
 ====================
 
 Number of population is one of the key parameters for genetic
-algorithm.  Higher population number allows wider search per each
+algorithm. Higher population number allows wider search per each
 iteration, but too high value will lead to unnecessary use of time
-and computational resources.  To adjust it, run VaxPress with random
+and computational resources. To adjust it, run VaxPress with random
 population numbers, and find proper value that makes no further
 difference.
 
@@ -178,27 +178,27 @@ Initial Mutation Rate
 To accomplish optimization successfully, certain amount of mutation
 rate is necessory.
 
-When running *VaxPress* without *LinearDesign* initialization, using
+When running VaxPress without *LinearDesign* initialization, using
 default value for initial mutation rate (``0.1``) won't be a problem
 since the evolution starts from the highly unoptimized sequence.
 When initial mutation rate is high, the program will search through
 the sequence space more widely, but more iterations might be needed
-for convergence.  If you set the initial mutation rate too low,
-*VaxPress* might lose the opportunity to find a better-scoring
+for convergence. If you set the initial mutation rate too low,
+VaxPress might lose the opportunity to find a better-scoring
 sequence by chance.
 
-But if you initialize sequence with *LinearDesign* before *VaxPress*
+But if you initialize sequence with *LinearDesign* before VaxPress
 optimization, it is recommended to lower the initial mutation rate.
-Since the output sequence from LinearDesign is already highly
+Since the output sequence from *LinearDesign* is already highly
 optimized, there is a minimal likelihood of more competitive
 populations to emerge under higher mutation rate.
 
 Below is the example for adjusting initial mutation rate for the 2
 cases.
 
-++++++++++++++++++++++++++++++++++++
-Case 1: LinearDesign is NOT applied
-++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++
+Case 1: *LinearDesign* is NOT applied
++++++++++++++++++++++++++++++++++++++
 
 * Fitness changes over the iterations from ``report.html``
     #. initial mutation rate = 0.005
@@ -229,16 +229,16 @@ Case 1: LinearDesign is NOT applied
         :alt: initial mutation rate 0.3
         :align: center
 
-This is *VaxPress* optimization result starting from the wild-type
-CDS sequence of Influenza virus.  In this case, the final fitness
+This is VaxPress optimization result starting from the wild-type
+CDS sequence of Influenza virus. In this case, the final fitness
 score at convergence is not affected by initial mutation rate.
 However, keep in mind that lower initial mutation rate might result
 in the optimization outcome to be stuck in the local optimum,
 although it generally allows the faster convergence.
 
-++++++++++++++++++++++++++++++++++
-Case 2: LinearDesign is applied
-++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++
+Case 2: *LinearDesign* is applied
++++++++++++++++++++++++++++++++++
 * Fitness changes over the iterations from ``report.html``
     #. initial mutation rate = 0.005
     
@@ -269,12 +269,12 @@ Case 2: LinearDesign is applied
         :align: center
     
 When the initial mutation rate is set high (``0.1``, ``0.3``), the
-fitness score starts to increase at later iteration cycles.  Also,
+fitness score starts to increase at later iteration cycles. Also,
 when the initial mutation rate is low (``0.01``, ``0.005``), the
 lower the initial mutation rate, the faster improvement is.
 
 Thus, low initial mutation rate is recommended when the initial
-sequence is already optimized with *LinearDesign*.  After setting
+sequence is already optimized with *LinearDesign*. After setting
 iteration number, you might try initial mutation rate under ``0.01``
 and observe the fitness score to set proper rate.
 
@@ -285,7 +285,7 @@ Weights of the Fitness Functions
 ================================
 
 The way of adjusting weights of fitness functions depends on the
-user's own purpose.  To adjust the weights properly, you might refer
+user's own purpose. To adjust the weights properly, you might refer
 to 4 steps in the example below.
 
 .. note::
@@ -368,7 +368,7 @@ to 4 steps in the example below.
     #. Raise weight of `MFE` more.
 
     By doing the second choice, there might be several deteriorations
-    of some other metrics.  You can keep adjusting them just like
+    of some other metrics. You can keep adjusting them just like
     the above process. How to balance the weights among the various
     fitness functions depends on your own purpose for using VaxPress.
 
@@ -378,21 +378,21 @@ to 4 steps in the example below.
 Removing Tandem Repeats from LindearDesign Output
 =================================================
 
-Overall, VaxPress can consist a workflow starting from LinearDesign
+Overall, VaxPress can consist a workflow starting from *LinearDesign*
 (See :ref:`Using LinearDesign for Optimization Initialization
 <using-lineardesign>` section for detailed information about the
-related options and parameters).  In this usage, VaxPress refines
-the MFE- or CAI-optimized sequence from LinearDesign on the other
-factors not considered in LinearDesign.
+related options and parameters). In this usage, VaxPress refines
+the MFE- or CAI-optimized sequence from *LinearDesign* on the other
+factors not considered in *LinearDesign.*
 
-For example, *VaxPress* can remove tandem repeats from the LinearDesign
+For example, VaxPress can remove tandem repeats from the *LinearDesign*
 output.
 
 mRNA manufacturing is a significant process of mRNA vaccine
-development.  However, the presence of repeated sequences cause
-severe difficulties in the manufacturing process.  As *LinearDesign*
+development. However, the presence of repeated sequences cause
+severe difficulties in the manufacturing process. As *LinearDesign*
 algorithm doesn't consider repeats, the output sequence from
-LinearDesign may contain repeated sequences.  Especially, when the
+*LinearDesign* may contain repeated sequences. Especially, when the
 ``lambda`` parameter is set high(which means high weight on CAI),
 the occurence of tandem repeat is highly probable since the codon
 with high CAI score is always favored.
@@ -411,40 +411,40 @@ with high CAI score is always favored.
          --start-str-weight 1
 
 =============================================================
-Using VaxPress as a User-friendly Interface to LinearDesign
+Using VaxPress as a User-friendly Interface to *LinearDesign*
 =============================================================
 
 Using ``--conservative-start N`` option only generates mutations
 in the start codon region during the initial N number of iterations,
-leaving the rest of the sequence as it is.  Therefore, by assigning
+leaving the rest of the sequence as it is. Therefore, by assigning
 the same parameter for ``--conservative-start`` and ``--iterations``
 options, VaxPress can be used as a convenient front-end interface
-for LinearDesign optimization.
+for *LinearDesign* optimization.
 
 .. note::
     **CAUTION**
 
-    This use case explains running LinearDesign optimization ALONE
-    through VaxPress.  If you're going to run VaxPress optimization
-    as well, you can go directly to :doc:`tour`, Step 3.  Information
-    about using LinearDesign for VaxPress optimization initialization
+    This use case explains running *LinearDesign* optimization *alone*
+    through VaxPress. If you're going to run VaxPress optimization
+    as well, you can go directly to :doc:`tour`, Step 3. Information
+    about using *LinearDesign* for VaxPress optimization initialization
     is also available in :ref:`lineardesign` section.
 
 
-Using LinearDesign through VaxPress interface offers several advantages:
+Using *LinearDesign* through VaxPress interface offers several advantages:
 
-- LinearDesign can be run without Python Version 2 dependency in VaxPress.
+- *LinearDesign* can be run without Python Version 2 dependency in VaxPress.
 - In addition to the optimized sequence output by *LinearDesign*,
-  *VaxPress* offers a comprehensive output report that is helpful to
+  VaxPress offers a comprehensive output report that is helpful to
   understand the optimized sequence. Detailed information is provided,
   such as the visualization of secondary structure and the scores of
   various evaluation metrics.
-- When using LinearDesign alone, several N-terminal amino acids
+- When using *LinearDesign* alone, several N-terminal amino acids
   should be manually removed before running the optimization to prevent
   folded structures in the start codon region. This process is run
   automatically in VaxPress with ``--lineardesign-omit-start`` (default
   = 5) option.
-- While LinearDesign only accepts protein sequence, mRNA sequence
+- While *LinearDesign* only accepts protein sequence, mRNA sequence
   can be directly used as an input in VaxPress.
 
 .. code-block:: bash
@@ -456,7 +456,7 @@ Using LinearDesign through VaxPress interface offers several advantages:
             --lineardesign-dir /path/to/LinearDesign \
 
 
-Results will be displayed in ``report.html``.  In this case,
+Results will be displayed in ``report.html``. In this case,
 differences between "Initial" and "Optimized" sequence should be
 minimal, since the mutations were only allowed at the start codon
 region.
@@ -482,8 +482,8 @@ Using preset values
 
 VaxPress stores its configuration information of each run in
 ``parameters.json`` file, which is generated inside the output
-directory.  With ``--preset`` option, you can use preset values in
-this file as the configuration for the next optimization.  This
+directory. With ``--preset`` option, you can use preset values in
+this file as the configuration for the next optimization. This
 option allows convenient preservation of the arguments applied in
 particular run, which later can be used to reproduce the optimization,
 to share with other people, etc.
@@ -498,7 +498,7 @@ If some of the options are specified along with ``--preset``, the
 specified arguments including addons will override the preset values.
 For example, if you want to generate 10 replicates with certain
 optimization parameters, only ``--seed`` option is needed to be
-changed.  In this case, you can load preset values with ``--preset``
+changed. In this case, you can load preset values with ``--preset``
 option and override only ``--seed`` argument to simplify the command.
 
 .. code-block:: bash
@@ -521,7 +521,7 @@ Besides using ``--preset`` option, default settings of VaxPress can
 also be modified.
 
 When you install VaxPress, ``.config/vaxpress/config.json`` file
-is generated inside the user's home directory.  You can find the
+is generated inside the user's home directory. You can find the
 location of this file with the command below.
 
 .. code-block::
@@ -530,7 +530,7 @@ location of this file with the command below.
 
 As a default, only ``--lineardesign-dir`` option is automatically
 saved to this ``config.json`` among all the arguments you have
-passed.  If VaxPress had run with ``--lineardesign-dir`` option,
+passed. If VaxPress had run with ``--lineardesign-dir`` option,
 ``config.json`` would be written as below.
 
 .. code-block::
@@ -541,7 +541,7 @@ passed.  If VaxPress had run with ``--lineardesign-dir`` option,
 
 This configuration file can be edited manually to change the default
 settings of VaxPress, such as default weights of each scoring
-function.  For example, to turn off *iCodon-Predicted Stability*
+function. For example, to turn off *iCodon-Predicted Stability*
 function as default, modify ``config.json`` like the example below.
 
 .. code-block::
@@ -552,7 +552,7 @@ function as default, modify ``config.json`` like the example below.
     }
 
 As shown in this example, '-' in the argument name should be replaced
-with '_' in configuration.  After this modification, ``--iCodon-weight``
+with '_' in configuration. After this modification, ``--iCodon-weight``
 option will be set to ``0`` as default.
 
 
@@ -565,8 +565,8 @@ Adding a custom scoring function
 
 You can extend VaxPress optimization algorithm by adding custom
 scoring functions that contributes to the fitness evaluation of
-each sequence.  Example codes showing templates for additional
-scoring functions are in ``VaxPress/examples`` directory.  After
+each sequence. Example codes showing templates for additional
+scoring functions are in ``VaxPress/examples`` directory. After
 preparing a python code for the new scoring function, you can add
 it to the optimization process with two ways:
 
@@ -575,7 +575,7 @@ Using a command line option
 ====================================
 
 Pass the path to the Python source file for the scoring function
-as an argument of ``-—addon`` option.  If there are multiple scoring
+as an argument of ``-—addon`` option. If there are multiple scoring
 functions to add, ``-—addon`` can be specified multiple times.
 ::
     
@@ -595,10 +595,10 @@ Adding source files to the scoring function directory
 ========================================================
 
 If you're going to use the custom scoring function repeatedly,
-writing command line option every time can be cumbersome.  In this
+writing command line option every time can be cumbersome. In this
 case, source file of the custom function can be copied to the
 directory where the original scoring functions of VaxPress are
-installed.  To do this, first you will need to find where the
+installed. To do this, first you will need to find where the
 ``vaxpress`` scoring modules are installed. It can be done with the
 command below.
 
@@ -618,4 +618,5 @@ optimization without specifying the command line option every time.
 References
 ----------
 
-.. [#LinearDesign] Zhang, He, et al. "Algorithm for optimized mRNA design improves stability and immunogenicity." Nature (2023): 1-3.
+.. [#LinearDesign] Zhang, He, *et al.* "Algorithm for optimized mRNA
+   design improves stability and immunogenicity." *Nature* (2023): 1-3.
