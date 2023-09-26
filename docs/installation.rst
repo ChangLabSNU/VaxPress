@@ -2,80 +2,118 @@
 Installation
 ************
 
-VaxPress can be installed with ``pip``, ``conda``, or ``singularity``.
-Pip is simple and easy to use since it can be operated in single
-command line, but ``R``, ``rpy2`` and ``iCodon`` dependencies should
-be managed separately. Using conda package also allows the
-installation with single command line, and all the dependencies
-will managed automatically in this case. But it'll be quite slow
-compared to other ways. Lastly, Singularity is fast, and automatically
-manages all dependencies. But Singularity should be installed first.
-Based on your own circumstance, select proper way to install VaxPress!
+You can install VaxPress using *Pip,* *Conda,* or *Singularity.* *Pip* is
+the recommended method for advanced users. The *Conda* package
+simplifies the installation of necessary dependencies. The *Singularity*
+container image runs just out of the box if your computing environment
+already has *Singularity* installed.
+
+.. note::
+    **Optional Installation of LinearDesign**
+
+    VaxPress can be integrated with *LinearDesign* for optimal coding
+    sequence design that offers superior performance and versatility.
+    To access these features, install *LinearDesign* separately. For
+    information, see :ref:`installing-lineardesign`.
 
 .. _label-installing:
 
-===========================
-Installing VaxPress via pip
-===========================
+=============================
+Installing VaxPress using Pip
+=============================
 
-.. note::
-    **Prerequisites**
-
-    If you install VaxPress via pip, ``R``, ``rpy2`` (version >=
-    3.0) and ``iCodon`` aren't included as dependencies. If you
-    want to utilize iCodon's predicted stability in the fitness
-    function, you'll need to install these separately. For iCodon
-    installation, see `iCodon's GitHub page
-    <https://github.com/santiago1234/iCodon/>`_.
-
-**Installation**
+**Installing**
 ::
-    
-    # To install using pip
+
+    # Create a virtual environment for VaxPress
+    python -m venv /path/to/vaxpress-env
+
+    # Activate the virtual environment
+    source /path/to/vaxpress-env/bin/activate
+
+    # Install VaxPress alone
     pip install vaxpress
 
-    # To install using pip with LinearFold (only for non-commercial uses)
+    # Alternatively, install VaxPress with LinearFold (only for non-commercial uses)
     pip install 'vaxpress[nonfree]'
 
-    # To install from the Github
-    git clone https://github.com/ChangLabSNU/VaxPress.git
-    cd VaxPress
-    pip install .
-
-=====================================
-Installing VaxPress via conda package
-=====================================
-**Installation**
+**Running**
 ::
 
-    conda install -c changlabsnu -c bioconda -c conda-forge vaxpress
+    # Activate the virtual environment
+    source /path/to/vaxpress-env/bin/activate
 
-===================================
-Installing VaxPress via Singularity
-===================================
+    # Run VaxPress
+    vaxpress -h
+
 .. note::
-    **Prerequisite**
+    **Optional Dependencies for Installations using Pip**
 
-    To install VaxPress via Singularity, you will need to install
-    `Singularity CE <https://sylabs.io/singularity/>`_ first.
+    If you wish to activate the iCodon predicted stability
+    (``--iCodon-weight``) in the fitness function, ensure you have
+    working installations of *R,* *rpy2* (version >= 3.0) and
+    *iCodon.*  For detailed installation instructions, visit
+    `iCodon's GitHub page <https://github.com/santiago1234/iCodon/>`_.
 
-**Installation**
-Once Singularity is installed, you can download the VaxPress image
-from this GitHub repository and run using the following command:
+===============================
+Installing VaxPress using Conda
+===============================
+
+**Installing**
 ::
 
-    singularity vaxpress.sif ...
+    conda install -n vaxpress -y -c changlabsnu -c bioconda -c conda-forge vaxpress
 
-It is recommended that VaxPress be installed in a virtual environment
-to be controlled properly. See `the Python documentation for
-preparing virtual environments
-<https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/>`_
+**Running**
+::
+
+    # Activate the environment
+    conda activate vaxpress
+
+    # Run VaxPress
+    vaxpress -h
+
+================================
+Running VaxPress via Singularity
+================================
+
+To run VaxPress via Singularity, you will need to install the
+`Singularity CE <https://sylabs.io/singularity/>`_ first.
+
+**Downloading the Image**
+
+Download the container image from `the GitHub project page
+<https://github.com/ChangLabSNU/VaxPress/releases>`_ and place it in a
+directory of your choice.
+
+**Running**
+::
+
+    singularity vaxpress.sif -h
+
+.. warning::
+    For ease of use, it's advised to store the VaxPress container
+    image and all your input/output files in a directory within your
+    home directory. If placed elsewhere, you might have to use the
+    ``--bind`` option with *Singularity* each time you run the container.
+    For detailed guidance, refer to `the Singularity documentation
+    <https://sylabs.io/guides/latest/user-guide/bind_paths_and_mounts.html>`_.
+
+
+.. _installing-lineardesign:
 
 =======================
 Installing LinearDesign
 =======================
 
-To use ``--lineardesign`` options, LinearDesign installation
-is required apart from VaxPress installation. You can follow the
-instructions on the LinearDesign's `LinearDesign GitHub Page
-<https://github.com/LinearDesignSoftware/LinearDesign>`_.
+To utilize the ``--lineardesign`` options, you need to have *LinearDesign*
+installed in addition to VaxPress. For installation guidance, visit
+`the LinearDesign GitHub page
+<https://github.com/LinearDesignSoftware/LinearDesign>`_.  Indicate
+the path to the *LinearDesign* directory using the ``--lineardesign-dir``
+option in the command line. This path will be stored in the
+configuration file and will be activated as the default for subsequent
+runs.
+
+Further information on the ``--lineardesign`` options can be found in
+:ref:`using-lineardesign`.
