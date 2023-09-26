@@ -1,7 +1,7 @@
 import sphinx_rtd_theme
 
 project = 'VaxPress'
-copyright = '2023, Sohyeon Ju, Jayoung Ku, and Hyeshik Chang'
+copyright = '2023 Seoul National University'
 author = 'Sohyeon Ju, Jayoung Ku, and Hyeshik Chang'
 release = '0.4'
 

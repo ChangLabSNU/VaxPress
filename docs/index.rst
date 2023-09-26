@@ -22,6 +22,7 @@ Contents
    scoring_functions
    user_guides
    troubleshooting
+   license
 
 ------------------
 Indices and tables
