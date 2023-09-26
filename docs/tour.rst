@@ -2,98 +2,96 @@
 A Tour Through VaxPress
 ***********************
 
-This guide will walk you through the process of optimizing a wild-type
-mRNA sequence with VaxPress. We will use Hemagglutinin(HA) protein
-of Influenza A virus as an example antigen.
+This guide will show you how to optimize a wild-type mRNA sequence
+using VaxPress. As an example, we'll focus on the Hemagglutinin
+(HA) protein from the Influenza A virus.
 
 .. index:: Influenza A virus, Hemagglutinin, HA, GenBank, UniProt
 
--------------------------------------------
-Step 1. Downloading a sequence
--------------------------------------------
+------------------------------
+Step 1. Downloading a Sequence
+------------------------------
 
-Wild-type complete cds sequence can be downloaded from `GenBank
-<https://www.ncbi.nlm.nih.gov/genbank/>`_: Particular GenBank page
-for the Influenza A virus HA protein is `here
-<https://www.ncbi.nlm.nih.gov/nuccore/FJ981613.1>`_. FASTA file
-can be downloaded from the above page, or using the command like
-below:
+To begin, use the following command to download the complete CDS
+sequence of the Influenza A virus's HA protein from a
+`GenBank page <https://www.ncbi.nlm.nih.gov/nuccore/FJ981613.1>`_.
+
 ::
 
     # Download a sequence from GenBank
     ID="FJ981613.1"
     wget -O Influenza_HA.fa "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=${ID}&rettype=fasta"
 
-If you want to download other sequences, run the above command after
-changing the ``ID`` variable to the GenBank Accession Number of
-that sequence.
+Alternatively, you may also begin with a protein sequence. For
+example, the following command will download the protein sequence
+of the Influenza A virus's HA protein from `UniProt
+<https://www.uniprot.org/>`_.
 
-`UniProt <https://www.uniprot.org/>`_ is a database for protein
-sequences. FASTA file can be downloaded from UniProt website by
-clicking the "Download" button in the query result page, or using
-wget command with primary accession number (See `UniProt - Programmatic
-access <https://www.uniprot.org/help/api_retrieve_entries>`_ for
-more details). The corresponding protein sequence for the above
-HA sequence can be found `in here
-<https://www.uniprot.org/uniprotkb/C3W5X2/entry>`_.
 ::
 
     # Download a protein sequence from UniProt
     ID="C3W5X2"
     wget -O Influenza_HA_protein.fa "https://www.uniprot.org/uniprotkb/${ID}.fasta"
 
--------------------------------------------
-Step 2. Evaluating the initial sequence
--------------------------------------------
+-------------------------------------
+Step 2. Evaluating the Given Sequence
+-------------------------------------
 
-Let's evaluate the sequence before any optimization. By setting
-``--iterations`` option to 0, VaxPress will only evaluate the given
-sequence and generate a report.
+Before starting optimization, let's evaluate the sequence. By setting
+the ``--iterations`` option to ``0``, VaxPress will generate a
+report presenting the properties and optimality measures of the
+provided sequence, without making any changes to the original
+sequence.
+
 ::
 
     # Evaluate the initial sequence
     vaxpress -i Influenza_HA.fa -o eval_results --iterations 0
 
-This command will generate a report file named ``report.html``
-inside the output directory. Check the *Sequence Optimality Metrics*
-and *Predicted Secondary Structure* sections. In this case, metrics
-of the Initial and Optimized in Sequence Optimality Metrics will
-be the same since there was no optimization.
+The output directory, ``eval_results``, will contain several data
+files, including ``report.html``. Take a look at the sections on
+*Sequence Optimality Metrics* and *Predicted Secondary Structure*
+in the report. Since no optimization took place, the metrics of
+the *Initial* and *Optimized* columns in the *Sequence Optimality
+Metrics* section will be identical.
 
--------------------------------------------
-Step 3. Running VaxPress optimization
--------------------------------------------
+It's important to note that if the input is provided as a protein
+sequence, the codons in the initial sequence will be chosen randomly.
+As such, the evaluation results may not hold significant information
+for the optimality of given protein sequence.
 
-Finally, all processes that are needed to run VaxPress is ready.
-Now let's run VaxPress optimization, starting from the sequence
-optimized by LinearDesign. But before running, we are going to
-point out why we start from LinearDesign result. LinearDesign [#LinearDesign]_
-offers sequence which is highly optimized in MFE(Minimum Free Energy)
-and CAI(Codon Adaptation Index) in linear time. Instead of searching
-through the vast space of randomized sequences, starting genetic
-algorithm from the LinearDesign output sequence which is highly
-optimized in MFE and CAI offers more efficient optimization.
+-------------------------------------
+Step 3. Running VaxPress Optimization
+-------------------------------------
+
+Let's proceed with the VaxPress optimization. With the ``--lineardesign``
+option, VaxPress utilizes the sequence optimized by *LinearDesign* as
+a starting point. *LinearDesign* produces a sequence with a virtually
+minimum free energy secondary structure among all possible protein
+sequence codon combinations. Subsequently, VaxPress performs even
+further optimization based on all the other parameters. This includes
+factors like start codon accessibility, GC content, tandem repeats,
+and predicted in-cell and in-solution stability among others, along
+with the already optimized secondary structure. See the
+:ref:`using-lineardesign` for more details.
+
 ::
-    
+
     # Run VaxPress optimization
     vaxpress -i Influenza_HA.fa -o vaxpress_results --processes 36 \
-             --lineardesign 1.0 --lineardesign-dir ../LinearDesign \
+             --lineardesign 1.0 --lineardesign-dir path/to/LinearDesign \
              --conservative-start 10 --initial-mutation-rate 0.01 \
-             --iterations 2000
+             --iterations 2000 --folding-engine linearfold
 
+Using the ``--processes`` option is recommended to fully utilize
+multiple CPU cores.  Also, employing the ``--folding-engine
+linearfold`` can reduce the running time by a minimum of 50%, without
+significant deterioration in optimization quality.
 
-It is recommended to use ``-p`` or ``--processes`` option to make
-the runtime shorter. If you're using a protein sequence, the only
-thing you have to do is adding ``--protein`` option.
-
-Now you can see the optimized sequence in the ``report.html``. In
-addition to the Sequence Optimality Metrics and Predicted Secondary
-Structure sections, plots in Optimization Process also contains
-useful information. If needed, additional optimization parameters
-can be adjusted according to these plots and :ref:`the guide
-<tuning-parameters>`.
-
------------------------
-References
------------------------
-.. [#LinearDesign] Zhang, He, et al. "Algorithm for optimized mRNA design improves stability and immunogenicity." Nature (2023): 1-3.
+The final optimized sequence can be reviewed in the ``report.html``
+found in the output directory. This document includes informative
+sections such as *Sequence Optimality Metrics* and *Predicted
+Secondary Structure.* The *Optimization Process* plots also help
+diagnose and improve the optimization process.  If necessary,
+optimization parameters can be modified based on these plots following
+the :ref:`guide <tuning-parameters>` in this documentation.
