@@ -7,10 +7,7 @@ expression. Plus, additional properties can be easily programmed
 into the optimization process with just a few lines of code via a
 pluggable interface. For the detailed information about VaxPress,
 including its options and algorithmic features, please refer to the
-[VaxPress documentation page](https://link.to/page).
-
-Also, you can check [VaxPress tutorial page](https://link.to/page)
-for a complete tutorial.
+[VaxPress documentation page](https://vaxpress.readthedocs.io/).
 
 # Installation
 
@@ -102,7 +99,7 @@ derived from a cumulative score of various metrics, including the
 codon adaptation index, GC ratio, among others. To emphasize or
 de-emphasize a specific feature, simply adjust its weight. A deeper
 understanding of the scoring functions' principles is available on
-the [optimization algorithm page](#algorithm_page).
+the [documentation](https://vaxpress.readthedocs.io/en/latest/scoring_functions.html).
 
 ### Setting Weights
 
@@ -172,9 +169,16 @@ LinearDesign optimization.
 Using LinearDesign through VaxPress interface offers several advantages:
 
 - LinearDesign can be run without python2 dependency in VaxPress.
-- In addition to the optimized sequence output by LinearDesign, VaxPress produces output report that contains detailed information about the sequence including the visualization of secondary structure and evaluation results of various metrics.
-- When using LinearDesign alone, several N-terminal amino acids should be manually removed before running the optimization to prevent folded structures in the start codon region. This process is run automatically in VaxPress with `--lineardesign-omit-start`(default = 5) option.
-- While LinearDesign only accepts protein sequence, mRNA sequence can be directly used as an input in VaxPress.
+- In addition to the optimized sequence output by LinearDesign,
+  VaxPress produces output report that contains detailed information
+  about the sequence including the visualization of secondary structure
+  and evaluation results of various metrics.
+- When using LinearDesign alone, several N-terminal amino acids should
+  be manually removed before running the optimization to prevent folded
+  structures in the start codon region. This process is run automatically
+  in VaxPress with `--lineardesign-omit-start`(default = 5) option.
+- While LinearDesign only accepts protein sequence, mRNA sequence can
+ . be directly used as an input in VaxPress.
 
 ```bash
 # Example usage of VaxPress as an interface to LinearDesign
