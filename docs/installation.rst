@@ -62,7 +62,7 @@ Installing VaxPress using Conda
 **Installing**
 ::
 
-    conda install -n vaxpress -y -c changlabsnu -c bioconda -c conda-forge vaxpress
+    conda create -n vaxpress -y -c changlabsnu -c bioconda -c conda-forge vaxpress
 
 **Running**
 ::
