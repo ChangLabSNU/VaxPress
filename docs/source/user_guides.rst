@@ -53,7 +53,7 @@ a better mutation would emerge with a higher mutation rate.
     Figures below demonstrates the effect of initial mutation rate
     on optimization process when the starting sequence is optimized
     with *LinearDesign* (λ = 0).
-    
+
     .. image:: _images/mutrate0.1.png
         :width: 500px
         :alt: initial mutation rate 0.1
@@ -101,9 +101,9 @@ sufficient convergence.
 
 Below is an example process with 1500 iterations on CDS sequence
 with the length of 1701 bp.
-     
+
 * Fitness changes over the iterations from ``report.html``
-    
+
     .. image:: _images/iteration1500.png
         :width: 500px
         :alt: iteration1500
@@ -137,21 +137,21 @@ difference.
 
 * Fitness changes over the iterations from ``report.html``
     #. 10 populations
-    
+
        .. image:: _images/population10.png
         :width: 700px
         :alt: population 10
         :align: center
 
     #. 100 populations
-    
+
        .. image:: _images/population100.png
         :width: 700px
         :alt: population 100
         :align: center
 
     #. 500 populations
-    
+
        .. image:: _images/population500.png
         :width: 700px
         :alt: population 1000
@@ -202,28 +202,28 @@ Case 1: *LinearDesign* is NOT applied
 
 * Fitness changes over the iterations from ``report.html``
     #. initial mutation rate = 0.005
-        
+
        .. image:: _images/nonLD_mutRate0.005.png
         :width: 700px
         :alt: initial mutation rate 0.005
         :align: center
 
     #. initial mutation rate = 0.01
-        
+
        .. image:: _images/nonLD_mutRate0.01.png
         :width: 700px
         :alt: initial mutation rate 0.01
         :align: center
 
     #. initial mutation rate = 0.1
-        
+
        .. image:: _images/nonLD_mutRate0.1.png
         :width: 700px
         :alt: initial mutation rate 0.1
         :align: center
 
     #. initial mutation rate = 0.3
-        
+
        .. image:: _images/nonLD_mutRate0.3.png
         :width: 700px
         :alt: initial mutation rate 0.3
@@ -241,21 +241,21 @@ Case 2: *LinearDesign* is applied
 +++++++++++++++++++++++++++++++++
 * Fitness changes over the iterations from ``report.html``
     #. initial mutation rate = 0.005
-    
+
        .. image:: _images/LD1_mutRate0.005.png
         :width: 700px
         :alt: initial mutation rate = 0.005
         :align: center
 
     #. initial mutation rate = 0.01
-        
+
        .. image:: _images/LD1_mutRate0.01.png
         :width: 700px
         :alt: initial mutation rate = 0.01
         :align: center
 
     #. initial mutation rate = 0.1
-        
+
        .. image:: _images/LD1_mutRate0.1.png
         :width: 700px
         :alt: initial mutation rate = 0.1
@@ -267,7 +267,7 @@ Case 2: *LinearDesign* is applied
         :width: 700px
         :alt: initial mutation rate = 0.3
         :align: center
-    
+
 When the initial mutation rate is set high (``0.1``, ``0.3``), the
 fitness score starts to increase at later iteration cycles. Also,
 when the initial mutation rate is low (``0.01``, ``0.005``), the
@@ -295,16 +295,16 @@ to 4 steps in the example below.
     - MFE: 3.0
     - U count: 3.0
     - loop weight: 1.5
-  
+
 #. Check the naive optimization process
     Firstly, just run VaxPress with deafult weights.
     ::
 
         # command line
         vaxpress -i input/fastaFile/directory/example.fa -o output/directory/ --iterations 50 -p 64
-    
+
     * Metrics' trend from ``report.html``
-    
+
       .. image:: _images/weightTuning1.png
         :width: 500px
         :alt: weight tuning 1st step
@@ -319,14 +319,14 @@ to 4 steps in the example below.
 
         # command line
         vaxpress -i ... -o ... --iterations 50 --mfe-weight 7 -p 64
-    
+
     * Metrics' trend from ``report.html``
-    
+
       .. image:: _images/weightTuning2.png
         :width: 500px
         :alt: weight tuning 2nd step
         :align: center
-    
+
     Now loops has increased, and you might want to keep the loops from increasing.
 
 #. Adjusting loop weight (``--loop-weight``)
@@ -335,14 +335,14 @@ to 4 steps in the example below.
 
         # command line
         vaxpress -i ... -o ... --iterations 50 --mfe-weight 7 --loop-weight 7 -p 64
-    
+
     * Metrics' Trend from ``report.html``
-    
+
       .. image:: _images/weightTuning3.png
         :width: 500px
         :alt: weight tuning 3rd step
         :align: center
-    
+
     Now we have problem with the Uridine Count. Let's compromise
     between ``loops`` and ``ucount``.
 
@@ -352,14 +352,14 @@ to 4 steps in the example below.
 
         # command line
         vaxpress -i ... -o ... --iterations 50 --mfe-weight 7 --loop-weight 5 --ucount-weight 5 -p 64
-    
+
     * Metrics' Trend from ``report.html``
 
       .. image:: _images/weightTuning4.png
         :width: 500px
         :alt: weight tuning 4th step
         :align: center
-    
+
     Now ``loops`` and ``ucount`` are improved, but there is slight
     elevation of ``MFE``. So now there might be some possible
     choices.
@@ -398,7 +398,7 @@ the occurence of tandem repeat is highly probable since the codon
 with high CAI score is always favored.
 ::
 
-    # Example command to get LinearDesign-VaxPress optimized sequence 
+    # Example command to get LinearDesign-VaxPress optimized sequence
     # with tandem repeats removed
     # MFE weight is set high to preserve the LinearDesign-optimized secondary structure
     # High weight set on Tandem Repeats, while CAI weight is set minimal.
@@ -545,7 +545,7 @@ function. For example, to turn off *iCodon-Predicted Stability*
 function as default, modify ``config.json`` like the example below.
 
 .. code-block::
-    
+
     {
       "lineardesign_dir": "/path/to/LinearDesign/",
       "iCodon_weight": 0
@@ -571,14 +571,14 @@ preparing a python code for the new scoring function, you can add
 it to the optimization process with two ways:
 
 ====================================
-Using a command line option 
+Using a command line option
 ====================================
 
 Pass the path to the Python source file for the scoring function
 as an argument of ``-—addon`` option. If there are multiple scoring
 functions to add, ``-—addon`` can be specified multiple times.
 ::
-    
+
     # Example command to add homotrimer count to the fitness evaluation
 
     vaxpress -i ./testseq/vegfa.fa\
@@ -605,11 +605,11 @@ command below.
 .. code-block:: bash
 
     # Prints the path to the directory that contains VaxPress scoring functions.
-    python -c "import vaxpress.scoring as s; print(s.__path__)"  
+    python -c "import vaxpress.scoring as s; print(s.__path__)"
 
     # Copy your source file to the directory found above.
     cp {path/to/your/scoring_function.py} {path/to/vaxpress/scoring_functions}
-    
+
 In this way, you can add your own scoring function to VaxPress
 optimization without specifying the command line option every time.
 
