@@ -42,12 +42,11 @@ Multi-Core Support (``-p``)
 ===========================
 
 You can use multiple CPU cores for optimization with the ``-p`` or
-``--processes`` option. By default, VaxPress uses only one CPU core.
-The ``--processes N`` option allows the parallelization of calculations
-required for scoring functions and secondary structure prediction
-in each iteration. The ``N`` denotes the maximum number of cores
-that the computation can be distributed across, thus enhancing the
-speed of the optimization process.
+``--processes`` option. The ``--processes N`` option allows the
+parallelization of calculations required for scoring functions and
+secondary structure prediction in each iteration. The ``N`` denotes
+the maximum number of cores that the computation can be distributed
+across, thus enhancing the speed of the optimization process.
 
 ====================================
 Adjusting the Fitness Scoring Scheme
