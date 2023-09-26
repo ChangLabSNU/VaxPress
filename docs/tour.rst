@@ -67,8 +67,8 @@ Step 3. Running VaxPress Optimization
 Let's proceed with the VaxPress optimization. With the ``--lineardesign``
 option, VaxPress utilizes the sequence optimized by *LinearDesign* as
 a starting point. *LinearDesign* produces a sequence with a virtually
-minimum free energy secondary structure among all possible protein
-sequence codon combinations. Subsequently, VaxPress performs even
+minimum free energy secondary structure among all possible codon
+combinations for the protein sequence. Subsequently, VaxPress performs even
 further optimization based on all the other parameters. This includes
 factors like start codon accessibility, GC content, tandem repeats,
 and predicted in-cell and in-solution stability among others, along
