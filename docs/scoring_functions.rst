@@ -72,8 +72,8 @@ Then VaxPress obtain the average of these codon by codon values.
 In addition, raw data of codon RSCU values and codon pair score is
 obtained from CoCoPUTs codon usage database\ [#CoCoPUTs]_.
 
-.. image:: _images/bicodon.png
-    :width: 500px
+.. image:: _images/cai_bicodon.png
+    :width: 700px
     :align: center
     :alt: bicodon usage.
 
