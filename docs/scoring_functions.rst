@@ -36,36 +36,36 @@ these built-in scoring functions.
 Codon Usage Functions
 ---------------------
 
-Codon usage bias refers to difference of frequency of synonymous
-codons in coding seqeuence. It is well known that the stability
-of mRNA within cells and the amount of protein produced are
-significantly improved depending on the types of synonymous codons
-actually composing the CDS\ [#CAI]_ [#Presnyak2015]_. Since
-VaxPress' main goal
-is to recommend best sequence for mRNA vaccine development, it's
-rational to reflect actual *in vivo* frequency of codon usage.
+Codon usage bias refers to the discrepancies in the frequency of
+synonymous codons within a coding sequence. This bias can significantly
+influence the stability of mRNA in cells and the quantity of protein
+produced\ [#CAI]_:sup:`,`\ [#Presnyak2015]_. In the case of mRNA vaccines,
+where antigen production takes place within the cells of the human
+recipient, it is generally a safe strategy to align the codon
+frequencies with those found in the human transcriptome.
 
 ============================
 Codon Adaptation Index (CAI)
 ============================
 
-Codon Adaptation Index is measure of codon usage bias. It calculates
-similarity between synonymous codon usage of test seqeunce and
-synonymous codon freqency of reference sequence. Especially,
-relative synonymous codon usage (RSCU) is needed to calculate CAI.
-RSCU is the ratio of the observations of a given codon calculated
-with respect to the sum of all observations of codons in highly
-expressed gene. VaxPress uses relative adaptiveness of
-codon (:math:`w_{ij}`) as score of each codon, which is calculated
-as below.
+The Codon Adaptation Index (CAI) measures the similarity between
+the codon usage in a given sequence and a reference sequence\ [#CAI]_.
+The relative adaptiveness of each codon is calculated based on the
+the frequency of a specific codon to the most frequently used
+synonymous codon in highly expressed genes. The score for each
+codon, :math:`w_{i}`, is defined as follows:
 
-.. math:: w_{ij} = RSCU_{ij}/RSCU_{i\;max}
+.. math:: w_{i} = \frac{f_{i}}{\max{f_{i}}}
 
-where :math:`w_{ij}` is relative adaptiveness and :math:`RSCU_{ij}`
-is RSCU value of jth codon for ith amino acid. And :math:`RSCU_{i\;max}`
-is maximal RSCU value of ith amino acid among synonymous codons\ [#CAI]_.
+where :math:`f_{i}` is the number of observations for codon :math:`i` in
+the reference sequence, and :math:`\max{f_{i}}` is the number of
+observations for the most frequently used synonymous codon in the
+reference sequence. The CAI is then calculated as the geometric
+mean of the relative adaptiveness of all codons in the sequence.
 
-Then VaxPress obtain the average of these codon by codon values.
+.. math:: CAI = \sqrt[n]{\prod_{j=1}^{n} w_{j}}
+
+where :math:`n` is the number of codons in the sequence.
 
 =============
 Bicodon Usage
