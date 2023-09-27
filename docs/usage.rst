@@ -7,13 +7,13 @@ There are two arguments that are required in order to run VaxPress:
 directory, respectively.
 
 ::
-    
-    # To see a full list of available options, use vaxpress --help 
+
+    # To see a full list of available options, run vaxpress --help
     vaxpress -h
-   
-    # Example command to run VaxPress
-    # Specify input file, output directory, number of iterations, and number of processes to use 
-    vaxpress -i {path_to_input.fa} -o {path_to_output_directory} --iterations {n_iterations} -p {n_processes}
+
+    # Example command to run VaxPress: Specifies the input file, output
+    # directory, number of iterations, and number of processes to use
+    vaxpress -i spike.fa -o output --iterations 1000 -p 32
 
 ===================
 Input File (``-i``)
@@ -124,7 +124,7 @@ the following five files:
 
   #. The optimized sequence information includes a comparison of
      the initial and optimized scores.
-  
+
      .. image:: _images/optimized_sequence.png
         :width: 500px
         :alt: Optimized sequence information in the report
@@ -132,7 +132,7 @@ the following five files:
 
   #. An interactive view that displays the predicted secondary structure
      of the output sequence.
-   
+
      .. image:: _images/predicted_secondary_structure.png
         :width: 500px
         :alt: Interactive structure view in the report
@@ -140,7 +140,7 @@ the following five files:
 
   #. Plots illustrate the changes in metrics and parameters over
      the iterations.
-   
+
      .. image:: _images/optimization_process.png
         :width: 500px
         :alt: Plots for metric changes over iterations in the report
@@ -148,7 +148,7 @@ the following five files:
 
   #. Parameters used in the corresponding VaxPress run. This
      information is also stored in ``parameters.json``.
-   
+
      .. image:: _images/parameters.png
         :width: 500px
         :alt: Parameters for the optimization in the report
@@ -158,7 +158,7 @@ the following five files:
 
 - ``checkpoints.tsv``: The best sequences and its evaluation results
   at each iteration.
-  
+
   .. image:: _images/checkpoints.tsv_example.png
         :width: 500px
         :alt: Sequence checkpoints
