@@ -428,7 +428,7 @@ for *LinearDesign* optimization.
     through VaxPress. If you're going to run VaxPress optimization
     as well, you can go directly to :doc:`tour`, Step 3. Information
     about using *LinearDesign* for VaxPress optimization initialization
-    is also available in :ref:`lineardesign` section.
+    is also available in :ref:`using-lineardesign` section.
 
 
 Using *LinearDesign* through VaxPress interface offers several advantages:
