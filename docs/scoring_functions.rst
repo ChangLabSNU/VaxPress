@@ -278,74 +278,68 @@ repeats from given sequences. And add all of their lengths.
 References
 ----------
 
-.. [#CAI] Sharp, Paul M., and Wen-Hsiung Li. "The codon adaptation index-a
-   measure of directional synonymous codon usage bias, and its potential
-   applications." *Nucleic Acids Research* 15.3 (1987): 1281-1295.
-   
-.. [#Presnyak2015] Presnyak, Vladimir, *et al.* "Codon optimality is a
-   major determinant of mRNA stability." *Cell* 160.6 (2015): 1111-1124.
-   
-.. [#CoCoPUTs] Alexaki, Aikaterini, *et al.* "Codon and codon-pair usage
-   tables (CoCoPUTs): facilitating genetic variation analyses and
-   recombinant gene design." *Journal of Molecular Biology* 431.13
-   (2019): 2434-2441.
-   
-.. [#Zuker1981] Zuker, Michael, and Patrick Stiegler. "Optimal computer
-   folding of large RNA sequences using thermodynamics and auxiliary
-   information." *Nucleic Acids Research* 9.1 (1981): 133-148.
-   
-.. [#Hofacker2014] Hofacker, Ivo L. "Energy-directed RNA structure
-   prediction." *RNA Sequence, Structure, and Function: Computational
-   and Bioinformatic Methods* (2014): 71-84.
-   
-.. [#Mauger2019] Mauger, David M., *et al.* "mRNA structure regulates
-   protein expression through changes in functional half-life."
-   *Proceedings of the National Academy of Sciences* 116.48 (2019):
-   24075-24083.
-   
-.. [#Kearse2019] Kearse, Michael G., *et al.* "Ribosome queuing enables
-   non-AUG translation to be resistant to multiple protein synthesis
-   inhibitors." *Genes & Development* 33.13-14 (2019): 871-885.
-   
-.. [#Tinoco1999] Tinoco Jr, Ignacio, and Carlos Bustamante. "How RNA
-   folds." *Journal of Molecular Biology* 293.2 (1999): 271-281.
-   
-.. [#NNDB]  Turner, Douglas H., and David H. Mathews. "NNDB: the nearest
-   neighbor parameter database for predicting stability of nucleic acid
-   secondary structure." *Nucleic Acids Research* 38.suppl_1 (2010):
-   D280-D282.
+.. [#CAI] Sharp, P.M. and Li, W.H. The codon Adaptation Index--a measure
+   of directional synonymous codon usage bias, and its potential applications.
+   *Nucleic Acids Res* 1987;15(3):1281-1295.
 
-.. [#WS2021] Hannah K Wayment-Steele *et al.* "Theoretical basis for
-   stabilizing messenger RNA through secondary structure design."
-   *Nucleic Acids Research* 49. 18 (2021): 10604-10617
+.. [#Presnyak2015] Presnyak, V., *et al.* Codon optimality is a major
+   determinant of mRNA stability. *Cell* 2015;160(6):1111-1124.
 
-.. [#Janeway1989] Janeway, Charles A. "Approaching the asymptote?
-   Evolution and revolution in immunology." *Cold Spring Harbor Symposia
-   on Quantitative Biology.* Vol. 54. Cold Spring Harbor Laboratory
-   Press, 1989.
+.. [#CoCoPUTs] Alexaki, A., *et al.* Codon and Codon-Pair Usage Tables
+   (CoCoPUTs): Facilitating Genetic Variation Analyses and Recombinant
+   Gene Design. *J Mol Biol* 2019;431(13):2434-2441.
 
-.. [#Berke2012] Berke, Ian C., and Yorgo Modis. "MDA5 cooperatively
-   forms dimers and ATP-sensitive filaments upon binding double-stranded
-   RNA." *The EMBO Journal* 31.7 (2012): 1714-1726.
-    
-.. [#Wu2013] Wu, Bin, *et al.* "Structural basis for dsRNA recognition,
-   filament formation, and antiviral signal activation by MDA5." *Cell*
-   152.1 (2013): 276-289.
-    
-.. [#Diez2022] Diez, Michay, *et al.* "iCodon customizes gene expression
-   based on the codon composition." *Scientific Reports* 12.1 (2022):
-   12126.
-    
-.. [#Kariko2008] Karikó, Katalin, *et al.* "Incorporation of pseudouridine
+.. [#Zuker1981] Zuker, M. and Stiegler, P. Optimal computer folding of
+   large RNA sequences using thermodynamics and auxiliary information.
+   *Nucleic Acids Res* 1981;9(1):133-148.
+
+.. [#Hofacker2014] Hofacker, I.L. Energy-directed RNA structure prediction.
+   *Methods Mol Biol* 2014;1097:71-84.
+
+.. [#Mauger2019] Mauger, D.M., *et al.* mRNA structure regulates protein
+   expression through changes in functional half-life. *Proc Natl
+   Acad Sci USA* 2019;116(48):24075-24083.
+
+.. [#Kearse2019] Kearse, M.G., *et al.* Ribosome queuing enables non-AUG
+   translation to be resistant to multiple protein synthesis inhibitors.
+   *Genes Dev* 2019;33(13-14):871-885.
+
+.. [#Tinoco1999] Tinoco, I., Jr. and Bustamante, C. How RNA folds.
+   *J Mol Biol* 1999;293(2):271-281.
+
+.. [#NNDB] Turner, D.H. and Mathews, D.H. NNDB: the nearest neighbor
+   parameter database for predicting stability of nucleic acid secondary
+   structure. *Nucleic Acids Res* 2010;38(Database issue):D280-282.
+
+.. [#WS2021] Wayment-Steele, H.K., *et al.* Theoretical basis for
+   stabilizing messenger RNA through secondary structure design.
+   *Nucleic Acids Res* 2021;49(18):10604-10617.
+
+.. [#Janeway1989] Janeway, C.A., Jr. Approaching the asymptote?
+   Evolution and revolution in immunology. *Cold Spring Harb Symp
+   Quant Biol* 1989;54 Pt 1:1-13.
+
+.. [#Berke2012] Berke, I.C. and Modis, Y. MDA5 cooperatively forms
+   dimers and ATP-sensitive filaments upon binding double-stranded
+   RNA. *EMBO J* 2012;31(7):1714-1726.
+
+.. [#Wu2013] Wu, B., *et al.* Structural basis for dsRNA recognition,
+   filament formation, and antiviral signal activation by MDA5.
+   *Cell* 2013;152(1-2):276-289.
+
+.. [#Diez2022] Diez, M., *et al.* iCodon customizes gene expression
+   based on the codon composition. *Sci Rep* 2022;12(1):12126.
+
+.. [#Kariko2008] Kariko, K., *et al.* Incorporation of pseudouridine
    into mRNA yields superior nonimmunogenic vector with increased
-   translational capacity and biological stability." *Molecular Therapy*
-   16.11 (2008): 1833-1840.
-    
-.. [#Vaidyanathan2018] Vaidyanathan, Sriram, *et al.* "Uridine depletion
-   and chemical modification increase Cas9 mRNA activity and reduce
-   immunogenicity without HPLC purification." *Molecular
-   Therapy-Nucleic Acids* 12 (2018): 530-542.
+   translational capacity and biological stability.
+   *Mol Ther* 2008;16(11):1833-1840.
 
-.. [#Leppek2022] Leppek, Kathrin, *et al.* "Combinatorial optimization
-   of mRNA structure, stability, and translation for RNA-based
-   therapeutics." *Nature Communications* 13.1 (2022): 1536.
+.. [#Vaidyanathan2018] Vaidyanathan, S., *et al.* Uridine Depletion
+   and Chemical Modification Increase Cas9 mRNA Activity and Reduce
+   Immunogenicity without HPLC Purification. *Mol Ther Nucleic Acids*
+   2018;12:530-542.
+
+.. [#Leppek2022] Leppek, K., *et al.* Combinatorial optimization of
+   mRNA structure, stability, and translation for RNA-based
+   therapeutics. *Nat Commun* 2022;13(1):1536.
