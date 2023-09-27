@@ -26,7 +26,7 @@ From the chosen survivor sequences, new offspring sequences are
 produced once again. This iterative process is repeated for a
 certain number of iterations specified as ``--iterations``.
 
-.. image:: _images/figure1_revised.png
+.. image:: _images/overall_algorithm.png
     :width: 500px
     :align: center
     :alt: Overview of the genetic algorithm used in VaxPress.
