@@ -8,23 +8,21 @@ Optimization
 
 .. index:: Genetic Algorithm
 
-VaxPress uses genetic algorithm to produce optimized mRNA CDS
-sequence, while fitness evaluation metrics are defined as scoring
-functions. Current scoring functions consider both the features
-involved in the production and distribution process, as well as
-features affecting the efficacy *in vivo* such as immunogenecity
-and translational efficiency.
+VaxPress utilizes a genetic algorithm to produce an optimized mRNA
+CDS sequence. It initiates a collection of randomly mutated child
+sequences based on the CDS sequence. The number of these sequences
+is determined by the ``--population`` parameter. Subsequently, scoring
+functions evaluate these sequences. A selection process then
+identifies the fittest sequences, which are carried forward to the
+next generation. The number of these survivors is defined by the
+``--survivors`` parameter.
 
-If the input sequence is a protein, it will first be backtranslated
-into an RNA sequence. The initial population of RNA sequences
-generates randomly mutated child sequences, up to a certain
-number of children specified as ``--population``. These sequences
-are then evaluated using scoring functions.  Based on the evaluation
-results, a selection process is carried out to choose survivor
-sequences, with the number of survivors specified as ``--survivors``.
-From the chosen survivor sequences, new offspring sequences are
-produced once again. This iterative process is repeated for a
-certain number of iterations specified as ``--iterations``.
+In the following iteration, these survivor sequences produce new
+offspring sequences under a pre-defined mutation rate. This process
+persists for a specified number of iterations, set by the ``--iterations``
+parameter. Over hundreds to thousands of these cycles, the sequence
+population progressively evolves towards the optimal coding sequences,
+exhibiting improved fitness with each iteration.
 
 .. image:: _images/overall_algorithm.png
     :width: 500px
@@ -39,7 +37,7 @@ Objective Function
 The objective function is a linear combination of the factors below,
 with associated weights. It is represented as follows:
 
-.. math:: Scoring \, Function =  \Sigma_{f \in factors} f*weight
+.. math:: \textup{maximize}\ Fitness(s) =  \Sigma_{f \in factors} weight_{f} \cdot metric_{f}(s)
 
 Refer to the :doc:`scoring_functions` section for more details on
 each factor.
@@ -51,14 +49,13 @@ each factor.
 Adaptive Decrement of Mutation Rate
 -----------------------------------
 
-To improve optimization performance, it is crucial to create new
-populations that can compete effectively with previous generations.
-As the optimization process progresses, highly mutated new populations
-are less likely to be selected because the earlier sequences are
-already well-optimized. Therefore, if the current fitness score
-remains at a certain level even as optimization continues, it is
-necessary to *winddown* the mutation rate. In VaxPress, the *winddown
-trigger* represents the number of iterations with the same fitness
-score required to decrease the mutation rate, and the *winddown rate*
-is the factor by which the mutation rate is multiplied when the
-winddown is triggered.
+To achieve the best results, generating new populations that can
+effectively compete with their predecessors is essential. As the
+optimization process progresses, new populations with many mutations
+may not be selected due to their predecessors' high fitness. If the
+fitness score remains constant despite ongoing optimization, reducing
+the mutation rate to enhance the existing population is necessary.
+The ``--winddown-trigger`` parameter is the count of iterations
+with a constant fitness score that necessitates a decrease in the
+mutation rate. The ``--winddown-rate`` parameter is the factor by
+which the mutation rate is reduced when the winddown is activated.
