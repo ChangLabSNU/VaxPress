@@ -1,23 +1,15 @@
 Troubleshooting
 ***************
 
--------------------------------
-iCodon scoring does not work.
--------------------------------
+------------------------
+iCodon option is missing
+------------------------
 
-If ``R``, ``rpy2`` and ``iCodon`` are not installed (see
-:ref:`installation <label-installing>`), iCodon-predicted stability
-fitness function will automatically be silenced. If iCodon score
-does not appear in the optimization report, check if they are
-installed::
-    
-    # check if rpy2 is installed
-    python
-    >>> import rpy2.robjects.packages as rpackages
-    # If ModuleNotFoundError is raised, rpy2 is not installed.
+The predicted in-cell stability fitness function based on iCodon
+will only load if *R,* *rpy2,* and *iCodon* are correctly installed.
+To install these, please refer to the provided :doc:`installation
+instructions <installation>`. To verify the installation,
+execute the command below::
 
-    >>> rpackages.importr('iCodon')
-    # If PackageNotInstalledError is raised, iCodon is not installed.
-
-
-
+    python -c 'from rpy2.robjects.packages import importr; importr("iCodon")'
+    # No output indicates success
