@@ -71,24 +71,30 @@ where :math:`n` is the number of codons in the sequence.
 Bicodon Usage
 =============
 
-It is well known that not only the frequency of usage of individual
-codons but also the frequency of consecutive codon occurrences
-significantly impacts gene design. VaxPress reads the sequence in
-codon units, obtaining scores which is calculated as below.
+In addition to the biased use of individual codons, the frequency
+of consecutive codon occurrences is also known to be significantly
+biased in highly expressed genes in all three kingdoms of
+life\ [#Tats2008]_. To account for this, the bicodon usage score is
+designed to match the codon pair frequencies in the transcriptome
+of the target species The score is calculated as follows:
 
-.. math:: score = {log {F(ABCDEF) \over F(ABC)F(DEF)}}
+.. math:: w_{ABC,DEF} = {\log \frac {f_{ABC,DEF}} {f_{ABC} \cdot f_{DEF}}}
 
-(where *ABCDEF* is example codon pair and *F(ABC)* is frequency of
-codon *ABC*.)\ [#CoCoPUTs]_
+where :math:`ABC,DEF` represents a codon pair, while :math:`F(ABC)`
+denotes the frequency of the individual codon :math:`ABC` within
+the reference sequence.
 
-Then VaxPress obtain the average of these codon by codon values.
-In addition, raw data of codon RSCU values and codon pair score is
-obtained from CoCoPUTs codon usage database\ [#CoCoPUTs]_.
+The bicodon adaptation score, :math:`w_{ABC,DEF}`, is
+standardized to fit within a specific range for easier interpretation
+before being integrated into the final sequence score.
 
 .. image:: _images/cai_bicodon.png
     :width: 700px
     :align: center
     :alt: bicodon usage.
+
+The score is calculated using a table prepared from the CoCoPUTs
+codon usage database\ [#CoCoPUTs]_.
 
 .. index:: RNA Folding
 .. index:: MFE
@@ -284,6 +290,9 @@ References
 
 .. [#Presnyak2015] Presnyak, V., *et al.* Codon optimality is a major
    determinant of mRNA stability. *Cell* 2015;160(6):1111-1124.
+
+.. [#Tats2008] Tats, A., Tenson, T. and Remm, M. Preferred and avoided
+   codon pairs in three domains of life. *BMC Genomics* 2008;9:463.
 
 .. [#CoCoPUTs] Alexaki, A., *et al.* Codon and Codon-Pair Usage Tables
    (CoCoPUTs): Facilitating Genetic Variation Analyses and Recombinant
