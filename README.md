@@ -13,44 +13,72 @@ including its options and algorithmic features, please refer to the
 
 ### pip
 
-You can install VaxPress via pip.  However, note that `rpy2` and
-`iCodon` aren't included as dependencies by default. If you want
-to utilize iCodon's predicted stability in the fitness function,
-you'll need to install these separately.
+You can install VaxPress via pip.
+
+#### Installing
 
 ```bash
-# To install using pip
+# Create a virtual environment for VaxPress
+python -m venv /path/to/vaxpress-env
+
+# Activate the virtual environment
+source /path/to/vaxpress-env/bin/activate
+
+# Install VaxPress alone
 pip install vaxpress
 
-# To install using pip with LinearFold (only for non-commercial uses)
+# Alternatively, install VaxPress with LinearFold (only for non-commercial uses)
 pip install 'vaxpress[nonfree]'
-
-# To install from the GitHub
-git clone https://github.com/ChangLabSNU/VaxPress.git
-cd VaxPress
-pip install .
 ```
+
+#### Running
+
+```bash
+# Activate the virtual environment
+source /path/to/vaxpress-env/bin/activate
+
+# Run VaxPress
+vaxpress -h
+```
+
+#### iCodon Dependency
+
+If you wish to activate the iCodon predicted stability
+(`--iCodon-weight`) in the fitness function, ensure you have
+working installations of *R,* *rpy2* (version >= 3.0) and
+*iCodon.*  For detailed installation instructions, visit
+[iCodon's GitHub page](https://github.com/santiago1234/iCodon/).
 
 ### Conda
 
 Alternatively, you may also install VaxPress via a conda package:
 
+#### Installation
+
 ```bash
-# Install VaxPress into a new conda environment
-conda create -n vaxpress -c changlabsnu -c bioconda -c conda-forge vaxpress
+conda create -n vaxpress -y -c changlabsnu -c bioconda -c conda-forge vaxpress
+```
+
+#### Running
+
+```bash
+# Activate the environment
+conda activate vaxpress
 
 # Run VaxPress
-conda run -n vaxpress --live-stream vaxpress --help
+vaxpress -h
 ```
 
 ### Singularity
 
-First, you will need to install [Singularity CE](https://sylabs.io/singularity/).
-Once Singularity is installed, you can download the VaxPress image from this
-GitHub repository and run using the following command:
+To run VaxPress via Singularity, you will need to install the
+[Singularity CE](https://sylabs.io/singularity/) first.
+Download the container image from
+[the GitHub project page](https://github.com/ChangLabSNU/VaxPress/releases)
+and place it in a directory of your choice.
 
 ```bash
-singularity run vaxpress-0.3.sif --help
+singularity vaxpress.sif -h
 ```
 
 When using the Singularity image, both the input and output must
