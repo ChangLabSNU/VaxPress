@@ -2,17 +2,30 @@
 Scoring Functions
 *****************
 
-Each scoring functions of VaxPress outputs scores in the direction
-they want to maximize. Balance among the scoring functions is
-adjusted by their relative weights. The ultimate goal of the
-optimization process is to maximize the objective function, which
-is defined by the weighted sum of all the scoring functions.
+The fitness of a sequence is determined through a linear combination
+of metrics, which are computed by various scoring functions. Each
+scoring function yields two numerical values per evaluation: a
+*metric* and a *score.* The *metric* serves as a reference value
+that illustrates the sequence's optimality according to a particular
+characteristic. It is primarily designed for human interpretation
+and appears in reports and logs. On the other hand, the *score*
+forms a component of the fitness function, where a higher number
+corresponds to greater optimality. The balance between the scoring
+functions is tuned through their weights, which can be adjusted
+using command line options.
 
 .. index:: Objective Function
 .. index:: Scoring Function
 
-VaxPress' scoring function consists of three main areas, each
-considering factors that can influence the optimization result:
+VaxPress comes with a variety of integrated scoring functions. These
+functions enable optimization with considerations of RNA stability,
+translation efficiency, and ease of development and manufacturing.
+VaxPress also provides an add-on system to create and use your
+scoring functions. This allows you to drive the sequence to include
+any features you desire.
+
+The following sections will explain the rationale and context behind
+these built-in scoring functions.
 
 .. index:: Codon Usage
 .. index:: Bicodon Usage
