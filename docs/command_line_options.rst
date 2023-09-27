@@ -80,9 +80,8 @@ Execution Options
 
   Example command to use a preset file::
 
-    vaxpress -i {path_to_input.fa} \
-             -o {path_to_output_directory} \
-             --preset {path_to_parameters.json}
+    vaxpress -i spike.fa -o output \
+             --preset parameters.json
 
   Refer to :ref:`label-preset` for more information.
 
@@ -92,11 +91,9 @@ Execution Options
 
   Example command to use a custom fitness function::
 
-    vaxpress -i {path_to_input.fa} \
-             -o {path_to_output_directory} \
-             --iterations {n_iterations} \
-             -p {n_processes} \
-             --addon {path_to_addon.py}
+    vaxpress -i input.fa -o output_dir \
+             --iterations 1000 -p 36 \
+             --addon myfunction.py
 
   Please refer to the :ref:`label-addon` section of this documentation
   for detailed instructions on using a custom fitness function.
