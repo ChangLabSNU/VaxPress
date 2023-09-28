@@ -9,7 +9,8 @@ release = '0.4'
 extensions = [
     'sphinx.ext.duration',
     'sphinx_rtd_theme',
-    'sphinx.ext.mathjax'
+    'sphinx.ext.mathjax',
+    'sphinxemoji.sphinxemoji',
 ]
 bibtex_bibfiles = ['refs.bib']
 templates_path = ['_templates']

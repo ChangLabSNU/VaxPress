@@ -48,6 +48,8 @@ frequencies with those found in the human transcriptome.
 Codon Adaptation Index (CAI)
 ============================
 
+|:hammer_and_wrench:| :ref:`Options related to Codon Adaptation Index <options-CAI>`
+
 The Codon Adaptation Index (CAI) measures the similarity between
 the codon usage in a given sequence and a reference sequence\ [#CAI]_.
 The relative adaptiveness of each codon is calculated based on the
@@ -70,6 +72,8 @@ where :math:`n` is the number of codons in the sequence.
 =============
 Bicodon Usage
 =============
+
+|:hammer_and_wrench:| :ref:`Options related to Bicodon Usage <options-bicodon>`
 
 In addition to the biased use of individual codons, the frequency
 of consecutive codon occurrences is also known to be significantly
@@ -107,14 +111,26 @@ codon usage database\ [#CoCoPUTs]_.
 RNA Folding
 -----------
 
-For the development of stable mRNA vaccines, the structural stability
-of RNA is crucial. In other words, it is favorable for the structures
-to be as limited in diversity as possible. So VaxPress has considered
-this as an objective and incorporated scoring factors.
+The secondary structure of an mRNA vaccine plays a crucial role in
+determining RNA stability and translation
+efficiency\ [#Mauger2019]_:sup:`,`\ [#Leppek2022]_. The base-pairing
+status determines the susceptibility to ribonucleases or divalent
+metal ions, which can degrade the RNA. Additionally, local structures
+near the start codon influence the efficiency of translation
+initiation.
+
+Predicting this secondary structure, however, is a computationally
+intensive task due to its cubic complexity. VaxPress is designed
+to handle this prediction task efficiently by utilizing all available
+CPU cores. Following the prediction, individual score functions are
+executed to evaluate the optimality of the predicted structures for
+use as a vaccine sequence.
 
 =========================
 Minimum Free Energy (MFE)
 =========================
+
+|:hammer_and_wrench:| :ref:`Options related to Minimum Free Energy <options-MFE>`
 
 Minimum Free Energy represents the free energy of RNA
 when it forms the most stable structure. Finding RNA sequence which
@@ -133,22 +149,11 @@ and loop structures to estimate the MFE structure efficiently.
 Since *ViennaRNA* and *LinearFold* use different algorithm to
 estimate MFE, VaxPress offers both as a options for folding engine.
 
-=====================
-Start Codon Structure
-=====================
-
-Stem-loop structure near start codon is highly influential to RNA's
-translational efficiency. It's because tranlation initiation is
-affected a lot by mRNA's secondary structure. Since actual proteins
-translated from mRNA vaccine matters, efficient translation is much
-more important\ [#Mauger2019]_ [#Kearse2019]_.
-
-In this section, the length of the stem formed near the start codon
-of RNA is measured and reflected as a score.
-
 ==================================
 Loop Length (total unpaired bases)
 ==================================
+
+|:hammer_and_wrench:| :ref:`Options related to Loop Length <options-loops>`
 
 Shorter loops in RNA generally contribute to more stable secondary
 structures due to reduced entropic costs and decreased structural
@@ -166,9 +171,26 @@ quantification method for mRNA stability besides MFE. In this
 function, the length of all segments considered to have unfolded
 loop structures are summed to calculate score.
 
+=====================
+Start Codon Structure
+=====================
+
+|:hammer_and_wrench:| :ref:`Options related to Start Codon Structure <options-startstr>`
+
+Stem-loop structure near start codon is highly influential to RNA's
+translational efficiency. It's because tranlation initiation is
+affected a lot by mRNA's secondary structure. Since actual proteins
+translated from mRNA vaccine matters, efficient translation is much
+more important\ [#Mauger2019]_ [#Kearse2019]_.
+
+In this section, the length of the stem formed near the start codon
+of RNA is measured and reflected as a score.
+
 ===========
 Stem Length
 ===========
+
+|:hammer_and_wrench:| :ref:`Options related to Stem Length <options-longstems>`
 
 One of the points to be careful about in the development of mRNA
 vaccines is that vaccine materials could be recognized as foreign
@@ -183,6 +205,8 @@ RNA which is represented as long stem in cells\ [#Berke2012]_ [#Wu2013]_.
 In the secondary structure of mRNA vaccines, the stem region
 corresponds to this case. To prevent its breakdown, limitations on
 stem length have been established.
+
+Mention about DNA synthesis difficulties.
 
 .. image:: _images/stem_loop.png
     :width: 700px
@@ -202,6 +226,8 @@ stability and immunogenicity in cells, such as:
 iCodon-Predicted Stability
 ==========================
 
+|:hammer_and_wrench:| :ref:`Options related to iCodon-Predicted Stability <options-iCodon>`
+
 ``iCodon`` is program that predicts the stability of the coding
 sequence of RNA using synonymous codons based on machine learning
 model trained by mRNA stability profiles from zebrafish and Xenopus
@@ -215,6 +241,8 @@ to propose the optimal RNA sequence.
 =============
 Uridine Count
 =============
+
+|:hammer_and_wrench:| :ref:`Options related to Uridine Count <options-ucount>`
 
 RNA molecules that are extensively folded induce a severe interferon
 response, and a significant contributing factor to this is the
@@ -232,6 +260,8 @@ uridine count.
 DegScore
 ========
 
+|:hammer_and_wrench:| :ref:`Options related to DegScore <options-DegScore>`
+
 DegScore is the deep learning model devolped by Eterna. It predicts
 possibility for degradation of RNA from the sequence information.
 Unlike the usage of DegScore in Eterna's original projects, VaxPress
@@ -247,6 +277,8 @@ Features related to effective production
 ==============
 Local GC Ratio
 ==============
+
+|:hammer_and_wrench:| :ref:`Options related to Local GC Ratio <options-gc>`
 
 The production of mRNA vaccines is carried out through in vitro
 transcription. For this purpose, it's necessary to synthesize
@@ -268,6 +300,8 @@ the score.
 =============
 Repeat Length
 =============
+
+|:hammer_and_wrench:| :ref:`Options related to Repeat Length <options-repeats>`
 
 For the mass production of mRNA vaccines, cloning using plasmids
 is necessary. This is achieved through the synthesis of the target
@@ -298,16 +332,20 @@ References
    (CoCoPUTs): Facilitating Genetic Variation Analyses and Recombinant
    Gene Design. *J Mol Biol* 2019;431(13):2434-2441.
 
+.. [#Mauger2019] Mauger, D.M., *et al.* mRNA structure regulates protein
+   expression through changes in functional half-life. *Proc Natl
+   Acad Sci USA* 2019;116(48):24075-24083.
+
+.. [#Leppek2022] Leppek, K., *et al.* Combinatorial optimization of
+   mRNA structure, stability, and translation for RNA-based
+   therapeutics. *Nat Commun* 2022;13(1):1536.
+
 .. [#Zuker1981] Zuker, M. and Stiegler, P. Optimal computer folding of
    large RNA sequences using thermodynamics and auxiliary information.
    *Nucleic Acids Res* 1981;9(1):133-148.
 
 .. [#Hofacker2014] Hofacker, I.L. Energy-directed RNA structure prediction.
    *Methods Mol Biol* 2014;1097:71-84.
-
-.. [#Mauger2019] Mauger, D.M., *et al.* mRNA structure regulates protein
-   expression through changes in functional half-life. *Proc Natl
-   Acad Sci USA* 2019;116(48):24075-24083.
 
 .. [#Kearse2019] Kearse, M.G., *et al.* Ribosome queuing enables non-AUG
    translation to be resistant to multiple protein synthesis inhibitors.
@@ -348,7 +386,3 @@ References
    and Chemical Modification Increase Cas9 mRNA Activity and Reduce
    Immunogenicity without HPLC Purification. *Mol Ther Nucleic Acids*
    2018;12:530-542.
-
-.. [#Leppek2022] Leppek, K., *et al.* Combinatorial optimization of
-   mRNA structure, stability, and translation for RNA-based
-   therapeutics. *Nat Commun* 2022;13(1):1536.

@@ -243,6 +243,8 @@ List of all arguments related to fitness functions inside VaxPress.
 For detailed information on how each scoring function works, see
 :doc:`scoring_functions`.
 
+.. _options-iCodon:
+
 ------------------------------------
 Predicted In-Cell Stability (iCodon)
 ------------------------------------
@@ -250,6 +252,8 @@ Predicted In-Cell Stability (iCodon)
 - ``--iCodon-weight WEIGHT``
   
   Scoring weight for iCodon predicted stability (default: ``1.0``).
+
+.. _options-DegScore:
 
 ------------------------------------------
 Predicted In-Solution Stability (DegScore)
@@ -263,6 +267,8 @@ Predicted In-Solution Stability (DegScore)
   you wish to incorporate this factor into the optimization process,
   a starting weight value of ``5.0`` is recommended.
 
+.. _options-CAI:
+
 ----------------------
 Codon Adaptation Index
 ----------------------
@@ -272,6 +278,8 @@ Codon Adaptation Index
   Scoring weight for codon adaptation index (CAI) of single codons
   (default: ``0.0``).
 
+.. _options-bicodon:
+
 -------------------------------------
 Codon Adaptation Index of Codon-Pairs
 -------------------------------------
@@ -280,6 +288,8 @@ Codon Adaptation Index of Codon-Pairs
   
   Scoring weight for codon adaptation index (CAI) of codon-pairs
   (default: ``1.0``).
+
+.. _options-ucount:
 
 --------------------
 Simple Uridine Count
@@ -293,6 +303,8 @@ Simple Uridine Count
 RNA Folding
 -----------
 
+.. _options-MFE:
+
 =========================
 Minimum Free Energy (MFE)
 =========================
@@ -300,6 +312,8 @@ Minimum Free Energy (MFE)
 - ``--mfe-weight WEIGHT``
   
   Scoring weight for Minimum Free Energy (MFE) (default: ``3.0``).
+
+.. _options-loops:
 
 =====
 Loops
@@ -314,6 +328,8 @@ Loops
   Minimum count of consecutive unfolded bases to be considered as
   a loop (default: ``2``).
 
+.. _options-startstr:
+
 ==========================
 Structure near Start Codon
 ==========================
@@ -326,6 +342,8 @@ Structure near Start Codon
   
   Width in nt of unfolded region near the start codon (default: ``15``).
 
+.. _options-longstems:
+
 ==========
 Long Stems
 ==========
@@ -337,6 +355,8 @@ Long Stems
 - ``--longstem-threshold N``
   
   Minimum length of stems to avoid (default: ``27``).
+
+.. _options-gc:
 
 ----------------
 Local GC Content
@@ -353,6 +373,8 @@ Local GC Content
 - ``--gc-stride STRIDE``
   
   Size of stride for GC content calculation (default: ``5``).
+
+.. _options-repeats:
 
 --------------
 Tandem Repeats
