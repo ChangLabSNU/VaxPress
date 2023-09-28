@@ -48,7 +48,7 @@ frequencies with those found in the human transcriptome.
 Codon Adaptation Index (CAI)
 ============================
 
-|:hammer_and_wrench:| :ref:`Options related to Codon Adaptation Index <options-CAI>`
+|:wrench:| :ref:`Options related to Codon Adaptation Index <options-CAI>`
 
 The Codon Adaptation Index (CAI) measures the similarity between
 the codon usage in a given sequence and a reference sequence\ [#CAI]_.
@@ -73,7 +73,7 @@ where :math:`n` is the number of codons in the sequence.
 Bicodon Usage
 =============
 
-|:hammer_and_wrench:| :ref:`Options related to Bicodon Usage <options-bicodon>`
+|:wrench:| :ref:`Options related to Bicodon Usage <options-bicodon>`
 
 In addition to the biased use of individual codons, the frequency
 of consecutive codon occurrences is also known to be significantly
@@ -130,7 +130,7 @@ use as a vaccine sequence.
 Minimum Free Energy (MFE)
 =========================
 
-|:hammer_and_wrench:| :ref:`Options related to Minimum Free Energy <options-MFE>`
+|:wrench:| :ref:`Options related to Minimum Free Energy <options-MFE>`
 
 Minimum Free Energy represents the free energy of RNA
 when it forms the most stable structure. Finding RNA sequence which
@@ -153,7 +153,7 @@ estimate MFE, VaxPress offers both as a options for folding engine.
 Loop Length (total unpaired bases)
 ==================================
 
-|:hammer_and_wrench:| :ref:`Options related to Loop Length <options-loops>`
+|:wrench:| :ref:`Options related to Loop Length <options-loops>`
 
 Shorter loops in RNA generally contribute to more stable secondary
 structures due to reduced entropic costs and decreased structural
@@ -175,7 +175,7 @@ loop structures are summed to calculate score.
 Start Codon Structure
 =====================
 
-|:hammer_and_wrench:| :ref:`Options related to Start Codon Structure <options-startstr>`
+|:wrench:| :ref:`Options related to Start Codon Structure <options-startstr>`
 
 Stem-loop structure near start codon is highly influential to RNA's
 translational efficiency. It's because tranlation initiation is
@@ -190,7 +190,7 @@ of RNA is measured and reflected as a score.
 Stem Length
 ===========
 
-|:hammer_and_wrench:| :ref:`Options related to Stem Length <options-longstems>`
+|:wrench:| :ref:`Options related to Stem Length <options-longstems>`
 
 One of the points to be careful about in the development of mRNA
 vaccines is that vaccine materials could be recognized as foreign
@@ -226,7 +226,7 @@ stability and immunogenicity in cells, such as:
 iCodon-Predicted Stability
 ==========================
 
-|:hammer_and_wrench:| :ref:`Options related to iCodon-Predicted Stability <options-iCodon>`
+|:wrench:| :ref:`Options related to iCodon-Predicted Stability <options-iCodon>`
 
 ``iCodon`` is program that predicts the stability of the coding
 sequence of RNA using synonymous codons based on machine learning
@@ -242,7 +242,7 @@ to propose the optimal RNA sequence.
 Uridine Count
 =============
 
-|:hammer_and_wrench:| :ref:`Options related to Uridine Count <options-ucount>`
+|:wrench:| :ref:`Options related to Uridine Count <options-ucount>`
 
 RNA molecules that are extensively folded induce a severe interferon
 response, and a significant contributing factor to this is the
@@ -260,7 +260,7 @@ uridine count.
 DegScore
 ========
 
-|:hammer_and_wrench:| :ref:`Options related to DegScore <options-DegScore>`
+|:wrench:| :ref:`Options related to DegScore <options-DegScore>`
 
 DegScore is the deep learning model devolped by Eterna. It predicts
 possibility for degradation of RNA from the sequence information.
@@ -278,7 +278,7 @@ Features related to effective production
 Local GC Ratio
 ==============
 
-|:hammer_and_wrench:| :ref:`Options related to Local GC Ratio <options-gc>`
+|:wrench:| :ref:`Options related to Local GC Ratio <options-gc>`
 
 The production of mRNA vaccines is carried out through in vitro
 transcription. For this purpose, it's necessary to synthesize
@@ -301,7 +301,7 @@ the score.
 Repeat Length
 =============
 
-|:hammer_and_wrench:| :ref:`Options related to Repeat Length <options-repeats>`
+|:wrench:| :ref:`Options related to Repeat Length <options-repeats>`
 
 For the mass production of mRNA vaccines, cloning using plasmids
 is necessary. This is achieved through the synthesis of the target
