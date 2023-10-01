@@ -180,7 +180,7 @@ Ju, Ku, and Chang (2023) Title. Journal. Volume.
 
 # License
 
-VaxPress is distributed under the terms of the MIT License.
+VaxPress is distributed under the terms of the [MIT License](LICENSE.txt).
 
 LinearFold and LinearDesign are licensed for non-commercial use
 only. If considering commercial use, be cautious about using options
