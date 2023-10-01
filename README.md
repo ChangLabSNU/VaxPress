@@ -153,7 +153,7 @@ please refer to the [Adding a scoring function page](#scoring_func).
 ## Using LinearDesign for Optimization Initialization
 
 [LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign)
-(Zhang *et al.,* 2023) offers ultra-fast optimization, focusing on
+([Zhang *et al.,* 2023](https://www.nature.com/articles/s41586-023-06127-z)) offers ultra-fast optimization, focusing on
 near-optimal MFE and CAI values. By using the `--lineardesign`
 option, VaxPress invokes LinearDesign internally then begins its
 optimization with a sequence already refined by LinearDesign.
@@ -240,7 +240,7 @@ Ju, Ku, and Chang (2023) Title. Journal. Volume.
 
 # License
 
-VaxPress is distributed under the terms of the MIT License.
+VaxPress is distributed under the terms of the [MIT License](LICENSE.txt).
 
 LinearFold and LinearDesign are licensed for non-commercial use
 only. If considering commercial use, be cautious about using options
