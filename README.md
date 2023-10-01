@@ -122,7 +122,7 @@ please refer to the [Adding a scoring function page](#scoring_func).
 ## Using LinearDesign for Optimization Initialization
 
 [LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign)
-(Zhang *et al.,* 2023) offers ultra-fast optimization, focusing on
+([Zhang *et al.,* 2023](https://www.nature.com/articles/s41586-023-06127-z)) offers ultra-fast optimization, focusing on
 near-optimal MFE and CAI values. By using the `--lineardesign`
 option, VaxPress invokes LinearDesign internally then begins its
 optimization with a sequence already refined by LinearDesign.
