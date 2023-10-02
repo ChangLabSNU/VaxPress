@@ -89,7 +89,7 @@ directory of your choice.
 **Running**
 ::
 
-    singularity vaxpress.sif -h
+    singularity run vaxpress.sif -h
 
 .. warning::
     For ease of use, it's advised to store the VaxPress container

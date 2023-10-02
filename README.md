@@ -78,7 +78,7 @@ Download the container image from
 and place it in a directory of your choice.
 
 ```bash
-singularity vaxpress.sif -h
+singularity run vaxpress.sif -h
 ```
 
 When using the Singularity image, both the input and output must
