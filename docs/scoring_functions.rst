@@ -59,22 +59,7 @@ Minimum Free Energy (MFE)
 
 |:wrench:| :ref:`Options related to Minimum Free Energy <options-MFE>`
 
-Minimum Free Energy represents the free energy of RNA
-when it forms the most stable structure. Finding RNA sequence which
-is corresponding to predicted MFE is common strategy for vaccine
-development\ [#Zuker1981]_ [#Hofacker2014]_. To calculate MFE value,
-VaxPress uses the *ViennaRNA* and *LinearFold* as folding engines.
-
-In detail, *ViennaRNA* employs dynamic programming techniques to
-compute the MFE structure of an RNA sequence with time complexity
-of cubic time for length of CDS. On the other side, *LinearFold*
-utilizes a linear-time dynamic programming approach, which significantly
-reduces the time complexity compared to more traditional dynamic
-programming methods. It considers different types of base pairs
-and loop structures to estimate the MFE structure efficiently.
-
-Since *ViennaRNA* and *LinearFold* use different algorithm to
-estimate MFE, VaxPress offers both as a options for folding engine.
+This section is to be written.
 
 ==================================
 Loop Length (total unpaired bases)
@@ -82,21 +67,7 @@ Loop Length (total unpaired bases)
 
 |:wrench:| :ref:`Options related to Loop Length <options-loops>`
 
-Shorter loops in RNA generally contribute to more stable secondary
-structures due to reduced entropic costs and decreased structural
-variability. Thus, loop is usually considered to predict nucleic
-secondary structure stabilities\ [#Tinoco1999]_ [#NNDB]_. Moreover,
-highly folded secondary structures with more base pairing inhibits
-mRNA hydrolysis,
-while unpaired bases are more susceptible for degradation. [#WS2021]_
-Thus, minimizing the total number of unpaired bases (which corresponds
-to minimizing loop length) will improve *in vitro* stability of the
-mRNA.
-
-In VaxPress, we added *Loop Length* function as an alternative
-quantification method for mRNA stability besides MFE. In this
-function, the length of all segments considered to have unfolded
-loop structures are summed to calculate score.
+This section is to be written.
 
 =====================
 Start Codon Structure
@@ -104,14 +75,7 @@ Start Codon Structure
 
 |:wrench:| :ref:`Options related to Start Codon Structure <options-startstr>`
 
-Stem-loop structure near start codon is highly influential to RNA's
-translational efficiency. It's because tranlation initiation is
-affected a lot by mRNA's secondary structure. Since actual proteins
-translated from mRNA vaccine matters, efficient translation is much
-more important\ [#Mauger2019]_ [#Kearse2019]_.
-
-In this section, the length of the stem formed near the start codon
-of RNA is measured and reflected as a score.
+This section is to be written.
 
 ===========
 Stem Length
@@ -119,21 +83,7 @@ Stem Length
 
 |:wrench:| :ref:`Options related to Stem Length <options-longstems>`
 
-One of the points to be careful about in the development of mRNA
-vaccines is that vaccine materials could be recognized as foreign
-substances, potentially triggering an immune response in our bodies.
-In relation to this, our bodies have a system called pattern
-recognition receptors (PRRs)\ [#Janeway1989]_. These are receptors that recognize
-patterns commonly present in various antigens coming from the
-outside. Among them, MDA5 (Melanoma differentiation-associated
-gene-5), for instance, recognizes and breaks down viral double-stranded
-RNA which is represented as long stem in cells\ [#Berke2012]_ [#Wu2013]_.
-
-In the secondary structure of mRNA vaccines, the stem region
-corresponds to this case. To prevent its breakdown, limitations on
-stem length have been established.
-
-Mention about DNA synthesis difficulties.
+This section is to be written.
 
 .. image:: _images/stem_loop.png
     :width: 700px
