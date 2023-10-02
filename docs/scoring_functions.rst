@@ -27,79 +27,6 @@ any features you desire.
 The following sections will explain the rationale and context behind
 these built-in scoring functions.
 
-.. index:: Codon Usage
-.. index:: Bicodon Usage
-.. index:: CAI
-.. index:: Codon Adaptation Index
-
----------------------
-Codon Usage Functions
----------------------
-
-Codon usage bias refers to the discrepancies in the frequency of
-synonymous codons within a coding sequence. This bias can significantly
-influence the stability of mRNA in cells and the quantity of protein
-produced\ [#CAI]_:sup:`,`\ [#Presnyak2015]_. In the case of mRNA vaccines,
-where antigen production takes place within the cells of the human
-recipient, it is generally a safe strategy to align the codon
-frequencies with those found in the human transcriptome.
-
-============================
-Codon Adaptation Index (CAI)
-============================
-
-|:wrench:| :ref:`Options related to Codon Adaptation Index <options-CAI>`
-
-The Codon Adaptation Index (CAI) measures the similarity between
-the codon usage in a given sequence and a reference sequence\ [#CAI]_.
-The relative adaptiveness of each codon is calculated based on the
-the frequency of a specific codon to the most frequently used
-synonymous codon in highly expressed genes. The score for each
-codon, :math:`w_{i}`, is defined as follows:
-
-.. math:: w_{i} = \frac{f_{i}}{\max{f_{i}}}
-
-where :math:`f_{i}` is the number of observations for codon :math:`i` in
-the reference sequence, and :math:`\max{f_{i}}` is the number of
-observations for the most frequently used synonymous codon in the
-reference sequence. The CAI is then calculated as the geometric
-mean of the relative adaptiveness of all codons in the sequence.
-
-.. math:: CAI = \sqrt[n]{\prod_{j=1}^{n} w_{j}}
-
-where :math:`n` is the number of codons in the sequence.
-
-=============
-Bicodon Usage
-=============
-
-|:wrench:| :ref:`Options related to Bicodon Usage <options-bicodon>`
-
-In addition to the biased use of individual codons, the frequency
-of consecutive codon occurrences is also known to be significantly
-biased in highly expressed genes in all three kingdoms of
-life\ [#Tats2008]_. To account for this, the bicodon usage score is
-designed to match the codon pair frequencies in the transcriptome
-of the target species The score is calculated as follows:
-
-.. math:: w_{ABC,DEF} = {\log \frac {f_{ABC,DEF}} {f_{ABC} \cdot f_{DEF}}}
-
-where :math:`ABC,DEF` represents a codon pair, while :math:`F(ABC)`
-denotes the frequency of the individual codon :math:`ABC` within
-the reference sequence.
-
-The bicodon adaptation score, :math:`w_{ABC,DEF}`, is
-standardized to fit within a specific range for easier interpretation
-before being integrated into the final sequence score.
-
-.. image:: _images/cai_bicodon.png
-    :width: 700px
-    :align: center
-    :alt: bicodon usage.
-
-The score is calculated using a table prepared from the CoCoPUTs
-codon usage database\ [#CoCoPUTs]_.
-
 .. index:: RNA Folding
 .. index:: MFE
 .. index:: Minimum Free Energy
@@ -213,11 +140,85 @@ Mention about DNA synthesis difficulties.
     :align: center
     :alt: stem-loop structure
 
+.. index:: Codon Usage
+.. index:: Bicodon Usage
+.. index:: CAI
+.. index:: Codon Adaptation Index
+
+-----------
+Codon Usage
+-----------
+
+Codon usage bias refers to the discrepancies in the frequency of
+synonymous codons within a coding sequence. This bias can significantly
+influence the stability of mRNA in cells and the quantity of protein
+produced\ [#CAI]_:sup:`,`\ [#Presnyak2015]_. In the case of mRNA vaccines,
+where antigen production takes place within the cells of the human
+recipient, it is generally a safe strategy to align the codon
+frequencies with those found in the human transcriptome.
+
+============================
+Codon Adaptation Index (CAI)
+============================
+
+|:wrench:| :ref:`Options related to Codon Adaptation Index <options-CAI>`
+
+The Codon Adaptation Index (CAI) measures the similarity between
+the codon usage in a given sequence and a reference sequence\ [#CAI]_.
+The relative adaptiveness of each codon is calculated based on the
+the frequency of a specific codon to the most frequently used
+synonymous codon in highly expressed genes. The score for each
+codon, :math:`w_{i}`, is defined as follows:
+
+.. math:: w_{i} = \frac{f_{i}}{\max{f_{i}}}
+
+where :math:`f_{i}` is the number of observations for codon :math:`i` in
+the reference sequence, and :math:`\max{f_{i}}` is the number of
+observations for the most frequently used synonymous codon in the
+reference sequence. The CAI is then calculated as the geometric
+mean of the relative adaptiveness of all codons in the sequence.
+
+.. math:: CAI = \sqrt[n]{\prod_{j=1}^{n} w_{j}}
+
+where :math:`n` is the number of codons in the sequence.
+
+=============
+Bicodon Usage
+=============
+
+|:wrench:| :ref:`Options related to Bicodon Usage <options-bicodon>`
+
+In addition to the biased use of individual codons, the frequency
+of consecutive codon occurrences is also known to be significantly
+biased in highly expressed genes in all three kingdoms of
+life\ [#Tats2008]_. To account for this, the bicodon usage score is
+designed to match the codon pair frequencies in the transcriptome
+of the target species The score is calculated as follows:
+
+.. math:: w_{ABC,DEF} = {\log \frac {f_{ABC,DEF}} {f_{ABC} \cdot f_{DEF}}}
+
+where :math:`ABC,DEF` represents a codon pair, while :math:`F(ABC)`
+denotes the frequency of the individual codon :math:`ABC` within
+the reference sequence.
+
+The bicodon adaptation score, :math:`w_{ABC,DEF}`, is
+standardized to fit within a specific range for easier interpretation
+before being integrated into the final sequence score.
+
+.. image:: _images/cai_bicodon.png
+    :width: 700px
+    :align: center
+    :alt: bicodon usage.
+
+The score is calculated using a table prepared from the CoCoPUTs
+codon usage database\ [#CoCoPUTs]_.
+
+
 .. index:: iCodon-Predicted Stability, U Count, DegScore
 
--------------------
-Sequential Features
--------------------
+----------------------
+Other Activity Factors
+----------------------
 
 This area includes various factors that influence RNA sequence
 stability and immunogenicity in cells, such as:
@@ -270,9 +271,9 @@ CDS\ [#Leppek2022]_.
 
 .. index:: Local GC Ratio, Repeat Length
 
-----------------------------------------
-Features related to effective production
-----------------------------------------
+------------------
+Production Factors
+------------------
 
 ==============
 Local GC Ratio
@@ -303,16 +304,21 @@ Repeat Length
 
 |:wrench:| :ref:`Options related to Repeat Length <options-repeats>`
 
-For the mass production of mRNA vaccines, cloning using plasmids
-is necessary. This is achieved through the synthesis of the target
-sequence and vector. If the target sequence itself contains numerous
-tandem repeats, difficulties arise in this synthesis and assembly
-process. Therefore, it is important to proceed in a way that
-minimizes this issue.
+Working with a codon-optimized CDS necessitates gene synthesis,
+typically achieved through chemical oligonucleotide synthesis and
+*in vitro* assembly. However, the presence of tandem repeats or
+inverted repeats can complicate this process, making it more prone
+to errors and less productive. VaxPress mitigates the issues that
+may impede vaccine development and production. The repeat length
+score function penalizes detected tandem repeats to minimize the
+appearance of such repeats in the sequence.
 
-In VaxPress, tandem repeats are quantified by measuring their length.
-By using ``pytrf.GTRFinder``, VaxPress finds all generic tandem
-repeats from given sequences. And add all of their lengths.
+Currently, VaxPress utilizes `pytrf
+<https://github.com/lmdu/pytrf>`_'s ``GTRFinder`` to detect tandem
+repeats. The metric is determined by the total length of all tandem
+repeats detected by ``GTRFinder`` that surpass a specified threshold.
+This approach ensures a more streamlined and error-free process in
+the development and manufacturing of vaccines.
 
 ----------
 References
