@@ -220,42 +220,13 @@ codon usage database\ [#CoCoPUTs]_.
 Other Activity Factors
 ----------------------
 
-This area includes various factors that influence RNA sequence
-stability and immunogenicity in cells, such as:
-
-==========================
-iCodon-Predicted Stability
-==========================
-
-|:wrench:| :ref:`Options related to iCodon-Predicted Stability <options-iCodon>`
-
-``iCodon`` is program that predicts the stability of the coding
-sequence of RNA using synonymous codons based on machine learning
-model trained by mRNA stability profiles from zebrafish and Xenopus
-embryos, human cell lines, and mouse embryonic stem cells\ [#Diez2022]_.
-
-In VaxPress, this is considered as an optimization factor for
-conducting sequence optimization. Particularly, it is regarded in
-terms of the predicted *in vivo* stability of RNA secondary structure
-to propose the optimal RNA sequence.
-
-=============
-Uridine Count
-=============
-
-|:wrench:| :ref:`Options related to Uridine Count <options-ucount>`
-
-RNA molecules that are extensively folded induce a severe interferon
-response, and a significant contributing factor to this is the
-number of uridines in the sequence. Therefore, when developing
-vaccines replacing uridine (U) to modified base such as
-N1-methylpsedouridine (Ψ)\ [#Kariko2008]_, is used. Also, alternative
-strategy that minimize the number of uridines might be
-helpful\ [#Vaidyanathan2018]_.
-
-Building upon this fact, VaxPress choses second strategy. It counts
-the number of uridines as it seeks sequences that minimize the
-uridine count.
+Besides RNA secondary structure and codon usage bias, various other
+sequence properties can influence the overall efficacy of an mRNA
+vaccine. These properties impact the stability of the vaccine both
+in solution and within cells, as well as its exposure to interferon
+responses. The functions summarized in this section aim to enhance
+the anticipated effectiveness of mRNA vaccines by optimizing those
+predictive factors.
 
 ========
 DegScore
@@ -263,11 +234,55 @@ DegScore
 
 |:wrench:| :ref:`Options related to DegScore <options-DegScore>`
 
-DegScore is the deep learning model devolped by Eterna. It predicts
-possibility for degradation of RNA from the sequence information.
-Unlike the usage of DegScore in Eterna's original projects, VaxPress
-utilizes DegScore function by dividing its value by length of
-CDS\ [#Leppek2022]_.
+`DegScore <https://zenodo.org/record/7130659>`_, a ridge regression
+model, predicts the degradation rate of each base position in
+solution, reflecting both primary and secondary
+structures\ [#Leppek2022]_. It was trained using high-throughput
+degradation profiles from hundreds of mRNA sequences under moderate
+and harsh degradation conditions. In VaxPress, the reported metric
+is the average DegScore across all positions.
+
+==========================
+iCodon-Predicted Stability
+==========================
+
+|:wrench:| :ref:`Options related to iCodon-Predicted Stability <options-iCodon>`
+
+`iCodon <https://github.com/santiago1234/iCodon/>`_ is a codon
+optimization tool that enhances the predicted in-cell stability,
+drawing from high-throughput half-life measurements of endogenous
+mRNAs\ [#Diez2022]_. The prediction model primarily relies on the
+rare codon usage, contingent on the total CDS length. VaxPress
+integrates iCodon's in-cell stability prediction as a scoring
+function, in addition to other optimization factors. iCodon's current
+human prediction model is based on SLAM-seq data obtained from K562
+cells\ [#MedinaMunoz2021]_.
+
+=============
+Uridine Count
+=============
+
+|:wrench:| :ref:`Options related to Uridine Count <options-ucount>`
+
+*N*:sup:`1`-methylpseudouridine is a modification universally employed
+in the initial FDA-approved mRNA vaccines that effectively addressed
+the SARS-CoV-2 pandemic. This modification, which substitutes
+uridines with *N*:sup:`1`-methylpseudouridine, dramatically improves
+mRNA vaccines' translational efficiency and stability\ [#Kariko2008]_.
+It is thought to alter the action of some pattern recognition
+receptors or interferon response factors to the mRNA.
+
+Interestingly, depleting uridine improves the translational capacity
+and decreases excessive immunogenicity for mRNAs, irrespective of
+the uridine modification to N1-methylpseudouridine\ [#Vaidyanathan2018]_.
+VaxPress tries to reduce the presence of uridines by substituting
+them with synonymous codons that contain fewer uridines.
+
+Similarly, VaxPress offers an alternative feature that specifically
+reduces the number of uridines in loops rather than their total
+count. This function is based on the observation that uridines in
+loops are the most vulnerable to degradation\ [#Leppek2022]_.
+For more details, please refer to the relevant section.
 
 .. index:: Local GC Ratio, Repeat Length
 
@@ -275,28 +290,35 @@ CDS\ [#Leppek2022]_.
 Production Factors
 ------------------
 
-==============
-Local GC Ratio
-==============
+Working with a codon-optimized CDS necessitates gene synthesis,
+typically achieved through chemical oligonucleotide synthesis and
+*in vitro* assembly. However, factors like repeats and GC content
+can complicate this procedure, increasing the likelihood of errors
+and reducing productivity. The scoring functions described in this
+section mitigate the potential issues by penalizing the problematic
+sequences.
+
+================
+Local GC Content
+================
 
 |:wrench:| :ref:`Options related to Local GC Ratio <options-gc>`
 
-The production of mRNA vaccines is carried out through in vitro
-transcription. For this purpose, it's necessary to synthesize
-template DNA corresponding to the desired sequence. During this
-process, if the GC ratio is high, the DNA being synthesized has a
-potential to form stem-loop structures on its own, which can hinder
-the synthesis. Additionally, high GC content can significantly
-impede the amplification process that follows. Therefore, for the
-ease of vaccine production, maintaining a relatively low GC ratio
-is desirable.
+Steps in gene synthesis often encounter issues with GC-rich regions.
+These complications can interfere with the synthesis and amplification
+of high-GC sections, causing researchers to spend additional time
+troubleshooting, subsequently extending the overall development
+period. To mitigate these challenges, VaxPress calculates the GC
+content within specified intervals and widths of the sequence. The
+metric is determined from the sum of each bin's score, with the
+highest score assigned to a GC ratio of 50% and lower scores given
+to more biased content. The plot below illustrates the partial score
+function calculated for each bin.
 
-VaxPress calculates the existence ratio of G and C within the window
-by moving it by the stride size, and then transform the window-specific
-GC ratio values (``gc``) using the following equation to determine
-the score.
-
-.. math:: score = -\Sigma_{gc}(10^{log_2(|gc-0.5|)+0.05})
+.. image:: _images/gc_function.png
+   :width: 400px
+   :alt: Scoring function for GC content
+   :align: center
 
 =============
 Repeat Length
@@ -304,21 +326,16 @@ Repeat Length
 
 |:wrench:| :ref:`Options related to Repeat Length <options-repeats>`
 
-Working with a codon-optimized CDS necessitates gene synthesis,
-typically achieved through chemical oligonucleotide synthesis and
-*in vitro* assembly. However, the presence of tandem repeats or
-inverted repeats can complicate this process, making it more prone
-to errors and less productive. VaxPress mitigates the issues that
-may impede vaccine development and production. The repeat length
-score function penalizes detected tandem repeats to minimize the
-appearance of such repeats in the sequence.
-
-Currently, VaxPress utilizes `pytrf
-<https://github.com/lmdu/pytrf>`_'s ``GTRFinder`` to detect tandem
-repeats. The metric is determined by the total length of all tandem
-repeats detected by ``GTRFinder`` that surpass a specified threshold.
-This approach ensures a more streamlined and error-free process in
-the development and manufacturing of vaccines.
+The presence of tandem repeats or inverted repeats interferes with
+virtually every step in gene synthesis, cloning, and manipulation.
+The repeat length function penalizes detected tandem repeats to
+minimize the appearance of such repeats in the sequence. Currently,
+VaxPress utilizes `pytrf <https://github.com/lmdu/pytrf>`_'s
+``GTRFinder`` to detect tandem repeats. The metric is determined
+by the total length of all tandem repeats detected by ``GTRFinder``
+that surpass a specified threshold.  This approach ensures a more
+streamlined and error-free process in the development and manufacturing
+of vaccines.
 
 ----------
 References
@@ -382,6 +399,10 @@ References
 
 .. [#Diez2022] Diez, M., *et al.* iCodon customizes gene expression
    based on the codon composition. *Sci Rep* 2022;12(1):12126.
+
+.. [#MedinaMunoz2021] Medina-Munoz, S.G., *et al.* Crosstalk between
+   codon optimality and cis-regulatory elements dictates mRNA
+   stability. *Genome Biol* 2021;22(1):14.
 
 .. [#Kariko2008] Kariko, K., *et al.* Incorporation of pseudouridine
    into mRNA yields superior nonimmunogenic vector with increased
