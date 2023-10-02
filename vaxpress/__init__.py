@@ -23,4 +23,4 @@
 # THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-__version__ = '0.4'
+__version__ = '0.9'
