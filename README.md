@@ -93,128 +93,44 @@ Here's a basic command-line instruction to start using VaxPress.
 Note that `-i` and `-o` options are mandatory:
 
 ```bash
-vaxpress -i {path_to_input.fa} -o {path_to_output_directory} --iterations {n_iterations} -p {n_processes}
+vaxpress -i spike.fa -o output --iterations 1000 -p 32
 ```
 
 ### Input
 
-Provide a CDS sequence in FASTA format. Alternatively, if you have
-a protein sequence in FASTA format, use the `--protein` option.
+VaxPress requires a FASTA format input file that contains the CDS
+(CoDing Sequence) to be optimized. In case the FASTA file holds a
+protein sequence, the additional `--protein` switch is required.
 
 ### Number of Iterations
 
-By default, the `--iterations` option is set to 10.  For a comprehensive
-optimization, it's suggested to use a minimum of 500 iterations.
-However, the ideal number of iterations can vary based on the input's
-length, composition, and chosen optimization settings. Note that
-the optimization process might halt before completing all specified
-iterations if no improvement is detected over several consecutive
-cycles.
+The `--iterations` option is set to `10` by default. However,
+for thorough optimization, it's recommended to use at least `500`
+iterations. The optimal number of iterations may differ depending
+on the length, composition of the input, and the selected optimization
+settings. It's important to note that the optimization process may
+stop before completing all the specified iterations if no progress
+is observed over several consecutive cycles. Guidelines for setting
+the appropriate number of iterations and other optimization parameters
+can be found in the
+[Tuning Optimization Parameters](https://vaxpress.readthedocs.io/en/latest/user_guides.html#tuning-parameters)
+section.
 
-By setting the number of `--iterations` to 0, VaxPress provides a convenient
-method to just evaluate a given sequence with its various scoring functions.
+You can set `--iterations` to `0` to generate VaxPress's sequence
+evaluation report without any optimization.
 
 ### Multi-Core Support
 
 You can use multiple CPU cores for optimization with the `-p` or
 `--processes` option.
 
-## Adjusting the Fitness Scoring Scheme
+### More About Options
 
-VaxPress optimizes synonymous codon selections to potentially enhance
-the fitness of coding sequences for mRNA vaccines. This fitness is
-derived from a cumulative score of various metrics, including the
-codon adaptation index, GC ratio, among others. To emphasize or
-de-emphasize a specific feature, simply adjust its weight. A deeper
-understanding of the scoring functions' principles is available on
-the [documentation](https://vaxpress.readthedocs.io/en/latest/scoring_functions.html).
-
-### Setting Weights
-
-To fine-tune the optimization, adjust the weights of individual
-scoring functions using the `--{func}-weight` option. Setting a
-function's weight to `0` effectively disables it.
-
-```bash
-# Concentrate on the stable secondary structure (more weight to the MFE)
-vaxpress -i spike.fa -o result-spike --mfe-weights 10
-
-# Turn off the consideration of repeated sequences
-vaxpress -i spike.fa -o result-spike --repeats-weight 0
-```
-
-### Custom Scoring Functions
-
-VaxPress allows users to add their custom scoring functions. This
-feature enables a more targeted optimization process by integrating
-new sequence attributes of interest. For detailed instructions,
-please refer to the [Adding a scoring function page](#scoring_func).
-
-## Using LinearDesign for Optimization Initialization
-
-[LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign)
-([Zhang *et al.,* 2023](https://www.nature.com/articles/s41586-023-06127-z)) offers ultra-fast optimization, focusing on
-near-optimal MFE and CAI values. By using the `--lineardesign`
-option, VaxPress invokes LinearDesign internally then begins its
-optimization with a sequence already refined by LinearDesign.
-Subsequent VaxPress optimizations further improves the sequences
-for features like secondary structures near the start codon, uridine
-count, in-cell stability, tandem repeats, and local GC content.
-
-To utilize the LinearDesign integration, provide the path to the
-installed directory of LinearDesign using the `--lineardesign-dir`
-option. This option can be omitted in subsequent uses. The
-`--lineardesign` option also needs a LAMBDA parameter, which influences
-the balance between MFE and CAI. Values between 0.5 and 4 are usually
-suitable starting points. For insights into the LAMBDA value's
-implications, consult Zhang *et al.* (2023).
-
-Note that sequences straight from LinearDesign often have suboptimal
-structures around the start codon. Under the high mutation rate at
-the beginning, this causes the main sequence body to lose its optimal
-MFE structure. The `-—conservative-start` option tackles this by
-focusing on the start codon region before optimizing the rest. Also,
-given that LinearDesign's outputs are already quite optimal, the
-`--initial-mutation-rate` can be reduced to 0.01.  This ensures
-efficient optimization as there's a minimal likelihood that a better
-mutation would emerge with a higher mutation rate.
-
-```bash
-# Running VaxPress with LinearDesign
-vaxpress -i spike.fa -o results-spike --processes 36 \
-         --iterations 500 --lineardesign 1.0 \
-         --lineardesign-dir /path/to/LinearDesign \
-         --conservative-start 10 --initial-mutation-rate 0.01
-```
-### Using VaxPress as a User-friendly Interface to LinearDesign
-Using `--conservative-start N` option only generates mutations in
-the start codon region during the initial N number of iterations,
-leaving the rest of the sequence as it is. Therefore, by assigning
-the same parameter for `--conservative-start` and `--iterations` options,
-VaxPress can be used as a convenient front-end interface for
-LinearDesign optimization.
-
-Using LinearDesign through VaxPress interface offers several advantages:
-
-- LinearDesign can be run without python2 dependency in VaxPress.
-- In addition to the optimized sequence output by LinearDesign,
-  VaxPress produces output report that contains detailed information
-  about the sequence including the visualization of secondary structure
-  and evaluation results of various metrics.
-- When using LinearDesign alone, several N-terminal amino acids should
-  be manually removed before running the optimization to prevent folded
-  structures in the start codon region. This process is run automatically
-  in VaxPress with `--lineardesign-omit-start`(default = 5) option.
-- While LinearDesign only accepts protein sequence, mRNA sequence can
- . be directly used as an input in VaxPress.
-
-```bash
-# Example usage of VaxPress as an interface to LinearDesign
-vaxpress -i spike.fa -o results-spike --processes 36 \
-         --iterations 10 --lineardesign 1.0 \
-         --conservative-start 10 --initial-mutation-rate 0.01 \
-         --lineardesign-dir /path/to/LinearDesign \
-```
+VaxPress offers the flexibility to adjust optimization strategies
+in detail and integrate with LinearDesign. It also allows several
+more convenient functions such as preset parameters, user-defined
+custom scoring functions, and etc. For comprehensive explanation,
+please refer to [the manual](https://vaxpress.readthedocs.io/en/latest/).
 
 ## Output
 
@@ -236,7 +152,7 @@ the following five files:
 If you employed our software in your research, please
 kindly reference our publication:
 
-Ju, Ku, and Chang (2023) Title. Journal. Volume.
+Ju, Ku, and Chang (2023) Title. Journal. Volume. (in preparation)
 
 # License
 
