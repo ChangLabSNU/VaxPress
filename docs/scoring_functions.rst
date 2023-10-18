@@ -38,20 +38,29 @@ these built-in scoring functions.
 RNA Folding
 -----------
 
-The secondary structure of an mRNA vaccine plays a crucial role in
-determining RNA stability and translation
-efficiency\ [#Mauger2019]_:sup:`,`\ [#Leppek2022]_. The base-pairing
-status determines the susceptibility to ribonucleases or divalent
-metal ions, which can degrade the RNA. Additionally, local structures
-near the start codon influence the efficiency of translation
-initiation.
+RNA folding has been shown to be an overwhelming factor determining
+an mRNA vaccine's
+efficacy\ [#Mauger2019]_:sup:`,`\ [#WS2021]_:sup:`,`\ [#Leppek2022]_.
+The secondary structure influences numerous biochemical and biological
+properties of mRNA. The base-pairing status confines the susceptibility
+to ribonucleases or divalent metal ions, which can degrade the RNA.
+Additionally, local structures near the start codon influence the
+efficiency of translation initiation.
 
 Predicting this secondary structure, however, is a computationally
 intensive task due to its cubic complexity. VaxPress is designed
 to handle this prediction task efficiently by utilizing all available
 CPU cores. Following the prediction, individual score functions are
 executed to evaluate the optimality of the predicted structures for
-use as a vaccine sequence.
+use as a vaccine sequence. To keep the computational load manageable,
+only the minimum free energy (MFE) structure is used to score the
+fitness of sequences among the many possible structures.
+
+VaxPress predicts a candidate sequence's MFE structure using *ViennaRNA*
+by default. However, users can select *LinearFold* using the command
+line switch "``--folding-engine linearfold``". It's important to
+note that *LinearFold* cannot be used commercially.  Nonetheless, it
+offers 2X to 4X faster predictions by more approximations.
 
 =========================
 Minimum Free Energy (MFE)
@@ -59,7 +68,16 @@ Minimum Free Energy (MFE)
 
 |:wrench:| :ref:`Options related to Minimum Free Energy <options-MFE>`
 
-This section is to be written.
+The Minimum Free Energy (MFE) indicates the thermodynamic stability
+of an RNA structure. By giving more weight to this measurement, you
+can drive the sequence optimization to take more stable structures.
+These stable structures have been shown to degrade slower and produce
+more antigens in tests\ [#Mauger2019]_:sup:`,`\ [#Leppek2022]_.
+
+Since longer RNA sequences inherently have a higher likelihood of
+forming a stronger, lower MFE, structure. To account for this bias,
+the MFE score is normalized by dividing it by the sequence length,
+measured in 1kb units.
 
 ==================================
 Loop Length (total unpaired bases)
@@ -67,7 +85,17 @@ Loop Length (total unpaired bases)
 
 |:wrench:| :ref:`Options related to Loop Length <options-loops>`
 
-This section is to be written.
+Loops in RNA secondary structures are typically their most vulnerable
+points due to their flexibility and susceptibility to degradation-causing
+substances. The MFE structure usually has a shorter total loop
+length than most other structures. However, because G:C base pairs
+are much stronger than A:U pairs, minimizing the total length of
+loops does not always correlate with the MFE.
+
+Prioritizing loop length in optimization can reduce these vulnerable
+sections rather than achieve overall thermodynamic stability. As
+with the MFE score, the total loop length is adjusted by dividing
+it by the RNA sequence length, scaled in 1kb units.
 
 =====================
 Start Codon Structure
@@ -75,7 +103,23 @@ Start Codon Structure
 
 |:wrench:| :ref:`Options related to Start Codon Structure <options-startstr>`
 
-This section is to be written.
+Strong structures near the start codon can disrupt the initiation
+of the translation
+process\ [#Shah2013]_:sup:`,`\ [#Ding2014]_:sup:`,`\ [#Wan2014]_.
+scoring function aims to reduce the number of base pairings close
+to the start codon. You can adjust the width of the leader region
+under consideration with the ``--start-str-width`` option.
+
+To prioritize this over other factors like MFE and loop length, the
+default weight for this function is significantly higher than the
+others. However, if the initial sequence has been optimized for
+certain features, the high penalty might diminish its existing
+optimization. This happens when unfavorable mutations in other
+regions are carried along with mutations that reduce the leader
+structure penalty. To mitigate this, for the first iterations,
+mutations can be restricted to the leader sequence near start codons
+using :ref:`the <label-constart>` ``--conservative-start``
+:ref:`option <label-constart>`.
 
 ===========
 Stem Length
@@ -83,7 +127,23 @@ Stem Length
 
 |:wrench:| :ref:`Options related to Stem Length <options-longstems>`
 
-This section is to be written.
+Long double-stranded RNA regions can trigger a strong immune response
+as they are detected by the innate immune system's pattern recognition
+receptors (PRRs)\ [#Berke2012]_:sup:`,`\ [#Wu2013]_. This response
+not only decreases antigen production but also actively degrades
+mRNAs.
+
+The stem length penalty is based on the total length of stems,
+without bulges or internal loops, in the MFE structure. By default,
+the lower limit to be considered "long" is around 30 bp, which
+includes a safe margin to reduce the chances of appearances of long
+stems in the non-MFE structures.
+
+The lower threshold, ~10 bp, might also be useful to prevent long
+inverted repeats, which can hinder efficient chemical synthesis
+and assembly of gene fragments. Restricting these patterns can
+improve the productivity of gene synthesis and amplification for
+mRNA vaccine development and manufacturing.
 
 .. image:: _images/stem_loop.png
     :width: 700px
@@ -291,6 +351,37 @@ of vaccines.
 References
 ----------
 
+.. [#Mauger2019] Mauger, D.M., *et al.* mRNA structure regulates protein
+   expression through changes in functional half-life. *Proc Natl
+   Acad Sci USA* 2019;116(48):24075-24083.
+
+.. [#WS2021] Wayment-Steele, H.K., *et al.* Theoretical basis for
+   stabilizing messenger RNA through secondary structure design.
+   *Nucleic Acids Res* 2021;49(18):10604-10617.
+
+.. [#Leppek2022] Leppek, K., *et al.* Combinatorial optimization of
+   mRNA structure, stability, and translation for RNA-based
+   therapeutics. *Nat Commun* 2022;13(1):1536.
+
+.. [#Shah2013] Shah, P., *et al.* Rate-limiting steps in yeast protein
+   translation. *Cell* 2013;153(7):1589-1601.
+
+.. [#Ding2014] Ding, Y., *et al.* *In vivo* genome-wide profiling of RNA
+   secondary structure reveals novel regulatory features. *Nature*
+   2014;505(7485):696-700.
+
+.. [#Wan2014] Wan, Y., *et al.* Landscape and variation of RNA secondary
+   structure across the human transcriptome. *Nature*
+   2014;505(7485):706-709.
+
+.. [#Berke2012] Berke, I.C. and Modis, Y. MDA5 cooperatively forms
+   dimers and ATP-sensitive filaments upon binding double-stranded
+   RNA. *EMBO J* 2012;31(7):1714-1726.
+
+.. [#Wu2013] Wu, B., *et al.* Structural basis for dsRNA recognition,
+   filament formation, and antiviral signal activation by MDA5.
+   *Cell* 2013;152(1-2):276-289.
+
 .. [#CAI] Sharp, P.M. and Li, W.H. The codon Adaptation Index--a measure
    of directional synonymous codon usage bias, and its potential applications.
    *Nucleic Acids Res* 1987;15(3):1281-1295.
@@ -304,48 +395,6 @@ References
 .. [#CoCoPUTs] Alexaki, A., *et al.* Codon and Codon-Pair Usage Tables
    (CoCoPUTs): Facilitating Genetic Variation Analyses and Recombinant
    Gene Design. *J Mol Biol* 2019;431(13):2434-2441.
-
-.. [#Mauger2019] Mauger, D.M., *et al.* mRNA structure regulates protein
-   expression through changes in functional half-life. *Proc Natl
-   Acad Sci USA* 2019;116(48):24075-24083.
-
-.. [#Leppek2022] Leppek, K., *et al.* Combinatorial optimization of
-   mRNA structure, stability, and translation for RNA-based
-   therapeutics. *Nat Commun* 2022;13(1):1536.
-
-.. [#Zuker1981] Zuker, M. and Stiegler, P. Optimal computer folding of
-   large RNA sequences using thermodynamics and auxiliary information.
-   *Nucleic Acids Res* 1981;9(1):133-148.
-
-.. [#Hofacker2014] Hofacker, I.L. Energy-directed RNA structure prediction.
-   *Methods Mol Biol* 2014;1097:71-84.
-
-.. [#Kearse2019] Kearse, M.G., *et al.* Ribosome queuing enables non-AUG
-   translation to be resistant to multiple protein synthesis inhibitors.
-   *Genes Dev* 2019;33(13-14):871-885.
-
-.. [#Tinoco1999] Tinoco, I., Jr. and Bustamante, C. How RNA folds.
-   *J Mol Biol* 1999;293(2):271-281.
-
-.. [#NNDB] Turner, D.H. and Mathews, D.H. NNDB: the nearest neighbor
-   parameter database for predicting stability of nucleic acid secondary
-   structure. *Nucleic Acids Res* 2010;38(Database issue):D280-282.
-
-.. [#WS2021] Wayment-Steele, H.K., *et al.* Theoretical basis for
-   stabilizing messenger RNA through secondary structure design.
-   *Nucleic Acids Res* 2021;49(18):10604-10617.
-
-.. [#Janeway1989] Janeway, C.A., Jr. Approaching the asymptote?
-   Evolution and revolution in immunology. *Cold Spring Harb Symp
-   Quant Biol* 1989;54 Pt 1:1-13.
-
-.. [#Berke2012] Berke, I.C. and Modis, Y. MDA5 cooperatively forms
-   dimers and ATP-sensitive filaments upon binding double-stranded
-   RNA. *EMBO J* 2012;31(7):1714-1726.
-
-.. [#Wu2013] Wu, B., *et al.* Structural basis for dsRNA recognition,
-   filament formation, and antiviral signal activation by MDA5.
-   *Cell* 2013;152(1-2):276-289.
 
 .. [#Diez2022] Diez, M., *et al.* iCodon customizes gene expression
    based on the codon composition. *Sci Rep* 2022;12(1):12126.
