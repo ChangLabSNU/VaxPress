@@ -106,7 +106,7 @@ Start Codon Structure
 Strong structures near the start codon can disrupt the initiation
 of the translation
 process\ [#Shah2013]_:sup:`,`\ [#Ding2014]_:sup:`,`\ [#Wan2014]_.
-scoring function aims to reduce the number of base pairings close
+This scoring function aims to reduce the number of base pairings close
 to the start codon. You can adjust the width of the leader region
 under consideration with the ``--start-str-width`` option.
 
