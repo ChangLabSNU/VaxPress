@@ -6,8 +6,6 @@ This guide will show you how to optimize a wild-type mRNA sequence
 using VaxPress. As an example, we'll focus on the Hemagglutinin
 (HA) protein from the Influenza A virus.
 
-.. index:: Influenza A virus, Hemagglutinin, HA, GenBank, UniProt
-
 ------------------------------
 Step 1. Downloading a Sequence
 ------------------------------
@@ -63,6 +61,8 @@ for the optimality of given protein sequence.
 -------------------------------------
 Step 3. Running VaxPress Optimization
 -------------------------------------
+
+.. index:: LinearDesign; tutorial
 
 Let's proceed with the VaxPress optimization. With the ``--lineardesign``
 option, VaxPress utilizes the sequence optimized by *LinearDesign* as

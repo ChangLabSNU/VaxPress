@@ -1,6 +1,8 @@
 Troubleshooting
 ***************
 
+.. index:: iCodon; troubleshooting
+
 ------------------------
 iCodon option is missing
 ------------------------

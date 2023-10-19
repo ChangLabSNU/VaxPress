@@ -2,7 +2,7 @@
 User Guides
 ***********
 
-.. index:: LinearDesign; Usage
+.. index:: LinearDesign; guide
 .. _using-lineardesign:
 
 --------------------------------------------------------
@@ -77,13 +77,14 @@ a better mutation would emerge with a higher mutation rate.
 To see the list of all options related to *LinearDesign,* see
 :ref:`label-linopts`.
 
+.. index:: optimization; guide
 .. _tuning-parameters:
 
 ------------------------------
 Tuning Optimization Parameters
 ------------------------------
 
-.. index:: Setting Parameters; Iterations
+.. index:: iteration; tuning
 
 ====================
 Number of Iterations
@@ -122,7 +123,7 @@ specified number of iterations if the fitness score doesn't improve
 for several consecutive cycles. In detail, if E(number of mutation)
 is equal to 0.2 because of decrease in mutation rate.
 
-.. index:: Setting Parameters; Population
+.. index:: population; tuning
 
 ====================
 Number of Population
@@ -169,7 +170,7 @@ that fitness curve converges after 100.
     Other parameters can be adjusted as well based on your own
     purpose.
 
-.. index:: Setting Parameters; Initial Mutation Rate
+.. index:: mutation rate; tuning
 
 =====================
 Initial Mutation Rate
@@ -236,6 +237,8 @@ However, keep in mind that lower initial mutation rate might result
 in the optimization outcome to be stuck in the local optimum,
 although it generally allows the faster convergence.
 
+.. index:: LinearDesign; tuning example
+
 +++++++++++++++++++++++++++++++++
 Case 2: *LinearDesign* is applied
 +++++++++++++++++++++++++++++++++
@@ -278,7 +281,7 @@ sequence is already optimized with *LinearDesign*. After setting
 iteration number, you might try initial mutation rate under ``0.01``
 and observe the fitness score to set proper rate.
 
-.. index:: Setting Parameters; Fitness Function Weights
+.. index:: weight, fitness; tuning
 
 ================================
 Weights of the Fitness Functions
@@ -372,7 +375,7 @@ to 4 steps in the example below.
     the above process. How to balance the weights among the various
     fitness functions depends on your own purpose for using VaxPress.
 
-.. index:: LinearDesign; Use Case
+.. index:: LinearDesign; removing tandem repeat
 
 =================================================
 Removing Tandem Repeats from LindearDesign Output
@@ -410,8 +413,10 @@ with high CAI score is always favored.
          --mfe-weight 10 --repeats-weight 10 --cai-weight 1 --gc-weight 3 \
          --start-str-weight 1
 
+.. index:: LinearDesign; VaxPress as a front-end interface
+
 =============================================================
-Using VaxPress as a User-friendly Interface to *LinearDesign*
+Using VaxPress as a User-Friendly Interface to *LinearDesign*
 =============================================================
 
 Using ``--conservative-start N`` option only generates mutations
@@ -461,6 +466,8 @@ differences between "Initial" and "Optimized" sequence should be
 minimal, since the mutations were only allowed at the start codon
 region.
 
+.. index:: report; report only
+
 =============================
 Evaluating the given sequence
 =============================
@@ -473,7 +480,7 @@ structure.
 
 
 
-.. index:: Preset
+.. index:: preset; guide
 .. _label-preset:
 
 --------------------------------------------------------
@@ -510,7 +517,7 @@ option and override only ``--seed`` argument to simplify the command.
              --seed {NUMBER}
 
 
-.. index:: Configuration
+.. index:: configuration, persistent settings
 .. _label-configuration:
 
 --------------------------------------------------------
@@ -556,7 +563,7 @@ with '_' in configuration. After this modification, ``--iCodon-weight``
 option will be set to ``0`` as default.
 
 
-.. index:: Addons
+.. index:: addon, custom scoring function
 .. _label-addon:
 
 --------------------------------------------------------

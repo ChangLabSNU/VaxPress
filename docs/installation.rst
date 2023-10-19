@@ -16,6 +16,7 @@ already has *Singularity* installed.
     To access these features, install *LinearDesign* separately. For
     information, see :ref:`installing-lineardesign`.
 
+.. index:: pip
 .. _label-installing:
 
 =============================
@@ -46,6 +47,8 @@ Installing VaxPress using Pip
     # Run VaxPress
     vaxpress -h
 
+.. index:: iCodon; with pip, rpy2
+
 .. note::
     **Optional Dependencies for Installations using Pip**
 
@@ -54,6 +57,8 @@ Installing VaxPress using Pip
     working installations of *R,* *rpy2* (version >= 3.0) and
     *iCodon.*  For detailed installation instructions, visit
     `iCodon's GitHub page <https://github.com/santiago1234/iCodon/>`_.
+
+.. index:: conda
 
 ===============================
 Installing VaxPress using Conda
@@ -72,6 +77,8 @@ Installing VaxPress using Conda
 
     # Run VaxPress
     vaxpress -h
+
+.. index:: singularity
 
 ================================
 Running VaxPress via Singularity
@@ -100,6 +107,7 @@ directory of your choice.
     <https://sylabs.io/guides/latest/user-guide/bind_paths_and_mounts.html>`_.
 
 
+.. index:: LinearDesign; installation
 .. _installing-lineardesign:
 
 =======================

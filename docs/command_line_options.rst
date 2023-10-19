@@ -2,7 +2,7 @@
 Command Line Options
 ********************
 
-.. index:: Input/Output Options
+.. index:: options
 
 Input/Output and Execution Options
 **********************************
@@ -51,6 +51,8 @@ Optional Arguments
   Print evaluation results of top ``N`` sequences at the ends of
   iterations (default: ``10``).
 
+.. index:: report; options
+
 - ``--report-interval MIN``
 
   Interval of report updates in minutes. In other words, ``report.html``
@@ -60,16 +62,19 @@ Optional Arguments
 
   Show program's version number and exit.
 
-.. index:: Execution Options
 .. _execution options:
 
 -----------------
 Execution Options
 -----------------
 
+.. index:: parallelization; options
+
 - ``-p N``, ``--processes N``
 
   Number of processes to use (default: ``4``).
+
+.. index:: preset; options
 
 - ``--preset FILE``
   
@@ -85,6 +90,8 @@ Execution Options
 
   Refer to :ref:`label-preset` for more information.
 
+.. index:: addon; options, plugin
+
 - ``--addon FILE``
 
   Load a custom fitness function.
@@ -98,10 +105,14 @@ Execution Options
   Please refer to the :ref:`label-addon` section of this documentation
   for detailed instructions on using a custom fitness function.
 
+.. index:: random seed
+
 - ``--seed NUMBER``
 
   Alter the random seed ``NUMBER`` to generate a different sequence
   under the same settings (default: ``922``).
+
+.. index:: folding; options
 
 - ``--folding-engine NAME``
 
@@ -116,10 +127,10 @@ Execution Options
   when you wish to activate only a select few fitness functions.
 
 
-.. index:: Optimization Options
-
 Optimization Options
 ********************
+
+.. index:: optimization; options
 
 The following is a list of parameters related to the program's
 optimization processes. Refer to the :ref:`tuning-parameters` section
@@ -130,6 +141,7 @@ optimization process.
 
   Randomize all codon selections at the beginning (default: not set).
 
+.. index:: conservative start, start codon; options
 .. _label-constart:
 
 - ``--conservative-start ITER[:WIDTH]``
@@ -165,6 +177,8 @@ optimization process.
 
   Initial mutation rate (default: ``0.1``).
 
+.. index:: full scan
+
 - ``--full-scan-interval N``
   
   Number of iterations between full scans of single mutations of
@@ -182,6 +196,8 @@ optimization process.
   rate when the best fitness score stagnates. The default value is
   ``0.9``. For a comprehensive explanation, please refer to the section
   labeled :ref:`label_WinddownTR`.
+
+.. index:: mutation rate; options
 
 - ``--boost-loop-mutations WEIGHT[:START]``
 
@@ -204,7 +220,7 @@ optimization process.
   to `BioPython source code
   <https://github.com/biopython/biopython/blob/master/Bio/Data/CodonTable.py>`_.
 
-.. index:: LinearDesign; Options
+.. index:: LinearDesign; options
 .. _label-linopts:
 
 *LinearDesign*-related Options 
@@ -234,8 +250,6 @@ optimization process.
   initiation.
 
 
-.. index:: Fitness Function Options
-
 Options Related to Fitness Functions
 ************************************
 
@@ -243,6 +257,7 @@ List of all arguments related to fitness functions inside VaxPress.
 For detailed information on how each scoring function works, see
 :doc:`scoring_functions`.
 
+.. index:: iCodon; options
 .. _options-iCodon:
 
 ------------------------------------
@@ -253,6 +268,7 @@ Predicted In-Cell Stability (iCodon)
   
   Scoring weight for iCodon predicted stability (default: ``1.0``).
 
+.. index:: DegScore; options
 .. _options-DegScore:
 
 ------------------------------------------
@@ -267,6 +283,7 @@ Predicted In-Solution Stability (DegScore)
   you wish to incorporate this factor into the optimization process,
   a starting weight value of ``5.0`` is recommended.
 
+.. index:: codon adaptation index (CAI); options
 .. _options-CAI:
 
 ----------------------
@@ -289,6 +306,7 @@ Codon Adaptation Index of Codon-Pairs
   Scoring weight for codon adaptation index (CAI) of codon-pairs
   (default: ``1.0``).
 
+.. index:: uridine; options
 .. _options-ucount:
 
 --------------------

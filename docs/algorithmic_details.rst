@@ -6,7 +6,7 @@ How VaxPress Works
 Optimization
 ------------
 
-.. index:: Genetic Algorithm
+.. index:: genetic algorithm, population, survivor
 
 VaxPress utilizes a genetic algorithm to produce an optimized mRNA
 CDS sequence. It initiates a collection of randomly mutated child
@@ -16,6 +16,8 @@ functions evaluate these sequences. A selection process then
 identifies the fittest sequences, which are carried forward to the
 next generation. The number of these survivors is defined by the
 ``--survivors`` parameter.
+
+.. index:: iteration, offspring
 
 In the following iteration, these survivor sequences produce new
 offspring sequences under a pre-defined mutation rate. This process
@@ -42,12 +44,13 @@ with associated weights. It is represented as follows:
 Refer to the :doc:`scoring_functions` section for more details on
 each factor.
 
-.. index:: Winddown Trigger, Winddown Rate
 .. _label_WinddownTR:
 
 -----------------------------------
 Adaptive Decrement of Mutation Rate
 -----------------------------------
+
+.. index:: winddown trigger, winddown rate, adaptive decrement, mutation rate
 
 To achieve the best results, generating new populations that can
 effectively compete with their predecessors is essential. As the

@@ -23,6 +23,8 @@ VaxPress requires a FASTA format input file that contains the CDS
 (CoDing Sequence) to be optimized. In case the FASTA file holds a
 protein sequence, the additional ``--protein`` switch is required.
 
+.. index:: iteration; quick start
+
 =======================================
 Number of Iterations (``--iterations``)
 =======================================
@@ -37,6 +39,8 @@ is observed over several consecutive cycles. Guidelines for setting
 the appropriate number of iterations and other optimization parameters
 can be found in the :ref:`tuning-parameters` section.
 
+.. index:: parallelization, multi-core, multi-thread
+
 ===========================
 Multi-Core Support (``-p``)
 ===========================
@@ -47,6 +51,8 @@ parallelization of calculations required for scoring functions and
 secondary structure prediction in each iteration. The ``N`` denotes
 the maximum number of cores that the computation can be distributed
 across, thus enhancing the speed of the optimization process.
+
+.. index:: fitness; quick start, scoring function; quick start
 
 ====================================
 Adjusting the Fitness Scoring Scheme
@@ -77,6 +83,7 @@ information on this can be found in the :ref:`label-addon` section.
 For a comprehensive understanding of how VaxPress determines sequence
 optimality, refer to the :doc:`algorithmic_details` section.
 
+.. index:: LinearDesign; initialization
 .. _lineardesign-simple:
 
 ==================================================
@@ -102,6 +109,8 @@ stability, tandem repeats, and local GC content.
 For a detailed information, refer to the :ref:`using-lineardesign`
 section. The :ref:`LinearDesign options <label-linopts>` section
 provides a comprehensive list of all options related to *LinearDesign.*
+
+.. index:: output, report
 
 ===============
 Output (``-o``)

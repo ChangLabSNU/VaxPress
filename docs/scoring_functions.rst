@@ -2,6 +2,8 @@
 Scoring Functions
 *****************
 
+.. index:: metric, score, fitness
+
 The fitness of a sequence is determined through a linear combination
 of metrics, which are computed by various scoring functions. Each
 scoring function yields two numerical values per evaluation: a
@@ -14,8 +16,7 @@ corresponds to greater optimality. The balance between the scoring
 functions is tuned through their weights, which can be adjusted
 using command line options.
 
-.. index:: Objective Function
-.. index:: Scoring Function
+.. index:: scoring function
 
 VaxPress comes with a variety of integrated scoring functions. These
 functions enable optimization with considerations of RNA stability,
@@ -27,12 +28,7 @@ any features you desire.
 The following sections will explain the rationale and context behind
 these built-in scoring functions.
 
-.. index:: RNA Folding
-.. index:: MFE
-.. index:: Minimum Free Energy
-.. index:: Start Codon Structure
-.. index:: Loop Length
-.. index:: Stem Length
+.. index:: folding
 
 -----------
 RNA Folding
@@ -62,6 +58,8 @@ line switch "``--folding-engine linearfold``". It's important to
 note that *LinearFold* cannot be used commercially.  Nonetheless, it
 offers 2X to 4X faster predictions by more approximations.
 
+.. index:: minimum free energy (MFE)
+
 =========================
 Minimum Free Energy (MFE)
 =========================
@@ -78,6 +76,8 @@ Since longer RNA sequences inherently have a higher likelihood of
 forming a stronger, lower MFE, structure. To account for this bias,
 the MFE score is normalized by dividing it by the sequence length,
 measured in 1kb units.
+
+.. index:: loop, total loop length
 
 ==================================
 Loop Length (total unpaired bases)
@@ -97,6 +97,8 @@ sections rather than achieve overall thermodynamic stability. As
 with the MFE score, the total loop length is adjusted by dividing
 it by the RNA sequence length, scaled in 1kb units.
 
+.. index:: start codon
+
 =====================
 Start Codon Structure
 =====================
@@ -110,6 +112,8 @@ This scoring function aims to reduce the number of base pairings close
 to the start codon. You can adjust the width of the leader region
 under consideration with the ``--start-str-width`` option.
 
+.. index:: leader sequence, conservative start; related to start codon structure
+
 To prioritize this over other factors like MFE and loop length, the
 default weight for this function is significantly higher than the
 others. However, if the initial sequence has been optimized for
@@ -120,6 +124,8 @@ structure penalty. To mitigate this, for the first iterations,
 mutations can be restricted to the leader sequence near start codons
 using :ref:`the <label-constart>` ``--conservative-start``
 :ref:`option <label-constart>`.
+
+.. index:: stem length, long stem, hairpin, inverted repeat
 
 ===========
 Stem Length
@@ -150,10 +156,7 @@ mRNA vaccine development and manufacturing.
     :align: center
     :alt: stem-loop structure
 
-.. index:: Codon Usage
-.. index:: Bicodon Usage
-.. index:: CAI
-.. index:: Codon Adaptation Index
+.. index:: codon usage
 
 -----------
 Codon Usage
@@ -166,6 +169,8 @@ produced\ [#CAI]_:sup:`,`\ [#Presnyak2015]_. In the case of mRNA vaccines,
 where antigen production takes place within the cells of the human
 recipient, it is generally a safe strategy to align the codon
 frequencies with those found in the human transcriptome.
+
+.. index:: codon adaptation index (CAI)
 
 ============================
 Codon Adaptation Index (CAI)
@@ -191,6 +196,8 @@ mean of the relative adaptiveness of all codons in the sequence.
 .. math:: CAI = \sqrt[n]{\prod_{j=1}^{n} w_{j}}
 
 where :math:`n` is the number of codons in the sequence.
+
+.. index:: bicodon usage, bicodon adaptation index
 
 =============
 Bicodon Usage
@@ -223,9 +230,6 @@ before being integrated into the final sequence score.
 The score is calculated using a table prepared from the CoCoPUTs
 codon usage database\ [#CoCoPUTs]_.
 
-
-.. index:: iCodon-Predicted Stability, U Count, DegScore
-
 ----------------------
 Other Activity Factors
 ----------------------
@@ -237,6 +241,8 @@ in solution and within cells, as well as its exposure to interferon
 responses. The functions summarized in this section aim to enhance
 the anticipated effectiveness of mRNA vaccines by optimizing those
 predictive factors.
+
+.. index:: DegScore, degradation, in-solution stability
 
 ========
 DegScore
@@ -251,6 +257,8 @@ structures\ [#Leppek2022]_. It was trained using high-throughput
 degradation profiles from hundreds of mRNA sequences under moderate
 and harsh degradation conditions. In VaxPress, the reported metric
 is the average DegScore across all positions.
+
+.. index:: iCodon, in-cell stability
 
 ==========================
 iCodon-Predicted Stability
@@ -267,6 +275,8 @@ integrates iCodon's in-cell stability prediction as a scoring
 function, in addition to other optimization factors. iCodon's current
 human prediction model is based on SLAM-seq data obtained from K562
 cells\ [#MedinaMunoz2021]_.
+
+.. index:: uridine
 
 =============
 Uridine Count
@@ -294,8 +304,6 @@ count. This function is based on the observation that uridines in
 loops are the most vulnerable to degradation\ [#Leppek2022]_.
 For more details, please refer to the relevant section.
 
-.. index:: Local GC Ratio, Repeat Length
-
 ------------------
 Production Factors
 ------------------
@@ -307,6 +315,8 @@ can complicate this procedure, increasing the likelihood of errors
 and reducing productivity. The scoring functions described in this
 section mitigate the potential issues by penalizing the problematic
 sequences.
+
+.. index:: GC content
 
 ================
 Local GC Content
@@ -329,6 +339,8 @@ function calculated for each bin.
    :width: 400px
    :alt: Scoring function for GC content
    :align: center
+
+.. index:: tandem repeat, short tandem repeat, repeat
 
 =============
 Repeat Length
