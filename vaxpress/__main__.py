@@ -189,6 +189,11 @@ def check_argument_validity(args):
         else:
             args.boost_loop_mutations = f'{boost_weight}:{boost_start}'
 
+    if args.m1psi and args.folding_engine == 'linearfold':
+        print('LinearFold currently does not support modified bases. '
+              'Remove --m1psi or use other folding engine supporting it.')
+        sys.exit(1)
+
 def parse_options(scoring_funcs, preset, default_off):
     parser = argparse.ArgumentParser(
         prog='vaxpress',
@@ -209,6 +214,9 @@ def parse_options(scoring_funcs, preset, default_off):
                      help='print top and bottom N sequences (default: 10)')
     grp.add_argument('--report-interval', type=int, default=5, metavar='MIN',
                      help='report interval in minutes (default: 5)')
+    grp.add_argument('--m1psi', default=False, action='store_true',
+                     help='substitute uridine with N1-methylpseudouridine (abbreviated \'1\'), '
+                          'only applicable for vienna folding engine')
     grp.add_argument('--version', action='version', version=__version__)
 
     grp = parser.add_argument_group('Execution Options')
@@ -345,6 +353,7 @@ def run_vaxpress():
         lineardesign_lambda=args.lineardesign,
         lineardesign_omit_start=args.lineardesign_omit_start,
         folding_engine=args.folding_engine,
+        m1psi=args.m1psi,
     )
 
     next_report = 0 # Generate the first report immediately.

@@ -29,11 +29,10 @@ import sys
 import os
 from textwrap import wrap
 from tabulate import tabulate
-from collections import namedtuple
 from concurrent import futures
 from itertools import cycle
 from .mutant_generator import MutantGenerator, STOP
-from .sequence_evaluator import SequenceEvaluator
+from .sequence_evaluator import SequenceEvaluator, ExecutionOptions
 from .presets import dump_to_preset
 from .log import hbar, hbar_double, log
 from . import __version__
@@ -41,15 +40,7 @@ from . import __version__
 PROTEIN_ALPHABETS = 'ACDEFGHIKLMNPQRSTVWY' + STOP
 RNA_ALPHABETS = 'ACGU'
 
-ExecutionOptions = namedtuple('ExecutionOptions', [
-    'n_iterations', 'n_population', 'n_survivors', 'initial_mutation_rate',
-    'winddown_trigger', 'winddown_rate', 'output', 'command_line', 'overwrite',
-    'seed', 'processes', 'random_initialization', 'conservative_start',
-    'boost_loop_mutations', 'full_scan_interval', 'species', 'codon_table',
-    'protein', 'quiet', 'seq_description', 'print_top_mutants', 'addons',
-    'lineardesign_dir', 'lineardesign_lambda', 'lineardesign_omit_start',
-    'folding_engine',
-])
+
 
 class CDSEvolutionChamber:
 
@@ -72,6 +63,7 @@ class CDSEvolutionChamber:
         self.n_processes = exec_options.processes
         self.quiet = exec_options.quiet
         self.print_top_mutants = exec_options.print_top_mutants
+        self.m1psi = exec_options.m1psi
 
         self.initialize()
 
@@ -394,8 +386,9 @@ class CDSEvolutionChamber:
         bestseq = ''.join(self.population[0])
         fastapath = os.path.join(self.outputdir, 'best-sequence.fasta')
         with open(fastapath, 'w') as f:
+            bestseq_output = bestseq.replace('U', '1') if self.m1psi else bestseq
             print(f'>{self.seq_description}', file=f)
-            print(*wrap(bestseq, width=self.fasta_line_width), sep='\n', file=f)
+            print(*wrap(bestseq_output, width=self.fasta_line_width), sep='\n', file=f)
 
         # Save the parameters used for the optimization
         paramspath = os.path.join(self.outputdir, 'parameters.json')

@@ -28,14 +28,37 @@ import re
 import pylru
 from tqdm import tqdm
 from concurrent import futures
-from collections import Counter
+from collections import Counter, namedtuple
 from .log import hbar_stars, log
 
+fold_m1psi = None
+# local variable cannot be pickled from multiprocess task
+try:
+    import RNA
+    def fold_wrapper(seq):
+        fc = RNA.fold_compound(seq)
+        fc.sc_mod_n1methylpseudouridine([i+1 for i, c in enumerate(seq) if c == 'U'])
+        return fc.mfe()
+    
+    fold_m1psi = fold_wrapper
+except ImportError:
+    pass
+
+ExecutionOptions = namedtuple('ExecutionOptions', [
+    'n_iterations', 'n_population', 'n_survivors', 'initial_mutation_rate',
+    'winddown_trigger', 'winddown_rate', 'output', 'command_line', 'overwrite',
+    'seed', 'processes', 'random_initialization', 'conservative_start',
+    'boost_loop_mutations', 'full_scan_interval', 'species', 'codon_table',
+    'protein', 'quiet', 'seq_description', 'print_top_mutants', 'addons',
+    'lineardesign_dir', 'lineardesign_lambda', 'lineardesign_omit_start',
+    'folding_engine', 'm1psi',
+])
 
 class FoldEvaluator:
 
-    def __init__(self, engine: str):
-        self.engine = engine
+    def __init__(self, *, folding_engine: str, m1psi: bool, **rest: ExecutionOptions):
+        self.engine = folding_engine
+        self.m1psi = m1psi
         self.pat_find_loops = re.compile(r'\.{2,}')
         self.initialize()
 
@@ -46,7 +69,7 @@ class FoldEvaluator:
             except ImportError:
                 raise ImportError('ViennaRNA module is not available. Try "'
                                   'pip install ViennaRNA" to install.')
-            self._fold = RNA.fold
+            self._fold = fold_m1psi if self.m1psi else RNA.fold
         elif self.engine == 'linearfold':
             try:
                 import linearfold
@@ -126,7 +149,7 @@ class SequenceEvaluator:
         self.initialize()
 
     def initialize(self):
-        self.foldeval = FoldEvaluator(self.execopts.folding_engine)
+        self.foldeval = FoldEvaluator(**self.execopts._asdict())
         self.folding_cache = pylru.lrucache(self.folding_cache_size)
 
         self.scorefuncs_nofolding = []
