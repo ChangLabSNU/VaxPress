@@ -63,6 +63,7 @@ class CDSEvolutionChamber:
         self.n_processes = exec_options.processes
         self.quiet = exec_options.quiet
         self.print_top_mutants = exec_options.print_top_mutants
+        self.m1psi = exec_options.m1psi
 
         self.initialize()
 
@@ -385,8 +386,9 @@ class CDSEvolutionChamber:
         bestseq = ''.join(self.population[0])
         fastapath = os.path.join(self.outputdir, 'best-sequence.fasta')
         with open(fastapath, 'w') as f:
+            bestseq_output = bestseq.replace('U', '1') if self.m1psi else bestseq
             print(f'>{self.seq_description}', file=f)
-            print(*wrap(bestseq, width=self.fasta_line_width), sep='\n', file=f)
+            print(*wrap(bestseq_output, width=self.fasta_line_width), sep='\n', file=f)
 
         # Save the parameters used for the optimization
         paramspath = os.path.join(self.outputdir, 'parameters.json')
