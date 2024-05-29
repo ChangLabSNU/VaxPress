@@ -368,7 +368,7 @@ def run_vaxpress():
                 status.update({'evaluations': evaldata, 'version': __version__})
 
                 generate_report(status, args, evochamber.metainfo, scoring_options,
-                                execution_options, inputseq, scoring_funcs)
+                                execution_options, inputseq, evochamber.bestseq, scoring_funcs)
 
         finished = (status is not None and status['iter_no'] < 0
                     and status['error'] == 0)
@@ -386,7 +386,7 @@ def run_vaxpress():
         return 1
 
 def generate_report(status, args, metainfo, scoring_options, execution_options,
-                    inputseq, scoring_funcs):
+                    inputseq, outputseq, scoring_funcs):
     if status['iter_no'] > 0: # Intermediate report
         total_elapsed = status['time'][-1] - status['time'][0]
         time_per_iteration = total_elapsed / status['iter_no']
@@ -402,7 +402,7 @@ def generate_report(status, args, metainfo, scoring_options, execution_options,
         status['refresh'] = args.report_interval * 60 + 5 # 5 seconds for safety
 
     ReportGenerator(status, args, metainfo, scoring_options, execution_options,
-                    inputseq, scoring_funcs).generate()
+                    inputseq, outputseq, scoring_funcs).generate()
 
 if __name__ == '__main__':
     ret = run_vaxpress()

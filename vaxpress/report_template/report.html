@@ -47,7 +47,7 @@
 <h1>Task information</h1>
 <ul>
   <li><b>Sequence name:</b> {{ seq.description | e }}</li>
-  <li><b>Sequence length:</b> {{ seq.seq | length }} nt</li>
+  <li><b>Sequence length:</b> {{ outputseq | length }} nt</li>
   <li><b>Mutation space:</b> {{ metainfo['mutation_space']['singles'] }} types
     of mutations, {{ metainfo['mutation_space']['total'] | format_power_html }}
     combinations</li>
