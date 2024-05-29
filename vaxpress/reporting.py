@@ -163,9 +163,10 @@ class ReportPlotsMixin:
 
 class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
 
-    def __init__(self, status, args, metainfo, scoreopts, execopts, seq,
+    def __init__(self, status, args, metainfo, scoreopts, execopts, seq, outputseq,
                  scorefuncs):
         self.seq = seq
+        self.outputseq = outputseq
         self.args = args
         self.metainfo = metainfo
         self.status = status
@@ -195,6 +196,7 @@ class ReportGenerator(TemplateFiltersMixin, ReportPlotsMixin):
         return {
             'args': self.args,
             'seq': self.seq,
+            'outputseq': self.outputseq,
             'metainfo': self.metainfo,
             'scoring': scoreopts_filtered,
             'exec': self.execopts,

@@ -391,11 +391,11 @@ class CDSEvolutionChamber:
 
     def save_results(self):
         # Save the best sequence
-        bestseq = ''.join(self.population[0])
+        self.bestseq = ''.join(self.population[0])
         fastapath = os.path.join(self.outputdir, 'best-sequence.fasta')
         with open(fastapath, 'w') as f:
             print(f'>{self.seq_description}', file=f)
-            print(*wrap(bestseq, width=self.fasta_line_width), sep='\n', file=f)
+            print(*wrap(self.bestseq, width=self.fasta_line_width), sep='\n', file=f)
 
         # Save the parameters used for the optimization
         paramspath = os.path.join(self.outputdir, 'parameters.json')
@@ -404,7 +404,7 @@ class CDSEvolutionChamber:
         # Prepare the evaluation results of the best sequence
         return {
             'initial': self.initial_sequence_evaluation,
-            'optimized': self.seqeval.prepare_evaluation_data(bestseq)
+            'optimized': self.seqeval.prepare_evaluation_data(self.bestseq)
         }
 
     def save_optimization_parameters(self, path: str) -> None:
