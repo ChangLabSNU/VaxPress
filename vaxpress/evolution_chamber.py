@@ -29,6 +29,7 @@ import sys
 import os
 from textwrap import wrap
 from tabulate import tabulate
+from typing import Iterator, Dict, Any
 from collections import namedtuple
 from concurrent import futures
 from itertools import cycle
@@ -228,7 +229,7 @@ class CDSEvolutionChamber:
         self.population_sources[:] = nextgen_sources
         self.flatten_seqs = [''.join(p) for p in self.population]
 
-    def run(self) -> dict:
+    def run(self) -> Iterator[Dict[str, Any]]:
         self.show_configuration()
 
         timelogs = [time.time()]
