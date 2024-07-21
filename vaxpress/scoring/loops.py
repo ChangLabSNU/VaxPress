@@ -1,7 +1,7 @@
 #
 # VaxPress
 #
-# Copyright 2023 Seoul National University
+# Copyright 2023-2024 Seoul National University
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the

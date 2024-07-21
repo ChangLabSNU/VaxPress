@@ -10,7 +10,7 @@ VaxPress
 VaxPress is developed and maintained by `the Hyeshik Chang Lab at
 Seoul National University <https://qbio.io/>`_.
 
-Copyright (c) 2023 Seoul National University
+Copyright (c) 2023-2024 Seoul National University
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
