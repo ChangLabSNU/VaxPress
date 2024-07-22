@@ -35,7 +35,7 @@ standard_backward_table = {
   'V': ['GUU', 'GUC', 'GUA', 'GUG'],
   'W': ['UGG'],
   'Y': ['UAU', 'UAC'],
-  STOP_CODON: '*',
+  STOP_CODON: ['UAA', 'UAG', 'UGA'],
 }
 
 forward_table = {
