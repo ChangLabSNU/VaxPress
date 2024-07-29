@@ -219,9 +219,9 @@ class FoldingManager:
         return self
 
     def initialize_vaxifold(self):
-        self.vaxiclient = AsyncVaxiFoldClient(self.sess['folding/vaxifold/url'],
-                                              self.sess['folding/vaxifold/queue'])
-        return self.vaxiclient.connect()
+        self.remote = AsyncVaxiFoldClient(self.sess['folding/vaxifold/url'],
+                                          self.sess['folding/vaxifold/queue'])
+        return self.remote.connect()
 
     def initialize_local_broker(self):
         self.local = LocalFoldingBroker(self.executor)
@@ -233,9 +233,9 @@ class FoldingManager:
         elif engine == 'linearfold':
             self.predict_mfe = self.local.call_linearfold
         elif engine == 'vaxifold/viennarna':
-            self.predict_mfe = self.vaxiclient.call_viennarna_fold
+            self.predict_mfe = self.remote.call_viennarna_fold
         elif engine == 'vaxifold/linearfold':
-            self.predict_mfe = self.vaxiclient.call_linearfold
+            self.predict_mfe = self.remote.call_linearfold
         else:
             raise ValueError(f'Unknown MFE engine {engine!r}')
 
@@ -244,6 +244,6 @@ class FoldingManager:
         if engine == 'linearpartition':
             self.predict_partition = self.local.call_linearpartition
         elif engine == 'vaxifold/linearpartition':
-            self.predict_partition = self.vaxiclient.call_linearpartition
+            self.predict_partition = self.remote.call_linearpartition
         else:
             raise ValueError(f'Unknown partition engine {engine!r}')

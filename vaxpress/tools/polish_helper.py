@@ -124,7 +124,7 @@ def write_fasta(output, seq, structure, cds_start, cds_end, combinations):
     for codon_start, codon, altcodon, deltacai in combinations:
         output.write(f'>{codon_start + 1}:{codon}->{altcodon} deltaCAI:{deltacai:.2f}\n')
 
-        altseq = seq[:codon_start] + altcodon + seq[codon_start+3:]
+        altseq = annotated_seq[:codon_start] + altcodon + annotated_seq[codon_start+3:]
 
         output.write(altseq + '\n')
         output.write(structure + '\n')
