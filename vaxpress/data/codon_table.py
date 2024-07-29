@@ -1,6 +1,6 @@
 STOP_CODON = '*'
 
-standard_forward_table = {
+standard_table = {
   'UUU': 'F', 'UUC': 'F', 'UUA': 'L', 'UUG': 'L', 'UCU': 'S', 'UCC': 'S',
   'UCA': 'S', 'UCG': 'S', 'UAU': 'Y', 'UAC': 'Y', 'UGU': 'C', 'UGC': 'C',
   'UGG': 'W', 'CUU': 'L', 'CUC': 'L', 'CUA': 'L', 'CUG': 'L', 'CCU': 'P',
@@ -14,34 +14,6 @@ standard_forward_table = {
   'GGG': 'G', 'UGA': STOP_CODON, 'UAG': STOP_CODON, 'UAA': STOP_CODON,
 }
 
-standard_backward_table = {
-  'A': ['GCU', 'GCC', 'GCA', 'GCG'],
-  'C': ['UGU', 'UGC'],
-  'D': ['GAU', 'GAC'],
-  'E': ['GAA', 'GAG'],
-  'F': ['UUU', 'UUC'],
-  'G': ['GGU', 'GGC', 'GGA', 'GGG'],
-  'H': ['CAU', 'CAC'],
-  'I': ['AUU', 'AUC', 'AUA'],
-  'K': ['AAA', 'AAG'],
-  'L': ['UUA', 'UUG', 'CUU', 'CUC', 'CUA', 'CUG'],
-  'M': ['AUG'],
-  'N': ['AAU', 'AAC'],
-  'P': ['CCU', 'CCC', 'CCA', 'CCG'],
-  'Q': ['CAA', 'CAG'],
-  'R': ['CGU', 'CGC', 'CGA', 'CGG', 'AGA', 'AGG'],
-  'S': ['UCU', 'UCC', 'UCA', 'UCG', 'AGU', 'AGC'],
-  'T': ['ACU', 'ACC', 'ACA', 'ACG'],
-  'V': ['GUU', 'GUC', 'GUA', 'GUG'],
-  'W': ['UGG'],
-  'Y': ['UAU', 'UAC'],
-  STOP_CODON: ['UAA', 'UAG', 'UGA'],
-}
-
-forward_table = {
-  'Homo sapiens': standard_forward_table,
-}
-
-backward_table ={
-  'Homo sapiens': standard_backward_table,
+codon_tables = {
+  'Homo sapiens': standard_table,
 }
